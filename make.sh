@@ -14,7 +14,7 @@ echo
 #
 DIR_INPUT_JOB=$1
 DIR_OUTPUT_IMG=$2  # draw first figure unless specified.
-RUN_MODE=$3        # "test" if debug mode.
+RUN_MODE=$3        # "test" if debug mode
 #
 if [ ! -d "${DIR_INPUT_JOB}" ] ; then
     echo "error in $0: DIR_INPUT_JOB = ${DIR_INPUT_JOB} does not exist."
@@ -167,17 +167,17 @@ while [ 1 -eq 1 ] ; do
     [ "${VARID}"  = "" -a "${FTYPE}" != "isccp_matrix" ] && echo "VARID is void"  && exit 1
     #
     case "${TIMEID}" in
-	"seasonal_mean")
-	    [ "${YEAR}"       = "" ] && echo "YEAR is void"      && exit 1
-	    [ "${SEASON}"     = "" ] && echo "SEASON is void"     && exit 1
+	"seasonal_mean" )
+	    [ "${YEAR}"   = "" ] && echo "error: YEAR is void"   && exit 1
+	    [ "${SEASON}" = "" ] && echo "error: SEASON is void" && exit 1
 	    [ "${SEASON}" = "MAM" ] && MONTH="345"
 	    [ "${SEASON}" = "JJA" ] && MONTH="678"
 	    [ "${SEASON}" = "SON" ] && MONTH="901"
 	    [ "${SEASON}" = "DJF" ] && MONTH="212"
 	    ;;
-	*)
-	    echo "TIMEID=${TIMEID} is not valid"
-	    exit 1
+	"monthly_mean" )
+	    [ "${YEAR}"   = "" ] && echo "error: YEAR is void"  && exit 1
+	    [ "${MONTH}"  = "" ] && echo "error: MONTH is void" && exit 1
 	    ;;
     esac
 
@@ -337,14 +337,14 @@ EOF
     #
     # display style
     case "${MODE}" in
-	"model_bias")
+	"model_bias" )
 	    cat >> temp_$$/cnf_${FTYPE}.gsf <<EOF
     _disp.1 = '1'
     _disp.2 = '2'
     _disp.5 = '2 1'
 EOF
 	    ;;
-	*)
+	* )
 	    echo "error: MODE=${MODE} is invalid."
 	    exit 1
 	    ;;
@@ -352,11 +352,15 @@ EOF
     #
     # time
     case "${TIMEID}" in
-	"seasonal_mean")
+	"seasonal_mean" | "monthly_mean" )
 	    cat >> temp_$$/cnf_${FTYPE}.gsf <<EOF
     _year  = ${YEAR}
     _month = ${MONTH}
 EOF
+	    ;;
+	* )
+	    echo "error: TIMEID=${TIMEID} is invalid."
+	    exit 1
 	    ;;
     esac
     #
