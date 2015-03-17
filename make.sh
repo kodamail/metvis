@@ -2,7 +2,7 @@
 #
 # only for git-version data_conv
 #
-# ./make.sh input-job-dir [output-img-dir]
+# ./make.sh input-job-dir [output-img-dir [test]]
 #
 echo "$0 $@ ($(date))"
 echo
@@ -14,6 +14,7 @@ echo
 #
 DIR_INPUT_JOB=$1
 DIR_OUTPUT_IMG=$2  # draw first figure unless specified.
+RUN_MODE=$3        # "test" if debug mode.
 #
 if [ ! -d "${DIR_INPUT_JOB}" ] ; then
     echo "error in $0: DIR_INPUT_JOB = ${DIR_INPUT_JOB} does not exist."
@@ -26,7 +27,8 @@ fi
 . ./${DIR_INPUT_JOB}/configure
 #
 if [ "${DIR_OUTPUT_IMG}" = "" ] ; then
-    echo "$0: display mode"
+    echo "$0: display test mode"
+    RUN_MODE="test"
 elif [ ! -d "${DIR_OUTPUT_IMG}" ] ; then
     echo "creating ${DIR_OUTPUT_IMG}"
     mkdir -p ${DIR_OUTPUT_IMG} || exit 1
@@ -102,15 +104,10 @@ while [ 1 -eq 1 ] ; do
     #
     MATRIX_TYPE=""
     #
-#    OUTPUT_DIR=${DIR_OUTPUT_IMG}/img
     OUTPUT_DIR=${DIR_OUTPUT_IMG}
     echo
     for(( j=0; ${j}<${#DESC[@]}; j=${j}+1 )) ; do
 #	echo "${DESC[$j]} ${DIR[$j]}"
-#	echo ${DESC[$j]} > ${OUTPUT_DIR}/description.txt
-#	DIR_TMP=$( echo ${DIR[$j]} | sed -e "s/-/m/g" )
-#	OUTPUT_DIR=${OUTPUT_DIR}/${DIR_TMP}
-#        OUTPUT_DIR=${OUTPUT_DIR}/${DIR[$j]}
 	OUTPUT_DIR=${OUTPUT_DIR}/$( echo ${DIR[$j]} | sed -e "s/^-/m/g" )
 	[ "${DESC[$j]}" = "ftype"       ] && FTYPE=${DIR[$j]}
 	[ "${DESC[$j]}" = "mode"        ] && MODE=${DIR[$j]}
@@ -129,7 +126,6 @@ while [ 1 -eq 1 ] ; do
 	[ "${DESC[$j]}" = "day2"        ] && DAY2=${DIR[$j]}
 	[ "${DESC[$j]}" = "hour2"       ] && HOUR2=${DIR[$j]}
 	[ "${DESC[$j]}" = "diff_y"      ] && DIFF_Y=${DIR[$j]}
-
 	[ "${DESC[$j]}" = "lon_min"     ] && LON_MIN=${DIR[$j]}
 	[ "${DESC[$j]}" = "lon_mid"     ] && LON_MID=${DIR[$j]}
 	[ "${DESC[$j]}" = "lon_max"     ] && LON_MAX=${DIR[$j]}
@@ -309,21 +305,19 @@ while [ 1 -eq 1 ] ; do
 
 #COMMENT_EOF
 
-    [ "${DIR_OUTPUT_IMG}" != "" -a ! -d ${OUTPUT_DIR} ] && mkdir -p ${OUTPUT_DIR}
+    [ "${RUN_MODE}" != "test" -a ! -d ${OUTPUT_DIR} ] && mkdir -p ${OUTPUT_DIR}
 
 #    OUTPUT_DIR=${TOP_DIR}/img
     OUTPUT_DIR=${DIR_OUTPUT_IMG}
     for(( j=0; ${j}<${#DESC[@]}; j=${j}+1 )) ; do
-	[ "${DIR_OUTPUT_IMG}" != "" ] && echo ${DESC[$j]} > ${OUTPUT_DIR}/.type
+	[ "${RUN_MODE}" != "test" ] && echo ${DESC[$j]} > ${OUTPUT_DIR}/.type
 #	[ "${DIR_OUTPUT_IMG}" != "" ] && echo ${DESC[$j]} > ${OUTPUT_DIR}/description.txt
-#        OUTPUT_DIR=${OUTPUT_DIR}/${DIR[$j]}
 	OUTPUT_DIR=${OUTPUT_DIR}/$( echo ${DIR[$j]} | sed -e "s/^-/m/g" )
     done
 
     echo ""
     for(( j=1; $j<=15; j=$j+1 )) ; do
 	let jp2=j+2
-#        jp2=$( echo "$j + 2" | bc )
 	LINE_LIST[$j]=$( cat temp_$$/temp.dat | sed -e "${jp2},${jp2}p" -e d )
 	VARID_LIST[$j]=$( echo "${LINE_LIST[$j]}" | awk '{ print $2 }' )
     done
@@ -332,12 +326,16 @@ while [ 1 -eq 1 ] ; do
 
     FLAG_GRADS=0
 
-
+    #
+    #----- create cnf for ${FTYPE}.gs -----
+    #
+    # common for all
     cat > temp_$$/cnf_${FTYPE}.gsf <<EOF
-function cnf_latlon()
+function cnf_${FTYPE}()
     _varid = '${VARID}'
 EOF
     #
+    # display style
     case "${MODE}" in
 	"model_bias")
 	    cat >> temp_$$/cnf_${FTYPE}.gsf <<EOF
@@ -352,7 +350,7 @@ EOF
 	    ;;
     esac
     #
-
+    # time
     case "${TIMEID}" in
 	"seasonal_mean")
 	    cat >> temp_$$/cnf_${FTYPE}.gsf <<EOF
@@ -361,8 +359,8 @@ EOF
 EOF
 	    ;;
     esac
-
-
+    #
+    # for each dataset
     cat >> temp_$$/cnf_${FTYPE}.gsf <<EOF
     f = 1
 EOF
@@ -378,13 +376,15 @@ EOF
 EOF
     done
     IFS=${IFS_ORG}
-    
+    #
+    # file name for saving img
     if [ "${DIR_OUTPUT_IMG}" != "" ] ; then
 	cat >> temp_$$/cnf_${FTYPE}.gsf <<EOF
     _save = '${HEAD}'
 EOF
     fi
-
+    #
+    # common for all
     cat >> temp_$$/cnf_${FTYPE}.gsf <<EOF
     _fmax = f - 1
 return
@@ -698,17 +698,19 @@ EOF
 #    if [ "${OVERWRITE}" = "yes" ] ; then
     if [ ${FLAG_GRADS} -eq 0 ] ; then
 	cd temp_$$
-
+	#
 	echo "Followings are cnf_${FTYPE}.gsf for ${FTYPE}.gs" >> ${TXT}
+	echo "-----" >> ${TXT}
 	cat cnf_${FTYPE}.gsf >> ${TXT}
-
+	echo "-----" >> ${TXT}
+	#
 	for FILE in ${FILE_LIST_TEMPLATE[@]} ; do
 	    ln -s ${DIR_TEMPLATE}/${FILE}
 	done
-
-	cat cnf_${FTYPE}.gsf
-	if [ "${DIR_OUTPUT_IMG}" = "" ] ; then
-	    grads -lc   "${FTYPE}.gs cnf_${FTYPE}.gsf" | tee grads.log 2>&1
+	#
+	if [ "${RUN_MODE}" = "test" ] ; then
+	    cat cnf_${FTYPE}.gsf
+	    grads -lc "${FTYPE}.gs cnf_${FTYPE}.gsf" | tee grads.log 2>&1
 	    exit
 	else
 	    grads -blcx "${FTYPE}.gs cnf_${FTYPE}.gsf" | tee grads.log 2>&1
@@ -735,22 +737,4 @@ done
 echo
 echo "$0 normally finished ($(date))"
 echo
-exit
-
-
-
-#cd ../script_html
-#./make.sh ${TOP_DIR} || exit 1
-#cd -
-
-
-
-exit 1
-
-if [ ${TOP_DIR} != "../output_kodama" ] ; then
-    rsync --progress -av ../output_public/ ../output_kodama/ || exit 1
-    ../script_html/img2js.pl top_dir=../output_kodama || exit 1
-fi
-
-echo "normally finished"
 exit
