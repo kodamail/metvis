@@ -1,0 +1,548 @@
+#
+#----- NICAM.12 family -----#
+#
+AMIP.N12.197806.gl09.L38.run01
+{
+    AMIP.N12.197806.gl09.L38.run01
+    AMIP.N12.197806.gl09.L38.run01.
+    NICAM.12 GL-09 AMIP run on K computer.
+    ya 1979,1988
+    ym  1978,06,1989,05
+    ys  1978,JJA,1989,MAM
+    ymd 1978,06,01,1989,05,31
+    cya 1979-1988
+    cys 1979-1988,MAM,DJF
+    cym 1979-1988,01,12
+}
+AMIP.N12.207406.gl09.L38.run01
+{
+    AMIP.N12.207406.gl09.L38.run01
+    AMIP.N12.207406.gl09.L38.run01.
+    NICAM.12 GL-09 AMIP run on K computer.
+    ya 2075,2084
+    ym 2074,06,2085,05
+    ys 2074,JJA,2085,MAM
+    cya 2075-2084
+    cys 2075-2084,MAM,DJF
+    cym 2075-2084,01,12
+}
+
+N12.ES.200404.gl09.L40.ndw6
+{
+    N12.ES.200404.gl09.L40.ndw6
+    N12.ES.200404.gl09.L40.ndw6.
+    NICAM.12 GL-09 on ES.
+    ym 2004,04,2004,04
+    ys 
+}
+
+K.200406.N12.gl09.b
+{
+    K.200406.N12.gl09.b
+    K.200406.N12.gl09.b.
+    ys 2004,JJA,2005,MAM
+    ym 2004,06,2005,05
+    cys 
+    cym 
+}
+
+
+#K.200406.L38.gl10.run01
+#{
+#    K.200406.L38.gl10.run01.ERRice
+#    K.200406.L38.gl10.run01.
+#    ym 2004,06,2004,06
+#}
+K.200406.L38.gl10.run03
+{
+    K.200406.L38.gl10.run03
+    K.200406.L38.gl10.run03.
+    ys  2004,JJA,2005,MAM
+    ym  2004,06,2005,05
+}
+K.20xx05.L38.gl10.run01
+{
+    K.20xx05.L38.gl10.run01
+    K.20xx05.L38.gl10.run01.
+    ys  2004,JJA,2005,MAM
+    ym  2004,06,2005,05
+}
+K.20xx05.L38.gl09.run00
+{
+    N12.K.20xx05.gl09.L38.run00
+    NICAM.12.K.20xx05.gl09.L38.run00.
+    NICAM.12 GL-09 run06 on K computer under future condition. Integration term is 30+365 days : 2004.05.01 - 2005.05.31.
+    ys  2004,JJA,2005,MAM
+    ym  2004,05,2005,05
+    ymd 2004,05,01,2005,05,31
+}
+K.200406.L38.gl09.run06
+{
+    N12.K.200406.gl09.L38.run06
+    NICAM.12.K.200406.gl09.L38.run06.
+    NICAM.12 GL-09 run06 on K computer. Integration term is 365 days : 2004.06.01 - 2005.05.31.
+    ya 
+    ys  2004,JJA,2005,MAM
+    ym  2004,06,2005,05
+    ymd 2004,06,01,2005,05,31
+    cya 
+    cys 
+    cym 
+    cyd 
+}
+K.200406.L38.gl09.dt60s
+{
+    N12.K.200406.gl09.L38.dt60s
+    NICAM.12.K.200406.gl09.L38.dt60s.
+    NICAM.12 GL-09 dt=60s run on K computer.
+    ys  2004,JJA,2004,SON
+    ym  2004,06,2004,11
+    ymd 2004,06,01,2004,12,03
+}
+K.200406.L38.gl09.dt60s.fixed_numfilter
+{
+    N12.K.200406.gl09.L38.dt60s.fixed_numfilter
+    NICAM.12.K.200406.gl09.L38.dt60s.fixed_numfilter.
+    NICAM.12 GL-09 dt=60s (same Kh_coeff as cntl) run on K computer.
+    ys  2004,JJA,2004,SON
+    ym  2004,06,2004,11
+    ymd 2004,06,01,2004,12,03
+}
+K.200406.L38.gl09.fixed_sst
+{
+    N12.K.200406.gl09.L38.fixed_sst
+    NICAM.12.K.200406.gl09.L38.fixed_sst.
+    NICAM.12 GL-09 fixed-SST run on K computer.
+    ys  2004,JJA,2004,SON
+    ym  2004,06,2004,11
+    ymd 2004,06,01,2004,12,03
+}
+K.200406.L38.gl09.fixed_sst_lessvar
+{
+    N12.K.200406.gl09.L38.fixed_sst_lessvar
+    NICAM.12.K.200406.gl09.L38.fixed_sst (less variables).
+    NICAM.12 GL-09 fixed-SST run on K computer.
+    ys  2004,JJA,2004,SON
+    ym  2004,06,2004,11
+    ymd 2004,06,01,2004,12,02
+}
+K.200406.L38.gl09.fixed_sst_no_ice
+{
+    N12.K.200406.gl09.L38.fixed_sst_no_ice
+    NICAM.12.K.200406.gl09.L38.fixed_sst_no_ice.
+    NICAM.12 GL-09 fixed-SST run on K computer.
+    ys  
+    ym  2004,06,2004,06
+    ymd 2004,06,01,2004,06,31
+}
+K.200406.L38.gl09.g98
+{
+    N12.K.200406.gl09.L38.g98
+    NICAM.12.K.200406.gl09.L38.g98.
+    NICAM.12 GL-09 G98 run on K computer.
+    ys  2004,JJA,2004,SON
+    ym  2004,06,2004,11
+    ymd 2004,06,01,2004,12,03
+}
+K.200406.L38.gl09.g98_lessvar
+{
+    N12.K.200406.gl09.L38.g98_lessvar
+    NICAM.12.K.200406.gl09.L38.g98 (less variables).
+    NICAM.12 GL-09 G98 run on K computer.
+    ys  2004,JJA,2004,SON
+    ym  2004,06,2004,11
+    ymd 2004,06,01,2004,12,02
+}
+K.200406.L38.gl09.gwd
+{
+    N12.K.200406.gl09.L38.gwd
+    NICAM.12.K.200406.gl09.L38.gwd.
+    NICAM.12 GL-09 gravity wave drag run on K computer.
+    ys  2004,JJA,2004,JJA
+    ym  2004,06,2004,09
+    ymd 2004,06,01,2004,10,14
+}
+K.200406.L38.gl09.miura.s7
+{
+    N12.K.200406.gl09.L38.miura.s7
+    NICAM.12.K.200406.gl09.L38.miura.s7
+    NICAM.12 GL-09 MIURA parameter (s7) run on K computer.
+    ys  2004,JJA,2004,SON
+    ym  2004,06,2004,11
+    ymd 2004,06,01,2004,12,02
+}
+K.200406.L38.gl09.ndw6
+{
+    N12.K.200406.gl09.L38.ndw6
+    NICAM.12.K.200406.gl09.L38.ndw6
+    NICAM.12 GL-09 NDW6 run on K computer.
+    ys  2004,JJA,2004,SON
+    ym  2004,06,2004,11
+    ymd 2004,06,01,2004,12,02
+}
+K.200406.L38.gl09.run02
+{
+    N12.K.200406.gl09.L38.run02
+    NICAM.12.K.200406.gl09.L38.run02. Bug: sea ice error.
+    NICAM.12 GL-09 run02 on K computer. Integration term is 355 days : 2004.06.01 - 2005.05.21.
+    ys  2004,JJA,2004,DJF
+    ym  2004,06,2005,04
+    ymd 2004,06,01,2005,05,21
+#    cdir_sl_2.5 sl/144x72/tstep
+}
+#K.200406.L38.gl09.run01
+#{
+#    K.200406.L38.gl09.run01.ERRice
+#    K.200406.L38.gl09.run01.ERRice.
+#    ym 2004,06,2004,06
+#}
+#
+#----- NICAM.10 family (prun2010) -----#
+#
+200404.new.prun2010.gl09
+{
+    N10.ES.200404.L40.gl09
+    NICAM.10 GL-09 control run on Earth Simulator. Integration term is 160 days : 2004.04.01 - 2004.09.07
+    ys  2004,JJA,2004,JJA
+    ym  2004,04,2004,08
+    ymd 2004,04,01,2004,09,07
+}
+200406.new.prun2010.gl09
+{
+    N10.ES.200406.L40.gl09
+    NICAM.10 GL-09 control run on Earth Simulator. Integration term is 90 days : 2004.06.01 - 2004.08.29
+    ys 
+    ym  2004,06,2004,07
+    ymd 2004,06,01,2004,08,29
+}
+200406.new.prun2010.gl09_nsw5
+{
+    N10.ES.200406.L40.gl09.nsw5
+    NICAM.10 GL-09 sens. exp. on Earth Simulator. Same as N10.ES.200406.L40.gl09 but for replacing NSW6 with NSW5. Integration term is 30 days : 2004.06.01 - 2004.06.30.
+    ys 
+    ym  2004,06,2004,06
+    ymd 2004,06,01,2004,06,30
+}
+200406.new.prun2010.gl09_chikira_def
+{
+    N10.ES.200406.L40.gl09.chikira-def
+    NICAM.10 GL-09 sens. exp. on Earth Simulator. Same as N10.ES.200406.L40.gl09 but for using Chikira scheme with default parameters. Integration term is 90 days : 2004.06.01 - 2004.08.29.
+    ys 
+    ym  2004,06,2004,07
+    ymd 2004,06,01,2004,08,29
+}
+200406.new.prun2010.gl09_chikira_pa01_clmd03
+{
+    N10.ES.200406.L40.gl09.chikira-pa01-clmd03
+    NICAM.10 GL-09 sens. exp. on Earth Simulator. Same as N10.ES.200406.L40.gl09.chikira-def but for using pa=0.1 and clmd=0.3. Integration term is 30 days : 2004.06.01 - 2004.06.30.
+    ys 
+    ym 2004,06,2004,06
+    ymd 2004,06,01,2004,06,30
+}
+200406.new.prun2010.gl09_chikira_pa01_clmd07
+{
+    N10.ES.200406.L40.gl09.chikira-pa01-clmd07
+    NICAM.10 GL-09 sens. exp. on Earth Simulator. Same as N10.ES.200406.L40.gl09.chikira-def but for using pa=0.1 and clmd=0.7. Integration term is 30 days : 2004.06.01 - 2004.06.30.
+    ys 
+    ym 2004,06,2004,06
+    ymd 2004,06,01,2004,06,30
+}
+200406.new.prun2010.gl09_chikira_pa09_clmd03
+{
+    N10.ES.200406.L40.gl09.chikira-pa09-clmd03
+    NICAM.10 GL-09 sens. exp. on Earth Simulator. Same as N10.ES.200406.L40.gl09.chikira-def but for using pa=0.9 and clmd=0.3. Integration term is 30 days : 2004.06.01 - 2004.06.30.
+    ys 
+    ym 2004,06,2004,06
+    ymd 2004,06,01,2004,06,30
+}
+200406.new.prun2010.gl09_chikira_pa09_clmd07
+{
+    N10.ES.200406.L40.gl09.chikira-pa09-clmd07
+    NICAM.10 GL-09 sens. exp. on Earth Simulator. Same as N10.ES.200406.L40.gl09.chikira-def but for using pa=0.9 and clmd=0.7. Integration term is 30 days : 2004.06.01 - 2004.06.30.
+    ys 
+    ym  2004,06,2004,06
+    ymd 2004,06,01,2004,06,30
+}
+200406.new.prun2010.gl08
+{
+    N10.ES.200406.L40.gl08
+    NICAM.10 GL-08 control run on Earth Simulator. Integration term is 420 days : 2004.06.01 - 2004.07.25 
+    ys  2004,JJA,2005,MAM
+    ym  2004,06,2005,06
+    ymd 2004,06,01,2005,07,25
+}
+200406.new.prun2010.gl08_as
+{
+    N10.ES.200406.L40.gl08.as
+    NICAM.10 GL-08 sens. exp. on Earth Simulator. Same as N10.ES.200406.L40.gl08.as but for using AS. Integration term is 90 days : 2004.06.01 - 2004.08.29.
+    ys 
+    ym  2004,06,2004,07
+    ymd 2004,06,01,2004,08,29
+}
+200406.new.prun2010.gl07
+{
+    N10.ES.200406.L40.gl07
+    NICAM.10 GL-07 control run on Earth Simulator. Integration term is 100 days : 2004.06.01 - 2004.09.08 
+    ys  2004,JJA,2004,JJA
+    ym  2004,06,2004,08
+    ymd 2004,06,06,2004,09,08
+}
+200406.new.prun2010.gl07_as
+{
+    N10.ES.200406.L40.gl07.as
+    NICAM.10 GL-07 sens. exp. on Earth Simulator. Same as N10.ES.200406.L40.gl07.as but for using AS. Integration term is 90 days : 2004.06.01 - 2004.08.29.
+    ys 
+    ym  2004,06,2004,07
+    ymd 2004,06,01,2004,08,29
+}
+200406.new.prun2010.gl06
+{
+    N10.ES.200406.L40.gl06
+    NICAM.10 GL-06 control run on Earth Simulator. Integration term is 90 days : 2004.06.01 - 2004.08.29.
+    ys 
+    ym  2004,06,2004,07
+    ymd 2004,06,01,2004,08,29
+}
+200406.new.prun2010.gl06_as
+{
+    N10.ES.200406.L40.gl06.as
+    NICAM.10 GL-06 sens. exp. on Earth Simulator. Same as N10.ES.200406.L40.gl06.as but for using AS. Integration term is 90 days : 2004.06.01 - 2004.08.29.
+    ys 
+    ym  2004,06,2004,07
+    ymd 2004,06,01,2004,08,29
+}
+200406.new.prun2010.gl05
+{
+    N10.ES.200406.L40.gl05
+    NICAM.10 GL-05 control run on Earth Simulator. Integration term is 90 days : 2004.06.01 - 2004.08.29 
+    ys 
+    ym  2004,06,2004,07
+    ymd 2004,06,01,2004,08,29
+    cys 0000-0000,MAM,MAM
+    cym 0000-0000,01,01
+}
+CLIM_MATSIRO_200406.run18
+{
+    N10.NC.200406.L40.gl05
+    NICAM.10 GL-05 run on NICAM cluster. Same as N10.ES.200406.L40.gl05 but for using NICAM cluster and longer integration term (10 years). Integration term is 2004.06.01 - 2014.05.31.
+    ys  2004,JJA,2014,MAM
+    ym  2004,06,2014,05
+    ymd 2004,06,01,2014,05,31
+    cys 2004-2014,JJA,SON 2004-2013,DJF,DJF 2005-2014,MAM,MAM
+    cym 2004-2013,06,12 2005-2014,01,05
+}
+#
+#----- NICAM.09 family (prun2009) -----#
+#
+COLA-NICAM
+{
+    N09.Athena.200X0521.L40.gl10
+    NICAM.09 GL-10 Athena run by COLA. Integration term is 103 days : 200X.05.21 - 200X.08.31 
+    ys 2001,JJA,2001,JJA 2002,JJA,2002,JJA 2004,JJA,2004,JJA 2005,JJA,2005,JJA 2006,JJA,2006,JJA 2007,JJA,2007,JJA 2008,JJA,2008,JJA 2009,JJA,2009,JJA
+    ym 2001,06,2001,08 2002,06,2002,08 2004,06,2004,08 2005,06,2005,08 2006,06,2006,08 2007,06,2007,08 2008,06,2008,08 2009,06,2009,08
+    ymd 2001,05,21,2001,08,31 2002,05,21,2002,08,31 2004,05,21,2004,08,31 2005,05,21,2005,08,31 2006,05,21,2006,08,31 2007,05,21,2007,08,31 2008,05,21,2008,08,31 2009,05,21,2009,08,31
+}
+200406.new
+{
+    N09.ES.200606.L40.gl09
+    NICAM.09 GL-09 control run on Earth Simulator. Integration term is 160 days : 2004.06.01 - 2004.11.07.
+    ys 2004,JJA,2004,JJA
+    ym 2004,06,2004,10
+    ymd 2004,06,01,2004,11,07
+}
+200406.new_g98
+{
+    N09.ES.200606.L40.gl09.g98
+    NICAM.09 GL-09 sens. exp. on Earth Simulator. Same as N09.ES.200406.L40.gl09 but for using G98. Integration term is 30 days : 2004.06.01 - 2004.06.30.
+    ys 
+    ym 2004,06,2004,06
+    ymd 2004,06,01,2004,06,31
+}
+200406.new_bc
+{
+    N09.ES.200606.L40.gl09.bc
+    NICAM.09 GL-09 sens. exp. on Earth Simulator. Same as N09.ES.200406.L40.gl09 but for using bucket land model. Integration term is 30 days : 2004.06.01 - 2004.06.30.
+    ys 
+    ym 2004,06,2004,06
+    ymd 2004,06,01,2004,06,31
+}
+#
+#----- NICAM.08 family (prun2008) -----#
+#
+200406_AR5
+{
+    N08.ES.200606.L40.gl09
+    NICAM.08 GL-09 control run on Earth Simulator. Integration term is 160 days : 2004.06.01 - 2004.11.07.
+    ys 2004,JJA,2004,JJA
+    ym 2004,06,2004,10
+    ymd 2004,06,01,2004,11,07
+}
+
+
+#
+#----- MIROC family -----#
+#
+MIROC_cmip5_mAmO_20C_run01
+{
+    MIROC_cmip5_mAmO_20C_run01
+    MIROC_cmip5_mAmO_20C_run01.
+    ys 1980,MAM,2005,SON
+    ym 1980,01,2005,12
+    ymd 1980,01,01,2005,12,31
+    cys 1980-2005,MAM,DJF
+    cym 1980-2005,01,12
+}
+MIROC_kinmirai_mAmO_AR4_SRES_LA_A1_01
+{
+    MIROC_kinmirai_mAmO_AR4_SRES_LA_A1_01
+    MIROC_kinmirai_mAmO_AR4_SRES_LA_A1_01.
+    ys 2003,MAM,2010,SON
+    ym 2003,01,2010,12
+    ymd 2003,01,01,2010,12,31
+    cys 2003-2010,MAM,SON 2003-2009,DJF,DJF
+    cym 2003-2010,01,12
+}
+MIROC_amip_t106
+{
+    MIROC_amip_t106
+    MIROC_amip_t106.
+    ys  1979,MAM,2002,SON
+    ym  1979,01,2002,12
+    ymd 1979,01,01,2002,12,31
+    cys 1979-2002,MAM,SON 1979-2001,DJF,DJF
+    cym 1979-2002,01,12
+
+}
+
+
+
+#
+#----- observation -----#
+#
+JRA125
+{
+    JRA125
+    JRA125.
+    ys 2000,MAM,2009,SON
+    ym 2000,01,2009,12
+    ymd 2000,01,01,2009,12,31
+#    ys 1979,MAM,2009,SON
+#    ym 1979,01,2009,12
+#    ymd 1979,01,01,2009,12,31
+    cys 2000-2009,MAM,SON 2000-2008,DJF,DJF
+    cym 2000-2009,01,12
+}
+NCEP1
+{
+    NCEP1
+    NCEP1.
+    ys 1980,MAM,2004,SON
+    ym 1980,01,2004,12
+    ymd 
+    cys 1980-2004,MAM,SON 1980-2003,DJF,DJF
+    cym 1980-2004,01,12
+#    ys 1980,MAM,2009,SON
+#    ym 1980,01,2009,12
+#    ymd 
+#    cys 1980,2009,MAM,SON 1980,2008,DJF,DJF
+#    cym 1980,2009,01,12
+}
+NCEP_FNL
+{
+    NCEP_FNL
+    NCEP_FNL.
+    ys 2004,JJA,2005,MAM
+    ym 2004,06,2005,05
+    ymd 
+    cys 
+    cym 
+}
+ERA_INTERIM
+{
+    ERA_INTERIM
+    ERA_INTERIM.
+    ys 1979,MAM,2012,SON
+    ym 1979,01,2012,12
+    ymd
+    cys 1979-2012,MAM,SON 1979-2011,DJF,DJF
+    cym 1979-2012,01,12
+}
+#ERA_INTERIM
+#{
+#    ERA_INTERIM
+#    ERA_INTERIM.
+#    ys 1989,MAM,2009,SON
+#    ym 1989,01,2009,12
+#    ymd 
+#    cys 1989-2009,MAM,SON 1989-2008,DJF,DJF
+#    cym 1989-2009,01,12
+#}
+CMAP
+{
+    CMAP
+    CMAP.
+    ys 1979,MAM,2009,JJA
+    ym 1979,01,2009,09
+    ymd 
+    cys 1979-2009,MAM,JJA 1979-2008,SON,DJF
+    cym 1979-2009,01,09 1979-2008,10,12
+}
+GPCP
+{
+    GPCP
+    GPCP.
+    ys 1979,MAM,2004,SON
+    ym 1979,01,2005,01
+    ymd 
+#    cys 1979,2004,MAM,SON 1979,2003,DJF,DJF
+    cys 1979-2004,MAM,SON 1979-2003,DJF,DJF
+    cym 1979-2004,02,12 1979-2005,01,01
+}
+OISST_v2
+{
+    OISST_v2
+    OISST version 2.
+    ys 2004,MAM,2005,SON
+    ym 2004,01,2005,12
+    ymd 
+#    cys 1979,2004,MAM,SON 1979,2003,DJF,DJF
+#    cym 1979,2004,02,12 1979,2005,01,01
+}
+
+
+AMIP2_BOUNDARY
+{
+    AMIP2_bnd
+    AMIP2 Boundary Condition .
+    ys 1978,MAM,2010,SON 2074,MAM,2105,SON
+    ym 1978,01,2010,12 2074,01,2105,12
+    ymd 
+#    cys 1978-2010,MAM,MAM
+#    cym 1978-2010,01,12
+    cys 1978-2010,MAM,SON 1978-2009,DJF,DJF 2074-2105,MAM,SON 2074-2104,DJF,DJF
+    cym 1978-2010,01,12 2074-2105,01,12
+}
+
+SRB3.0
+{
+    SRB3.0
+    SRB3.0.
+    ys 1983,SON,2007,SON
+    ym 1983,07,2007,12
+    ymd 
+    cys 1983-2007,SON,SON 1983-2006,DJF,DJF 1984-2007,MAM,MAM 1984-2007,JJA,JJA
+    cym 1983-2007,07,12 1984-2007,01,06
+}
+ISCCP_D1_OBS
+{
+    ISCCP
+    ISCCP D1.
+    ya 1995,2007
+    ys 1995,MAM,2008,MAM
+    ym 1995,01,2008,06
+    ymd 
+    cya 1995-2007
+    cys 1995-2007,MAM,DJF
+    cym 1995-2007,01,12
+#    cym 1995-2008,01,06 1995-2007,07,12
+}
