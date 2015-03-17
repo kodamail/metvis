@@ -4,14 +4,16 @@
 #
 # ./make.sh input-job-dir [output-img-dir]
 #
+echo "$0 $@ ($(date))"
+echo
 #
 . ./common.sh
 . ./usr/common.sh
 #
+#========== arguments ==========
 #
 DIR_INPUT_JOB=$1
 DIR_OUTPUT_IMG=$2  # draw first figure unless specified.
-#FLAG_TEST=$3    # <-ARGS_TEST=$1
 #
 if [ ! -d "${DIR_INPUT_JOB}" ] ; then
     echo "error in $0: DIR_INPUT_JOB = ${DIR_INPUT_JOB} does not exist."
@@ -29,8 +31,9 @@ elif [ ! -d "${DIR_OUTPUT_IMG}" ] ; then
     echo "creating ${DIR_OUTPUT_IMG}"
     mkdir -p ${DIR_OUTPUT_IMG} || exit 1
 fi
-
-
+#
+#========== loop for all the figures ==========
+#
 i=1
 if [ -f ${DIR_INPUT_JOB}/resume.txt -a "${RESUME}" = "yes" ] ; then
     i=$( cat ${DIR_INPUT_JOB}/resume.txt )
@@ -49,13 +52,13 @@ while [ 1 -eq 1 ] ; do
 	run2=${TARGET_RUN2} \
 	varid=${TARGET_VARID} \
 	> temp_$$/temp.dat || exit 1
-
+    #
     [ ! -s temp_$$/temp.dat ] && break
     DESC=( $( sed temp_$$/temp.dat -e "1,1p" -e d ) )
     DIR=( $( sed temp_$$/temp.dat -e "2,2p" -e d ) )
     echo -n "$i: ${DIR[@]}"
     #
-    # initial check
+    #----- initial check -----
     #
     if [ ${#DESC[@]} -ne ${#DIR[@]} ] ; then
 	let i=i+1
@@ -68,10 +71,7 @@ while [ 1 -eq 1 ] ; do
     PNG=${HEAD}.png  # standard image format
     GIF=${HEAD}.gif  # format for aninmation
     TXT=${HEAD}.txt  # description
-    cd temp_$$
-    rm -f ${EPS} ${PNG} ${GIF} ${TXT}
-    cd ..
-
+    #
     FTYPE=""
     MODE=""
     VARID=""
@@ -162,7 +162,7 @@ while [ 1 -eq 1 ] ; do
 	continue
     fi
     #
-    # check consistency
+    #----- check consistency & set necessary values -----
     #
     [ "${FTYPE}" = "" ] && echo "FTYPE is void" && exit 1
     #
@@ -170,7 +170,6 @@ while [ 1 -eq 1 ] ; do
     #
     [ "${VARID}"  = "" -a "${FTYPE}" != "isccp_matrix" ] && echo "VARID is void"  && exit 1
     #
-
     case "${TIMEID}" in
 	"seasonal_mean")
 	    [ "${YEAR}"       = "" ] && echo "YEAR is void"      && exit 1
@@ -179,19 +178,6 @@ while [ 1 -eq 1 ] ; do
 	    [ "${SEASON}" = "JJA" ] && MONTH="678"
 	    [ "${SEASON}" = "SON" ] && MONTH="901"
 	    [ "${SEASON}" = "DJF" ] && MONTH="212"
-#	    [ "${SEASON}" = "MAM" ] && MONTH="03"
-#	    [ "${SEASON}" = "JJA" ] && MONTH="06"
-#	    [ "${SEASON}" = "SON" ] && MONTH="09"
-#	    [ "${SEASON}" = "DJF" ] && MONTH="12"
-#	    YMD1=$( date --date "${YEAR}-${MONTH}-01"          +%d%b%Y )
-#	    YMD2=$( date --date "${YEAR}-${MONTH}-01 3 months" +%d%b%Y )
-#	    STR_TIME="-time ${YMD1} ${YMD2}"
-#	    if [ "${DIFF_Y}" != "" ] ; then
-#		let YEAR2=YEAR+DIFF_Y
-#		YMD1=$( date --date "${YEAR2}-${MONTH}-01"          +%d%b%Y )
-#		YMD2=$( date --date "${YEAR2}-${MONTH}-01 3 months" +%d%b%Y )
-#		STR_TIME="${STR_TIME} -time.2 ${YMD1} ${YMD2}"
-#	    fi
 	    ;;
 	*)
 	    echo "TIMEID=${TIMEID} is not valid"
@@ -328,7 +314,8 @@ while [ 1 -eq 1 ] ; do
 #    OUTPUT_DIR=${TOP_DIR}/img
     OUTPUT_DIR=${DIR_OUTPUT_IMG}
     for(( j=0; ${j}<${#DESC[@]}; j=${j}+1 )) ; do
-	[ "${DIR_OUTPUT_IMG}" != "" ] && echo ${DESC[$j]} > ${OUTPUT_DIR}/description.txt
+	[ "${DIR_OUTPUT_IMG}" != "" ] && echo ${DESC[$j]} > ${OUTPUT_DIR}/.type
+#	[ "${DIR_OUTPUT_IMG}" != "" ] && echo ${DESC[$j]} > ${OUTPUT_DIR}/description.txt
 #        OUTPUT_DIR=${OUTPUT_DIR}/${DIR[$j]}
 	OUTPUT_DIR=${OUTPUT_DIR}/$( echo ${DIR[$j]} | sed -e "s/^-/m/g" )
     done
@@ -340,6 +327,7 @@ while [ 1 -eq 1 ] ; do
 	LINE_LIST[$j]=$( cat temp_$$/temp.dat | sed -e "${jp2},${jp2}p" -e d )
 	VARID_LIST[$j]=$( echo "${LINE_LIST[$j]}" | awk '{ print $2 }' )
     done
+    rm temp_$$/temp.dat
 
 
     FLAG_GRADS=0
@@ -402,11 +390,6 @@ EOF
 return
 EOF
 
-
-
-
-#    cat temp_$$/cnf_${FTYPE}.gsf
-#    exit
 
     : <<'#COMMENT_EOF'
 
@@ -730,27 +713,35 @@ EOF
 	else
 	    grads -blcx "${FTYPE}.gs cnf_${FTYPE}.gsf" | tee grads.log 2>&1
 	fi
+	#
 	rm grads.log cnf_${FTYPE}.gsf
+	for FILE in ${FILE_LIST_TEMPLATE[@]} ; do
+	    rm ${FILE}
+	done
         #
-	eps2png ${EPS}
-
+	[ -f ${EPS} ] && eps2png ${EPS}
 	cd ..
-
     fi
     #
     mv temp_$$/${PNG} temp_$$/${TXT} ${OUTPUT_DIR}
     rm -f temp_$$/${EPS}
-
-#TODO: description.txt -> ?
-exit
+    ls temp_$$
+    rmdir temp_$$
     #
     ##############################
     let i=i+1
 done
 
-cd ../script_html
-./make.sh ${TOP_DIR} || exit 1
-cd -
+echo
+echo "$0 normally finished ($(date))"
+echo
+exit
+
+
+
+#cd ../script_html
+#./make.sh ${TOP_DIR} || exit 1
+#cd -
 
 
 
