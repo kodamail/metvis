@@ -510,17 +510,23 @@ sub expand_ast
 #	print STDERR "$type[$d]\n";
 
 	if( $s == 0 ){ @$status_list = @status_list_tmp; }
-	elsif( $$type_now[$d] eq "cym" || $$type_now[$d] eq "cys" || $$type_now[$d] eq "cya" )
+	elsif( $$type_now[$d] eq "cym" || $$type_now[$d] eq "cys" )
 	{
 	    for( my $i=0; $i<=$#$status_list; $i++ )
 	    {
-#		print STDERR $$status_list[$i] . "\n";
+#		print STDERR "status_list: " . $$status_list[$i] . "\n";
 #		exit 1;
 		#my @yym1 = split( " ", $$status_list[$i] );
 		my @yym1 = split( /[- ]/, $$status_list[$i] );
 
 		my @tmp2 = grep( / $yym1[2]$/, @status_list_tmp );
 		# assume duplicate month does not exist.
+#		print STDERR "@yym1\n";
+#		print STDERR "@status_list_tmp\n";
+#		print STDERR "$tmp2[0]\n";
+#		print STDERR "$#tmp2\n";
+		#exit 1;
+
 		if( $#tmp2 == 0 )
 		{
 		    #print STDERR "ok";
@@ -542,14 +548,32 @@ sub expand_ast
 		{
 		    $$status_list[$i] = "";
 		}
-
-
 		#print STDERR $tmp[0] . "\n";
 		
 	    }
 	    @$status_list = split( "SEP", join( "SEP", @$status_list ) );
 	    
 	}
+
+	elsif( $$type_now[$d] eq "cya" )
+	{
+	    for( my $i=0; $i<=$#$status_list; $i++ )
+	    {
+#		print STDERR "status_list: " . $$status_list[$i] . "\n";
+		my @yy1 = split( /-/, $$status_list[$i] );
+		my @yy2 = split( /-/, $status_list_tmp[0] );
+#		print STDERR "@yy1\n";
+#		print STDERR "@yy2\n";
+		my $ymin = $yy1[0];
+		if( $yy1[0] < $yy2[0] ){ $ymin = $yy2[0]; }
+		my $ymax = $yy1[1];
+		if( $yy1[1] > $yy2[1] ){ $ymax = $yy2[1]; }
+		if( $ymin > $ymax ){ $$status_list[$i] = ""; }
+		else{ $$status_list[$i] = "$ymin-$ymax"; }
+	    }
+	    @$status_list = split( "SEP", join( "SEP", @$status_list ) );
+	}
+
 	else
 	{
 	    # obtain only the duplicated values (i.e. && operation) 
