@@ -84,6 +84,16 @@ JRA55
     cys 1957-2012,MAM,SON 1957-2011,DJF,DJF
     cya 1957-2012
 }
+NCEP1
+{
+    ymd 
+    ym  1980,01,2004,12
+    ys  1980,MAM,2004,SON
+    ya  1980,2004
+    cym 1980-2004,01,12
+    cys 1980-2004,MAM,SON 1980-2003,DJF,DJF
+    cya 1980-2004
+}
 
 
 
@@ -491,21 +501,6 @@ MIROC_amip_t106
 #
 #----- observation -----#
 #
-NCEP1
-{
-    NCEP1
-    NCEP1.
-    ys 1980,MAM,2004,SON
-    ym 1980,01,2004,12
-    ymd 
-    cys 1980-2004,MAM,SON 1980-2003,DJF,DJF
-    cym 1980-2004,01,12
-#    ys 1980,MAM,2009,SON
-#    ym 1980,01,2009,12
-#    ymd 
-#    cys 1980,2009,MAM,SON 1980,2008,DJF,DJF
-#    cym 1980,2009,01,12
-}
 NCEP_FNL
 {
     NCEP_FNL
