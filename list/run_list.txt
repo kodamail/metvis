@@ -74,6 +74,16 @@ GPCP
     cys 1979-2013,MAM,SON 1979-2012,DJF,DJF
     cya 1979-2013
 }
+ISCCP_D1_OBS
+{
+    ymd 
+    ym  1995,01,2008,06
+    ys  1995,MAM,2008,MAM
+    ya  1995,2007
+    cym 1995-2007,01,12
+    cys 1995-2007,MAM,DJF
+    cya 1995-2007
+}
 JRA55
 {
     ymd
@@ -93,6 +103,37 @@ NCEP1
     cym 1980-2004,01,12
     cys 1980-2004,MAM,SON 1980-2003,DJF,DJF
     cya 1980-2004
+}
+NCEP_FNL
+{
+    ymd
+    ym  2004,06,2005,05
+    ys  2004,JJA,2005,MAM
+    ya
+    cym
+    cys
+    cya
+}
+OISST_v2
+{
+    ymd
+    ym 2004,01,2005,12
+    ys 2004,MAM,2005,SON
+    ymd 
+    cym
+    cys
+    cya
+}
+
+SRB3.0
+{
+    ymd 
+    ym  1983,07,2007,12
+    ys  1983,SON,2007,SON
+    ya  1984,2007
+    cym 1983-2007,07,12 1984-2007,01,06
+    cys 1983-2007,SON,SON 1983-2006,DJF,DJF 1984-2007,MAM,MAM 1984-2007,JJA,JJA
+    cya 1984-2007
 }
 
 
@@ -501,16 +542,6 @@ MIROC_amip_t106
 #
 #----- observation -----#
 #
-NCEP_FNL
-{
-    NCEP_FNL
-    NCEP_FNL.
-    ys 2004,JJA,2005,MAM
-    ym 2004,06,2005,05
-    ymd 
-    cys 
-    cym 
-}
 ERA_INTERIM
 {
     ERA_INTERIM
@@ -531,17 +562,6 @@ ERA_INTERIM
 #    cys 1989-2009,MAM,SON 1989-2008,DJF,DJF
 #    cym 1989-2009,01,12
 #}
-OISST_v2
-{
-    OISST_v2
-    OISST version 2.
-    ys 2004,MAM,2005,SON
-    ym 2004,01,2005,12
-    ymd 
-#    cys 1979,2004,MAM,SON 1979,2003,DJF,DJF
-#    cym 1979,2004,02,12 1979,2005,01,01
-}
-
 
 AMIP2_BOUNDARY
 {
@@ -556,26 +576,3 @@ AMIP2_BOUNDARY
     cym 1978-2010,01,12 2074-2105,01,12
 }
 
-SRB3.0
-{
-    SRB3.0
-    SRB3.0.
-    ys 1983,SON,2007,SON
-    ym 1983,07,2007,12
-    ymd 
-    cys 1983-2007,SON,SON 1983-2006,DJF,DJF 1984-2007,MAM,MAM 1984-2007,JJA,JJA
-    cym 1983-2007,07,12 1984-2007,01,06
-}
-ISCCP_D1_OBS
-{
-    ISCCP
-    ISCCP D1.
-    ya 1995,2007
-    ys 1995,MAM,2008,MAM
-    ym 1995,01,2008,06
-    ymd 
-    cya 1995-2007
-    cys 1995-2007,MAM,DJF
-    cym 1995-2007,01,12
-#    cym 1995-2008,01,06 1995-2007,07,12
-}

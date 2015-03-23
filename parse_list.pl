@@ -474,10 +474,11 @@ sub expand_ast
 	my $flag = 0;
 	for( my $i=0; $i<=$#run_list-1; $i++ )
 	{
-	    #print STDERR "$i: $flag\n";
-
 	    if( $run_list[$i] =~ /^$$status_now[$p]\s*$/ && $run_list[$i+1] =~ /^\{\s*/ ){ $flag = 1; }
 	    elsif( $run_list[$i] =~ /^\s*\}s*$}/ ){ $flag = 0; }
+
+	    #print STDERR "$i: $flag\n";
+	    #print STDERR "$i: $flag $run_list[$i] $$status_now[$p]\n";
 
 	    if( $flag == 1 )
 	    {
@@ -490,11 +491,11 @@ sub expand_ast
 	    }
 	}
     }
-    if( $st[0] eq "" )
-    {
-	print STDERR "error in parse_list.pl: $$type_now[$d] is not set in list/$$type_now[$d]_list.txt\n";
-	exit 1;
-    }
+#    if( $st[0] eq "" )
+#    {
+#	print STDERR "error in parse_list.pl: $$type_now[$d] is not set in list/$$type_now[$d]_list.txt\n";
+#	exit 1;
+#    }
 #    print STDERR "@st\n";
     for( my $s=0; $s<=$#st; $s++ )
     {

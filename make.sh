@@ -281,6 +281,8 @@ EOF
     _disp.1 = '1'
     _disp.2 = '2'
     _disp.5 = '2 1'
+    _cbar.2 = 'hor'
+    _cbar.5 = 'hor'
 EOF
 	    ;;
 	"sens_model_bias" )
@@ -291,6 +293,8 @@ EOF
     _disp.4 = '3 2'
     _disp.5 = '2 1'
     _disp.6 = '3 1'
+    _cbar.3 = 'hor'
+    _cbar.6 = 'hor'
 EOF
 	    ;;
 	* )
@@ -686,6 +690,8 @@ EOF
 	if [ "${RUN_MODE}" = "test" ] ; then
 	    cat cnf_${FTYPE}.gsf
 	    grads -lc "${FTYPE}.gs cnf_${FTYPE}.gsf" | tee grads.log 2>&1
+	    cd ..
+	    rm -r temp_$$
 	    exit
 	else
 	    grads -blcx "${FTYPE}.gs cnf_${FTYPE}.gsf" | tee grads.log 2>&1

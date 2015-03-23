@@ -2,8 +2,8 @@
 #
 # include here for particular jobs
 #
-include sens.txt
-exit
+#include sens.txt
+#exit
 
 
 
@@ -44,7 +44,9 @@ timeid = clim_annual_mean clim_seasonal_mean clim_monthly_mean annual_mean seaso
 #
 ############################################################
 # all other finished
-include latlon.txt
+include latlon_bias.txt
+
+
 #include latlon_isccp2.txt
 #include latlev_type1.txt
 ##include sphere.txt
