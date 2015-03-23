@@ -4,11 +4,11 @@
 #
 # ./make.sh input-job-dir [output-img-dir [test]]
 #
-echo "$0 $@ ($(date))"
-echo
-#
 . ./common.sh
 . ./usr/common.sh
+#
+echo "$0 $@ ($(date))"
+echo
 #
 #========== arguments ==========
 #
@@ -17,7 +17,8 @@ DIR_OUTPUT_IMG=$2  # draw first figure unless specified.
 RUN_MODE=$3        # "test" if debug mode
 #
 if [ ! -d "${DIR_INPUT_JOB}" ] ; then
-    echo "error in $0: DIR_INPUT_JOB = ${DIR_INPUT_JOB} does not exist."
+    echo "usage: $0 input-job-dir [output-img-dir [test]]"
+    echo
     exit 1
 fi
 if [ ! -f ${DIR_INPUT_JOB}/configure ] ; then
@@ -162,13 +163,16 @@ while [ 1 -eq 1 ] ; do
     #
     [ "${FTYPE}" = "" ] && echo "FTYPE is void" && exit 1
     #
-    [ "${MODE}"   = "" ] && echo "MODE is void"   && exit 1
+    [ "${MODE}" = "" ] && echo "MODE is void" && exit 1
     #
-    [ "${VARID}"  = "" -a "${FTYPE}" != "isccp_matrix" ] && echo "VARID is void"  && exit 1
+    [ "${VARID}" = "" -a "${FTYPE}" != "isccp_matrix" ] && echo "VARID is void" && exit 1
     #
     case "${TIMEID}" in
+	"annual_mean" )
+	    [ "${YEAR}"   = "" ] && echo "error: YEAR is void" && exit 1
+	    ;;
 	"seasonal_mean" )
-	    [ "${YEAR}"   = "" ] && echo "error: YEAR is void"   && exit 1
+	    [ "${YEAR}"   = "" ] && echo "error: YEAR is void" && exit 1
 	    [ "${SEASON}" = "" ] && echo "error: SEASON is void" && exit 1
 	    [ "${SEASON}" = "MAM" ] && MONTH="345"
 	    [ "${SEASON}" = "JJA" ] && MONTH="678"
@@ -176,7 +180,22 @@ while [ 1 -eq 1 ] ; do
 	    [ "${SEASON}" = "DJF" ] && MONTH="212"
 	    ;;
 	"monthly_mean" )
-	    [ "${YEAR}"   = "" ] && echo "error: YEAR is void"  && exit 1
+	    [ "${YEAR}"   = "" ] && echo "error: YEAR is void" && exit 1
+	    [ "${MONTH}"  = "" ] && echo "error: MONTH is void" && exit 1
+	    ;;
+	"clim_annual_mean" )
+	    [ "${YEARS}"  = "" ] && echo "error: YEARS is void" && exit 1
+	    ;;
+	"clim_seasonal_mean" )
+	    [ "${YEARS}"  = "" ] && echo "error: YEARS is void" && exit 1
+	    [ "${SEASON}" = "" ] && echo "error: SEASON is void" && exit 1
+	    [ "${SEASON}" = "MAM" ] && MONTH="345"
+	    [ "${SEASON}" = "JJA" ] && MONTH="678"
+	    [ "${SEASON}" = "SON" ] && MONTH="901"
+	    [ "${SEASON}" = "DJF" ] && MONTH="212"
+	    ;;
+	"clim_monthly_mean" )
+	    [ "${YEARS}"  = "" ] && echo "error: YEARS is void" && exit 1
 	    [ "${MONTH}"  = "" ] && echo "error: MONTH is void" && exit 1
 	    ;;
     esac
@@ -184,60 +203,6 @@ while [ 1 -eq 1 ] ; do
 
 
     : <<'#COMMENT_EOF'
-    if [ "${TIMEID}" = "monthly_mean" ] ; then
-	[ "${YEAR}"       = "" ] && echo "YEAR is void"       && exit 1
-	[ "${MONTH}"      = "" ] && echo "MONTH is void"      && exit 1
-	STR_TIME="-ym ${YEAR} ${MONTH}"
-	if [ "${DIFF_Y}" != "" ] ; then
-	    let YEAR2=YEAR+DIFF_Y
-	    YMD1=$( date --date "${YEAR2}-${MONTH}-01"         +%d%b%Y )
-	    YMD2=$( date --date "${YEAR2}-${MONTH}-01 1 month" +%d%b%Y )
-	    STR_TIME="${STR_TIME} -time.2 ${YMD1} ${YMD2}"
-	fi
-    elif [ "${TIMEID}" = "clim_monthly_mean"  ] ; then
-	[ "${YEARS}" = "" ] && echo "YEARS is void" && exit 1
-	[ "${MONTH}" = "" ] && echo "MONTH is void" && exit 1
-	YEAR_START=$( echo ${YEARS} | cut -d - -f 1 )
-	YEAR_END=$(   echo ${YEARS} | cut -d - -f 2 )
-	STR_TIME="-clim ${YEAR_START} ${YEAR_END} ${MONTH}"
-	if [ "${DIFF_Y}" != "" ] ; then
-	    let YEAR_START2=YEAR_START+DIFF_Y
-	    let YEAR_END2=YEAR_END+DIFF_Y
-	    STR_TIME="${STR_TIME} -clim.2 ${YEAR_START2} ${YEAR_END2} ${MONTH}"
-	fi
-    elif [ "${TIMEID}" = "clim_seasonal_mean"  ] ; then
-	[ "${YEARS}"  = "" ] && echo "YEARS is void"  && exit 1
-	YEAR_START=$( echo ${YEARS} | cut -d - -f 1 )
-	YEAR_END=$(   echo ${YEARS} | cut -d - -f 2 )
-	[ "${SEASON}" = "" ] && echo "SEASON is void" && exit 1
-	[ "${SEASON}" = "MAM" ] && MONTH="345"
-	[ "${SEASON}" = "JJA" ] && MONTH="678"
-	[ "${SEASON}" = "SON" ] && MONTH="901"
-	[ "${SEASON}" = "DJF" ] && MONTH="212"
-	STR_TIME="-clim ${YEAR_START} ${YEAR_END} ${MONTH}"
-	if [ "${DIFF_Y}" != "" ] ; then
-	    let YEAR_START2=YEAR_START+DIFF_Y
-	    let YEAR_END2=YEAR_END+DIFF_Y
-	    STR_TIME="${STR_TIME} -clim.2 ${YEAR_START2} ${YEAR_END2} ${MONTH}"
-	fi
-    elif [ "${TIMEID}" = "annual_mean"  ] ; then
-	[ "${YEAR}"  = "" ] && echo "YEAR is void"  && exit 1
-	STR_TIME="-clim ${YEAR} ${YEAR} 999"
-	if [ "${DIFF_Y}" != "" ] ; then
-	    let YEAR2=YEAR+DIFF_Y
-	    STR_TIME="${STR_TIME} -clim.2 ${YEAR2} ${YEAR2} 999"
-	fi
-    elif [ "${TIMEID}" = "clim_annual_mean"  ] ; then
-	[ "${YEARS}"  = "" ] && echo "YEARS is void"  && exit 1
-	YEAR_START=$( echo ${YEARS} | cut -d - -f 1 )
-	YEAR_END=$(   echo ${YEARS} | cut -d - -f 2 )
-	MONTH="999"
-	STR_TIME="-clim ${YEAR_START} ${YEAR_END} ${MONTH}"
-	if [ "${DIFF_Y}" != "" ] ; then
-	    let YEAR_START2=YEAR_START+DIFF_Y
-	    let YEAR_END2=YEAR_END+DIFF_Y
-	    STR_TIME="${STR_TIME} -clim.2 ${YEAR_START2} ${YEAR_END2} ${MONTH}"
-	fi
     elif [ "${TIMEID}" = "1dy_mean" \
 	-o "${TIMEID}" = "5dy_mean" ] ; then
 	[ "${TIMEID}" = "tstep"    ] && DELTA_DAY=1
@@ -279,39 +244,13 @@ while [ 1 -eq 1 ] ; do
 	echo ""
 	echo "TIMEID = ${TIMEID} is NOT supported" && exit 1
     fi
-    YM_START=$( echo "${START_YEAR} * 12 + ${START_MONTH}" | bc )
-    YM_END=$(   echo "${END_YEAR}   * 12 + ${END_MONTH}"   | bc )
-    if [ "${TIMEID}" = "seasonal_mean" ] ; then
-	[ "${SEASON}" = "MAM" ] && { MONTH1=3; MONTH2=5; }
-	[ "${SEASON}" = "JJA" ] && { MONTH1=6; MONTH2=8; }
-	[ "${SEASON}" = "SON" ] && { MONTH1=9; MONTH2=11; }
-	[ "${SEASON}" = "DJF" ] && { MONTH1=12; MONTH2=14; }
-	YM1=$(       echo "${YEAR}       * 12 + ${MONTH1}"       | bc )
-	YM2=$(       echo "${YEAR}       * 12 + ${MONTH2}"       | bc )
-	if [ ${YM1} -lt ${YM_START} -o ${YM2} -gt ${YM_END} ] ; then
-	    i=$( expr $i + 1 )
-	    echo " -> out of year/season"
-	    continue
-	fi
-    elif [ "${TIMEID}" = "clim_monthly_mean" ] ; then
-	YM1=$(       echo "${YEAR_START} * 12 + ${MONTH}"       | bc )
-	YM2=$(       echo "${YEAR_END}   * 12 + ${MONTH}"       | bc )
-	if [ ${YM1} -lt ${YM_START} -o ${YM2} -gt ${YM_END} ] ; then
-	    i=$( expr $i + 1 )
-	    echo " -> out of clim-year/month"
-	    continue
-	fi
-    fi
-
 #COMMENT_EOF
 
     [ "${RUN_MODE}" != "test" -a ! -d ${OUTPUT_DIR} ] && mkdir -p ${OUTPUT_DIR}
 
-#    OUTPUT_DIR=${TOP_DIR}/img
     OUTPUT_DIR=${DIR_OUTPUT_IMG}
     for(( j=0; ${j}<${#DESC[@]}; j=${j}+1 )) ; do
 	[ "${RUN_MODE}" != "test" ] && echo ${DESC[$j]} > ${OUTPUT_DIR}/.type
-#	[ "${DIR_OUTPUT_IMG}" != "" ] && echo ${DESC[$j]} > ${OUTPUT_DIR}/description.txt
 	OUTPUT_DIR=${OUTPUT_DIR}/$( echo ${DIR[$j]} | sed -e "s/^-/m/g" )
     done
 
@@ -337,11 +276,21 @@ EOF
     #
     # display style
     case "${MODE}" in
-	"model_bias" )
+	"model_bias" | "sens_model" )
 	    cat >> temp_$$/cnf_${FTYPE}.gsf <<EOF
     _disp.1 = '1'
     _disp.2 = '2'
     _disp.5 = '2 1'
+EOF
+	    ;;
+	"sens_model_bias" )
+	    cat >> temp_$$/cnf_${FTYPE}.gsf <<EOF
+    _disp.1 = '1'
+    _disp.2 = '2'
+    _disp.3 = '3'
+    _disp.4 = '3 2'
+    _disp.5 = '2 1'
+    _disp.6 = '3 1'
 EOF
 	    ;;
 	* )
@@ -352,10 +301,32 @@ EOF
     #
     # time
     case "${TIMEID}" in
+	"annual_mean" )
+	    cat >> temp_$$/cnf_${FTYPE}.gsf <<EOF
+    _year  = ${YEAR}
+    _month = 999
+EOF
+	    ;;
 	"seasonal_mean" | "monthly_mean" )
 	    cat >> temp_$$/cnf_${FTYPE}.gsf <<EOF
     _year  = ${YEAR}
     _month = ${MONTH}
+EOF
+	    ;;
+	"clim_annual_mean" )
+	    cat >> temp_$$/cnf_${FTYPE}.gsf <<EOF
+    _year       = 'clim'
+    _year_start = ${YEARS:0:4}
+    _year_end   = ${YEARS:5:4}
+    _month      = 999
+EOF
+	    ;;
+	"clim_seasonal_mean" | "clim_monthly_mean" )
+	    cat >> temp_$$/cnf_${FTYPE}.gsf <<EOF
+    _year       = 'clim'
+    _year_start = ${YEARS:0:4}
+    _year_end   = ${YEARS:5:4}
+    _month      = ${MONTH}
 EOF
 	    ;;
 	* )
@@ -703,10 +674,10 @@ EOF
     if [ ${FLAG_GRADS} -eq 0 ] ; then
 	cd temp_$$
 	#
-	echo "Followings are cnf_${FTYPE}.gsf for ${FTYPE}.gs" >> ${TXT}
-	echo "-----" >> ${TXT}
-	cat cnf_${FTYPE}.gsf >> ${TXT}
-	echo "-----" >> ${TXT}
+#	echo "Followings are cnf_${FTYPE}.gsf for ${FTYPE}.gs" >> ${TXT}
+#	echo "-----" >> ${TXT}
+#	cat cnf_${FTYPE}.gsf >> ${TXT}
+#	echo "-----" >> ${TXT}
 	#
 	for FILE in ${FILE_LIST_TEMPLATE[@]} ; do
 	    ln -s ${DIR_TEMPLATE}/${FILE}
@@ -720,7 +691,17 @@ EOF
 	    grads -blcx "${FTYPE}.gs cnf_${FTYPE}.gsf" | tee grads.log 2>&1
 	fi
 	#
-	rm grads.log cnf_${FTYPE}.gsf
+	ERROR=$( grep -i "error" grads.log )
+	ERROR=${ERROR}$( grep -i "all undefined values" grads.log )
+	ERROR=${ERROR}$( grep -i "Data Request Warning" grads.log )
+	if [ "${ERROR}" != "" ] ; then
+	    echo
+	    echo "error occurred!"
+	    echo "see temp_$$/grads.log for details"
+	    echo
+	    exit 1
+	fi
+#	rm grads.log cnf_${FTYPE}.gsf
 	for FILE in ${FILE_LIST_TEMPLATE[@]} ; do
 	    rm ${FILE}
 	done
@@ -729,7 +710,8 @@ EOF
 	cd ..
     fi
     #
-    mv temp_$$/${PNG} temp_$$/${TXT} ${OUTPUT_DIR}
+#    mv temp_$$/${PNG} temp_$$/${TXT} ${OUTPUT_DIR}
+    mv temp_$$/${PNG} temp_$$/grads.log temp_$$/cnf_${FTYPE}.gsf ${OUTPUT_DIR}
     rm -f temp_$$/${EPS}
     ls temp_$$
     rmdir temp_$$

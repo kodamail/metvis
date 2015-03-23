@@ -1,19 +1,100 @@
+# full template
+run_name
+{
+    ymd
+    ym
+    ys
+    ya
+    cym
+    cys
+    cya
+}
+
 #
-#----- NICAM.12 family -----#
+#----- NICAM.12 AMIP family -----#
 #
 AMIP.N12.197806.gl09.L38.run01
 {
-    AMIP.N12.197806.gl09.L38.run01
-    AMIP.N12.197806.gl09.L38.run01.
-    NICAM.12 GL-09 AMIP run on K computer.
-    ya 1979,1988
-    ym  1978,06,1989,05
-    ys  1978,JJA,1989,MAM
-    ymd 1978,06,01,1989,05,31
-    cya 1979-1988
-    cys 1979-1988,MAM,DJF
-    cym 1979-1988,01,12
+    ymd 1978,06,01,2008,12,31
+    ym  1978,06,2008,12
+    ys  1978,JJA,2008,SON
+    ya  1979,2008
+    cym 1979-2008,01,12
+    cys 1979-2008,MAM,SON 1978-2007,DJF,DJF
+    cya 1979-2008
 }
+# 1979-1983 1979-1988 1989-1998 1999-2008
+
+#
+#----- NICAM.12 sens. exp. family -----#
+#
+K.200406.N12.gl09.b
+{
+    ymd 2004,06,01,2005,05,31
+    ym  2004,06,2005,05
+    ys  2004,JJA,2005,MAM
+    ya
+    cym
+    cys
+    cya
+}
+K.200406.N12.gl09.b.001
+{
+    ymd 2004,06,01,2005,05,31
+    ym  2004,06,2005,05
+    ys  2004,JJA,2005,MAM
+    ya
+    ys  2004,JJA,2005,MAM
+    cya
+    cym
+    cys
+}
+
+
+#
+#----- observation -----#
+#
+CMAP
+{
+    ymd 
+    ym  1979,01,2009,09
+    ys  1979,MAM,2009,JJA
+    ya  1979,2008
+    cym 1979-2008,01,09 1979-2007,10,12
+    cys 1979-2009,MAM,JJA 1979-2008,SON,DJF
+    cya 1979-2008
+}
+GPCP
+{
+    ymd 
+    ym  1979,01,2013,12
+    ys  1979,MAM,2013,SON
+    ya  1979,2013
+    cym 1979-2013,01,12
+    cys 1979-2013,MAM,SON 1979-2012,DJF,DJF
+    cya 1979-2013
+}
+JRA55
+{
+    ymd
+    ym  1957,01,2012,12
+    ys  1957,MAM,2012,SON
+    ya  1957,2012
+    cym 1957-2012,01,12
+    cys 1957-2012,MAM,SON 1957-2011,DJF,DJF
+    cya 1957-2012
+}
+
+
+
+
+
+########################################################
+# below may be old
+########################################################
+
+
+
 AMIP.N12.207406.gl09.L38.run01
 {
     AMIP.N12.207406.gl09.L38.run01
@@ -36,15 +117,6 @@ N12.ES.200404.gl09.L40.ndw6
     ys 
 }
 
-K.200406.N12.gl09.b
-{
-    K.200406.N12.gl09.b
-    K.200406.N12.gl09.b.
-    ys 2004,JJA,2005,MAM
-    ym 2004,06,2005,05
-    cys 
-    cym 
-}
 
 
 #K.200406.L38.gl10.run01
@@ -419,19 +491,6 @@ MIROC_amip_t106
 #
 #----- observation -----#
 #
-JRA125
-{
-    JRA125
-    JRA125.
-    ys 2000,MAM,2009,SON
-    ym 2000,01,2009,12
-    ymd 2000,01,01,2009,12,31
-#    ys 1979,MAM,2009,SON
-#    ym 1979,01,2009,12
-#    ymd 1979,01,01,2009,12,31
-    cys 2000-2009,MAM,SON 2000-2008,DJF,DJF
-    cym 2000-2009,01,12
-}
 NCEP1
 {
     NCEP1
@@ -477,27 +536,6 @@ ERA_INTERIM
 #    cys 1989-2009,MAM,SON 1989-2008,DJF,DJF
 #    cym 1989-2009,01,12
 #}
-CMAP
-{
-    CMAP
-    CMAP.
-    ys 1979,MAM,2009,JJA
-    ym 1979,01,2009,09
-    ymd 
-    cys 1979-2009,MAM,JJA 1979-2008,SON,DJF
-    cym 1979-2009,01,09 1979-2008,10,12
-}
-GPCP
-{
-    GPCP
-    GPCP.
-    ys 1979,MAM,2004,SON
-    ym 1979,01,2005,01
-    ymd 
-#    cys 1979,2004,MAM,SON 1979,2003,DJF,DJF
-    cys 1979-2004,MAM,SON 1979-2003,DJF,DJF
-    cym 1979-2004,02,12 1979-2005,01,01
-}
 OISST_v2
 {
     OISST_v2

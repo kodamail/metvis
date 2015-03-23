@@ -1,41 +1,46 @@
 ############################################################
 #
+# include here for particular jobs
+#
+include sens.txt
+exit
+
+
+
+
+############################################################
+#
 # run2 list for general configuration
 #
 run2_list = 
 #
 # well done:
 #
-run2_list += K.200406.L38.gl09.run06
-run2_list += K.200406.L38.gl09.dt60s
 
-run2_list += N12.ES.200404.gl09.L40.ndw6
-###run2_list += K.200406.L38.gl09.run02
-run2_list += 200404.new.prun2010.gl09
-run2_list += 200406.new.prun2010.gl09
-run2_list += 200406.new.prun2010.gl09_nsw5
-run2_list += 200406.new.prun2010.gl09_chikira_def 200406.new.prun2010.gl09_chikira_pa01_clmd03 200406.new.prun2010.gl09_chikira_pa01_clmd07 200406.new.prun2010.gl09_chikira_pa09_clmd03 200406.new.prun2010.gl09_chikira_pa09_clmd07
-run2_list += 200406.new.prun2010.gl08 200406.new.prun2010.gl08_as
-run2_list += 200406.new.prun2010.gl07 200406.new.prun2010.gl07_as
-run2_list += 200406.new.prun2010.gl06 200406.new.prun2010.gl06_as
-run2_list += 200406.new.prun2010.gl05
-run2_list += 200406.new
-run2_list += 200406.new_g98 200406.new_bc
-run2_list += 200406_AR5
-run2_list += AMIP.N12.197806.gl09.L38.run01
-run2_list += K.200406.L38.gl10.run03 K.200406.L38.gl09.run06
 #
 # running:
 #
-#run2_list = AMIP.N12.197806.gl09.L38.run01
 
-run2_list = K.200406.N12.gl09.b
+run2_list += K.200406.N12.gl09.b
+run2_list += K.200406.N12.gl09.b.001
+#run2_list += AMIP.N12.197806.gl09.L38.run01
 
 # not done yet ->
 
 # data preparing -> 
 
 # waiting for running ->
+
+############################################################
+#
+# timeid list for general configuration
+#
+# for annual-scale integration
+timeid = clim_annual_mean clim_seasonal_mean clim_monthly_mean annual_mean seasonal_mean monthly_mean
+
+# for decadal-scale integration
+#timeid = clim_annual_mean clim_seasonal_mean clim_monthly_mean annual_mean
+
 #
 ############################################################
 # all other finished
