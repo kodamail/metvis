@@ -79,6 +79,7 @@ while [ 1 -eq 1 ] ; do
     MODE=""
     VARID=""
     TIMEID=""
+    REGION=""
     #
     YEAR=""
     SEASON=""
@@ -113,6 +114,7 @@ while [ 1 -eq 1 ] ; do
 	[ "${DESC[$j]}" = "ftype"       ] && FTYPE=${DIR[$j]}
 	[ "${DESC[$j]}" = "mode"        ] && MODE=${DIR[$j]}
 	[ "${DESC[$j]}" = "varid"       ] && VARID=${DIR[$j]}
+	[ "${DESC[$j]}" = "region"      ] && REGION=${DIR[$j]}
 	[ "${DESC[$j]}" = "timeid"      ] && TIMEID=${DIR[$j]}
 	[ "${DESC[$j]}" = "year"        ] && YEAR=${DIR[$j]}
 	[ "${DESC[$j]}" = "years"       ] && YEARS=${DIR[$j]}
@@ -284,6 +286,13 @@ EOF
     _cbar.2 = 'hor'
     _cbar.5 = 'hor'
 EOF
+	    if [ "${FTYPE}" = "latlev" ] ; then
+		cat >> temp_$$/cnf_${FTYPE}.gsf <<EOF
+    _cont.1 = 'on'
+    _cont.2 = 'on'
+    _over.5 = '1'
+EOF
+	    fi
 	    ;;
 	"sens_model_bias" )
 	    cat >> temp_$$/cnf_${FTYPE}.gsf <<EOF
@@ -296,6 +305,16 @@ EOF
     _cbar.3 = 'hor'
     _cbar.6 = 'hor'
 EOF
+	    if [ "${FTYPE}" = "latlev" ] ; then
+		cat >> temp_$$/cnf_${FTYPE}.gsf <<EOF
+    _cont.1 = 'on'
+    _cont.2 = 'on'
+    _cont.3 = 'on'
+    _cont.4 = 'on'
+    _over.5 = '1'
+    _over.6 = '1'
+EOF
+	    fi
 	    ;;
 	* )
 	    echo "error: MODE=${MODE} is invalid."
@@ -366,6 +385,7 @@ EOF
     # common for all
     cat >> temp_$$/cnf_${FTYPE}.gsf <<EOF
     _fmax = f - 1
+    _region = '${REGION}'
 return
 EOF
 

@@ -2,8 +2,8 @@
 #
 # include here for particular jobs
 #
-#include sens.txt
-#exit
+#include latlev_sens.txt
+#include latlon_sens.txt
 
 
 
@@ -21,8 +21,13 @@ run2_list =
 # running:
 #
 
-run2_list += K.200406.N12.gl09.b
-run2_list += K.200406.N12.gl09.b.001
+#run2_list += K.200406.N12.gl09.b
+#run2_list += K.200406.N12.gl09.b.001
+run2_list += K.200406.N12.gl09.b.002
+run2_list += K.200406.N12.gl09.b.003
+run2_list += K.200406.N12.gl09.b.004
+run2_list += K.200406.N12.gl09.b.005
+
 #run2_list += AMIP.N12.197806.gl09.L38.run01
 
 # not done yet ->
@@ -36,19 +41,21 @@ run2_list += K.200406.N12.gl09.b.001
 # timeid list for general configuration
 #
 # for annual-scale integration
-timeid = clim_annual_mean clim_seasonal_mean clim_monthly_mean annual_mean seasonal_mean monthly_mean
+#timeid = clim_annual_mean clim_seasonal_mean clim_monthly_mean annual_mean seasonal_mean monthly_mean
+timeid = seasonal_mean
 
 # for decadal-scale integration
 #timeid = clim_annual_mean clim_seasonal_mean clim_monthly_mean annual_mean
+#timeid = clim_annual_mean clim_seasonal_mean
 
 #
 ############################################################
 # all other finished
 include latlon_bias.txt
+include latlev_bias.txt
 
 
 #include latlon_isccp2.txt
-#include latlev_type1.txt
 ##include sphere.txt
 
 exit
