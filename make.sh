@@ -310,7 +310,8 @@ EOF
     _cont.1 = 'on'
     _cont.2 = 'on'
     _cont.3 = 'on'
-    _cont.4 = 'on'
+    _cont.4 = 'off'
+    _over.4 = '2'
     _over.5 = '1'
     _over.6 = '1'
 EOF
