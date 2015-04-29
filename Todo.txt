@@ -1,0 +1,5 @@
+run_list.txt (and parse_list) should be simpler
+-just specify ddmmyyyy-ddmmyyyy for a data.
+
+
+
