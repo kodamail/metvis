@@ -89,7 +89,7 @@ K.200406.N12.gl09.b.005
     ys  2004,JJA,2005,MAM
     ya
     ys  2004,JJA,2005,MAM
-    cya
+    cya 
     cym
     cys
 }

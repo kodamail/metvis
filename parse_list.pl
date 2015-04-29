@@ -1,5 +1,6 @@
 #!/usr/bin/perl
 
+
 use strict;
 use CGI;
 use File::Basename;
@@ -351,6 +352,7 @@ sub parse_core
 #		    elsif( $$type_now[$p] eq "cys"        ){ print "year_start year_end season "; }
 		    elsif( $$type_now[$p] eq "cys"        ){ print "years season "; }
 		    elsif( $$type_now[$p] eq "ya"         ){ print "year "; }
+#		    elsif( $$type_now[$p] eq "ya"         ){ print "year month "; }
 		    elsif( $$type_now[$p] eq "cya"        ){ print "years "; }
 		    elsif( $$type_now[$p] eq "ymd_range"  ){ print "year month day year2 month2 day2 "; }
 		    elsif( $$type_now[$p] eq "ymdh_range" ){ print "year month day hour year2 month2 day2 hour2 "; }
@@ -400,10 +402,13 @@ sub parse_core
 			$disp =~ s/\$\{season\}|\$season/$season/g;
 		    }
 		    elsif( $$type_now[$p] eq "ya" && $$status_now[$p] =~ /^([0-9][0-9][0-9][0-9])$/ )
+#		    elsif( $$type_now[$p] eq "ya" && $$status_now[$p] =~ /^([0-9][0-9][0-9][0-9]) ([01][0-9])$/ )
 		    {
 			my $year = $1;
+			my $month = $2;
 #			print "succeed\n";
 			$disp =~ s/\$\{year\}|\$year/$year/g;
+			$disp =~ s/\$\{month\}|\$month/$month/g;
 		    }
 #		    else{print "fail\n";}
 #		    print "ok: $$type[$p], $$status_now[$p]\n";
@@ -839,11 +844,15 @@ sub expand
 	}
     }
     elsif( $type_now eq "ya" && $st =~ /^([0-9][0-9][0-9][0-9]),([0-9][0-9][0-9][0-9])$/ )
+#    elsif( $type_now eq "ya" && $st =~ /^([0-9][0-9][0-9][0-9]),([0-9][0-9][0-9][0-9])(,([0-1][0-9]))?$/ )
     {
 	my ( $year_start,   $year_end   ) = ( $1, $2 );
+#	my ( $year_start,   $year_end, $month   ) = ( $1, $2, $4 );
+#	if ( $month eq "" ){ $month = "01"; }
 	for( my $y=$year_start; $y<=$year_end; $y++ )
 	{
 	    push( @$status_list, "$y" );
+#	    push( @$status_list, "$y $month" );
 	}
     }
     elsif( $type_now eq "cya" && $st =~ /^([0-9][0-9][0-9][0-9])-([0-9][0-9][0-9][0-9])$/ )

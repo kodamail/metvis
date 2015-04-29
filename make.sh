@@ -330,6 +330,7 @@ EOF
     _year  = ${YEAR}
     _month = 999
 EOF
+#    _month = 999${MONTH}
 	    ;;
 	"seasonal_mean" | "monthly_mean" )
 	    cat >> temp_$$/cnf_${FTYPE}.gsf <<EOF
