@@ -1,0 +1,297 @@
+
+############################################################
+# start
+#   ftype latlon_type1
+#   mode gw
+#
+#
+ftype latlon_type1
+mode gw
+{
+    varid_list = iwp lwp precip qv2m t2m lw_up_toa lw_up_clr_toa lw_crf_toa lw_up_sfc lw_down_sfc lw_net_sfc sw_up_toa sw_up_clr_toa sw_up_sfc sw_down_toa sw_crf_toa sw_down_sfc sw_net_sfc aw_net_toa aw_crf_toa aw_net_sfc sh_sfc lh_sfc energy_net_sfc
+    run1 K.200406.L38.gl09.run06
+    run2 K.20xx05.L38.gl09.run00
+#    timeid seasonal_mean monthly_mean
+    timeid seasonal_mean
+    varid ${varid_list}
+    y* *
+    sw 144x72 2560x1280
+    (
+        ${run1} ${varid} -cdir sl/${sw}/monthly_mean
+        ${run2} ${varid} -cdir sl/${sw}/monthly_mean
+    )
+    run1 K.200406.L38.gl10.run03
+    run2 K.20xx05.L38.gl10.run01
+#    timeid seasonal_mean monthly_mean
+    timeid seasonal_mean
+    varid ${varid_list}
+    y* *
+    sw 144x72
+    (
+        ${run1} ${varid} -cdir sl/${sw}/monthly_mean
+        ${run2} ${varid} -cdir sl/${sw}/monthly_mean
+    )
+
+    varid_list = isccp_high_vis isccp_middle_vis isccp_low_vis isccp_high_vis_thick isccp_middle_vis_thick isccp_low_vis_thick isccp_high_vis_med isccp_middle_vis_med isccp_low_vis_med isccp_high_vis_thin isccp_middle_vis_thin isccp_low_vis_thin 
+    varid_list = isccp_high_vis isccp_middle_vis isccp_low_vis isccp_high_vis_thick isccp_middle_vis_thick isccp_low_vis_thick isccp_high_vis_med isccp_middle_vis_med isccp_low_vis_med isccp_high_vis_thin isccp_middle_vis_thin isccp_low_vis_thin 
+    run1 K.200406.L38.gl09.run06
+    run2 K.20xx05.L38.gl09.run00
+#    timeid seasonal_mean monthly_mean
+    timeid seasonal_mean
+    varid ${varid_list}
+    y* *
+    sw 144x72
+    (
+        ${run1} ${varid} -cdir isccp/${sw}x49/monthly_mean
+        ${run2} ${varid} -cdir isccp/${sw}x49/monthly_mean
+    )
+    run1 K.200406.L38.gl10.run03
+    run2 K.20xx05.L38.gl10.run01
+#    timeid seasonal_mean monthly_mean
+    timeid seasonal_mean
+    varid ${varid_list}
+    y* *
+    sw 144x72
+    (
+        ${run1} ${varid} -cdir isccp/${sw}x49/monthly_mean
+        ${run2} ${varid} -cdir isccp/${sw}x49/monthly_mean
+    )
+}
+
+
+#
+# end
+#   ftype latlon_type1
+#   mode gw
+############################################################
+
+
+
+############################################################
+# start
+#   ftype latlon_type1
+#   mode model_bias
+#   run1 OISST_v2
+#
+/*
+ftype latlon_type1
+mode model_bias
+run1 AMIP2_BOUNDARY
+{
+    #
+    #----- general -----#
+    #
+    run2 ${run2_list}
+    {
+        timeid clim_seasonal_mean clim_monthly_mean seasonal_mean monthly_mean
+        varid sst icr ice
+        y* *
+        (
+            ${run1} ${varid}
+            ${run2} ${varid} -cdir ol/360x181/tstep -cdir2 sl/360x181/invariant
+        )
+#            ${run2} ${varid} -cdir ol/144x72/tstep -cdir2 sl/144x72/invariant
+    }
+}
+*/
+#
+# end
+#   ftype latlon_type1
+#   mode model_bias
+#   run1 OISST_v2
+############################################################
+
+
+
+
+
+ftype latlon
+mode model_bias
+run1 JRA55
+{
+    run2 ${run2_list}
+    {
+#
+#        # until now, 1dy_mean is on-demand.
+#        # TODO: "after 10days"
+#        timeid 1dy_mean
+#        varid t2m qv2m
+#        ymd 2004,06,01,2004,06,10
+#        (
+#            ${run1} ${varid} -cdir sl/144x72/tstep
+#            ${run2} ${varid} -cdir sl/144x72/${timeid}
+#        )
+    }
+
+#    #
+#    #----- for gl05 144x73 grid -----#
+#    # on-demand
+#    #
+#    run2 CLIM_MATSIRO_200406.run18
+#    {
+#        timeid clim_seasonal_mean clim_monthly_mean seasonal_mean monthly_mean
+#        varid t2m qv2m
+#        y* *
+#        (
+#            ${run1} ${varid} -cdir sl/144x72/tstep
+#            ${run2} ${varid} -cdir sl/144x73/monthly_mean
+#        )
+#    }
+#    #
+#    #----- for COLA data -----#
+#    # on-demand
+#    #
+#    run2 COLA-NICAM
+#    {
+#        timeid seasonal_mean monthly_mean
+#        varid t2m qv2m
+#        y* *
+#        (
+#            ${run1} ${varid} -cdir sl/144x72/tstep
+#            ${run2} ${varid} -cdir data_conv/${year}/320x160/monthly_mean
+#        )
+#    }
+#    #
+#    #----- for MIROC data -----#
+#    # on-demand
+#    #
+#    run2 MIROC_cmip5_mAmO_20C_run01 MIROC_kinmirai_mAmO_AR4_SRES_LA_A1_01 MIROC_amip_t106
+#    {
+#        timeid clim_seasonal_mean clim_monthly_mean seasonal_mean monthly_mean
+#        varid t2m qv2m
+#        y* *
+#        (
+#            ${run1} ${varid} -cdir sl/144x72/tstep
+#            ${run2} ${varid}
+#        )
+#    }
+}
+
+
+############################################################
+# start
+#   ftype latlon_type1
+#   mode model_bias
+#   run1 NCEP1
+#
+ftype latlon_type1
+mode model_bias
+#run1 
+run1 NCEP1
+{
+    #
+    #----- for gl05 144x73 grid -----#
+    # on-demand
+    #
+#    run2 CLIM_MATSIRO_200406.run18
+#    {
+#        timeid seasonal_mean monthly_mean
+#        varid t2m lh_sfc sh_sfc precip
+#        y* *
+#        (
+#            ${run1} ${varid} -cdir data_conv/surface/144x73/monthly
+#            ${run2} ${varid} -cdir sl/144x73/monthly_mean
+#        )
+#    }
+    #
+    #----- for COLA data -----#
+    # on-demand
+    #
+#    run2 COLA-NICAM
+#    {
+#        timeid seasonal_mean monthly_mean
+#        varid t2m lh_sfc sh_sfc precip
+#        y* *
+#        (
+#            ${run1} ${varid} -cdir data_conv/surface/144x73/monthly
+#            ${run2} ${varid} -cdir data_conv/${year}/320x160/monthly_mean
+#        )
+#    }
+    #
+    #----- for MIROC data -----#
+    # on-demand
+    #
+#    run2 MIROC_cmip5_mAmO_20C_run01 MIROC_kinmirai_mAmO_AR4_SRES_LA_A1_01 MIROC_amip_t106
+#    {
+#        timeid clim_seasonal_mean clim_monthly_mean seasonal_mean monthly_mean
+#        varid t2m lh_sfc sh_sfc precip
+#        y* *
+#        (
+#            ${run1} ${varid} -cdir data_conv/surface/144x73/monthly
+#            ${run2} ${varid}
+#        )
+#    }
+}
+#
+# end
+#   ftype latlon_type1
+#   mode model_bias
+#   run1 NCEP1
+############################################################
+
+
+############################################################
+# start
+#   ftype latlon_type1
+#   mode model_bias
+#   run1 SRB3.0
+#
+ftype latlon_type1
+mode model_bias
+run1 SRB3.0
+{
+    varid_list = lw_up_toa lw_up_clr_toa lw_crf_toa lw_up_sfc lw_down_sfc sw_up_toa sw_up_clr_toa sw_crf_toa sw_up_sfc sw_down_toa sw_down_sfc sw_net_toa sw_net_sfc lw_net_sfc aw_net_toa aw_crf_toa aw_net_sfc
+    varid_list_cola = lw_up_toa lw_up_clr_toa lw_up_sfc lw_down_sfc sw_up_toa sw_up_clr_toa sw_up_sfc sw_down_sfc sw_net_sfc lw_net_sfc aw_net_sfc
+
+    #
+    #----- for gl05 144x73 grid -----#
+    # on-demand
+    #
+#    run2 CLIM_MATSIRO_200406.run18
+#    {
+#        timeid clim_seasonal_mean clim_monthly_mean seasonal_mean monthly_mean
+#        varid ${varid_list}
+#        y* *
+#        (
+#            ${run1} ${varid} -time monthly_mean
+#            ${run2} ${varid} -cdir sl/144x73/monthly_mean
+#        )
+#    }
+    #
+    #----- for COLA data -----#
+    # on-demand
+    #
+#    run2 COLA-NICAM
+#    {
+#        timeid seasonal_mean monthly_mean
+#        varid ${varid_list_cola}
+#        y* *
+#        (
+#            ${run1} ${varid} -time monthly_mean
+#            ${run2} ${varid} -cdir data_conv/${year}/320x160/monthly_mean
+#        )
+#    }
+    #
+    #----- for MIROC data -----#
+    # on-demand
+    #
+#    run2 MIROC_cmip5_mAmO_20C_run01 MIROC_kinmirai_mAmO_AR4_SRES_LA_A1_01 MIROC_amip_t106
+#    {
+#        timeid clim_seasonal_mean clim_monthly_mean seasonal_mean monthly_mean
+#        varid ${varid_list}
+#        y* *
+#        (
+#            ${run1} ${varid} -time monthly_mean
+#            ${run2} ${varid}
+#        )
+#    }
+}
+#
+# end
+#   ftype latlon_type1
+#   mode model_bias
+#   run1 SRB3.0
+############################################################
+
+
+
