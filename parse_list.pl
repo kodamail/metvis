@@ -470,11 +470,25 @@ sub expand_ast
 
 	#print STDERR "$type[$p] value=$$status_now[$p]\n";
 	my @run_list;
+	my $type_now_tmp = $$type_now[$p];
+	$type_now_tmp =~ s/-[0-9]+$//;  # e.g., run-1 -> run
 	if( open(LINK, "< list/" . $$type_now[$p] . "_list.txt") )
 	{
 	    @run_list = <LINK>;
 	    close(LINK);
 	}
+	elsif( open(LINK, "< list/" . $type_now_tmp . "_list.txt") )
+	{
+	    @run_list = <LINK>;
+	    close(LINK);
+	}
+#	print STDERR "$type_now_tmp\n";
+#	exit 1;
+#	else
+#	{ 
+#	    print STDERR "error in parse_list.pl: list/". $$type_now[$p] . "_list.txt does not exist\n";
+#	    exit 1;
+#	}
 	#print STDERR @run_list;
 	my $flag = 0;
 	for( my $i=0; $i<=$#run_list-1; $i++ )
