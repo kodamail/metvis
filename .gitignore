@@ -1,5 +1,8 @@
 *~
-configure/[^.]*
-log/
+configure/
 temp_*/
-usr/[^.]*
+usr/
+
+#configure/[^.]*
+#log/
+#usr/[^.]*
