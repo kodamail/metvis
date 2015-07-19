@@ -1,0 +1,18 @@
+include common_bias.txt
+
+ftype isccp_matrix
+mode model_bias
+{
+    run-1 ISCCP_D1_OBS
+    run-2 ${run2_list}
+    {
+        timeid ${timeid}
+        y* *
+        region global
+        matrix_type 7x7
+        (
+            ${run-1} dummy
+            ${run-2} dummy
+        )
+    }
+}
