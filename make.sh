@@ -169,6 +169,8 @@ while [ 1 -eq 1 ] ; do
     #
     [ "${VARID}" = "" -a "${FTYPE}" != "isccp_matrix" ] && echo "VARID is void" && exit 1
     #
+    [ "${FTYPE}" = "isccp_matrix" -a "${MATRIX_TYPE}" = "" ] && echo "MATRIX_TYPE is void" && exit 1
+    #
     case "${TIMEID}" in
 	"annual_mean" )
 	    [ "${YEAR}"   = "" ] && echo "error: YEAR is void" && exit 1
@@ -322,6 +324,7 @@ EOF
 	    exit 1
 	    ;;
     esac
+
     #
     # time
     case "${TIMEID}" in
@@ -360,6 +363,12 @@ EOF
 	    ;;
     esac
     #
+    if [ "${FTYPE}" = "isccp_matrix" ] ; then
+	cat >> temp_$$/cnf_${FTYPE}.gsf <<EOF
+    _type = '${MATRIX_TYPE}'
+EOF
+    fi
+
     # for each dataset
     cat >> temp_$$/cnf_${FTYPE}.gsf <<EOF
     f = 1
@@ -368,12 +377,36 @@ EOF
     IFS=$'\n'
     for LINE in ${LINE_LIST[@]} ; do
 	echo ${LINE}
-	cat >> temp_$$/cnf_${FTYPE}.gsf <<EOF
+
+	if [ "${FTYPE}" = "isccp_matrix" ] ; then
+	    cat >> temp_$$/cnf_${FTYPE}.gsf <<EOF
+    dir = run_list( '${LINE} -show-dir' )
+    _run.f = subwrd( '${LINE}', 1 )
+    if( _run.f = 'ISCCP_D1_OBS' )
+      _type.f = 'satellite'
+      prex( 'open 'dir'/isccp_d1.ctl' )
+      _var.f = ''
+      _f2df.f = last()
+      _var_pres.f = ''
+      f = f + 1
+    else
+      _type.f = 'nicam'
+      prex( 'open 'dir'/isccp/144x72x49/monthly_mean/dfq_isccp2/dfq_isccp2.ctl' )
+      _var.f = 'dfq_isccp2.'f
+      _f2df.f = last()
+      'open 'dir'/ml_zlev/144x72x38/monthly_mean/ms_pres/ms_pres.ctl'
+      _var_pres.f = 'ms_pres.'_f2df.f+1
+      f = f + 1
+    endif
+EOF
+	else
+	    cat >> temp_$$/cnf_${FTYPE}.gsf <<EOF
     ret = run_list( '${LINE}' )
     _run.f = subwrd( ret, 2 )
     _var.f = subwrd( ret, 4 )
     if( _var.f != '' ) ; _f2df.f = last() ; f = f + 1 ; endif
 EOF
+	fi
     done
     IFS=${IFS_ORG}
     #

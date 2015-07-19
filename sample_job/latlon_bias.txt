@@ -4,228 +4,155 @@
 ftype latlon
 mode model_bias
 {
-/*
     # note: GSMaP_TMI: 0.25deg x 0.25deg
-    run1 GSMaP_TMI
-    run2 ${run2_list}
+    run-1 GSMaP_TMI
+    run-2 ${run2_list}
     {
         varid precip
         timeid ${timeid}
-        region global tropics
         y* *
+        region global tropics
         (
-            ${run1} ${varid}
-            ${run2} ${varid} -cdir sl/2560x1280/monthly_mean
+            ${run-1} ${varid}
+            ${run-2} ${varid} -cdir sl/2560x1280/monthly_mean
         )
     }
-    run1 GPCP CMAP
-    run2 ${run2_list}
+    run-1 GPCP CMAP
+    run-2 ${run2_list}
     {
         varid precip
         timeid ${timeid}
-        region global tropics
         y* *
+        region global tropics
         (
-            ${run1} ${varid}
-            ${run2} ${varid} -cdir sl/144x72/monthly_mean
+            ${run-1} ${varid}
+            ${run-2} ${varid} -cdir sl/144x72/monthly_mean
         )
     }
-    run1 JRA55
-    run2 ${run2_list}
+    run-1 JRA55
+    run-2 ${run2_list}
     {
         varid t2m qv2m u10m v10m
         timeid ${timeid}
-        region global
         y* *
+        region global
         (
-            ${run1} ${varid} -cdir ctl_monthly
-            ${run2} ${varid} -cdir sl/288x145/monthly_mean
+            ${run-1} ${varid} -cdir ctl_monthly
+            ${run-2} ${varid} -cdir sl/288x145/monthly_mean
         )
         varid u700 u500 u300 t700 t500 t300 qv700 qv500 qv300 rh700 rh500 rh300
         timeid ${timeid}
-        region global
         y* *
+        region global
         (
-            ${run1} ${varid} -cdir ctl_monthly
-            ${run2} ${varid} -cdir ml_plev/288x145x37/monthly_mean
+            ${run-1} ${varid} -cdir ctl_monthly
+            ${run-2} ${varid} -cdir ml_plev/288x145x37/monthly_mean
         )
     }
-    run1 NCEP1
-    run2 ${run2_list}
+    run-1 NCEP1
+    run-2 ${run2_list}
     {
         varid t2m lh_sfc sh_sfc precip
         timeid ${timeid}
-        region global
         y* *
+        region global
         (
-            ${run1} ${varid} -cdir data_conv/surface/144x73/monthly
-            ${run2} ${varid} -cdir sl/144x72/monthly_mean
+            ${run-1} ${varid} -cdir data_conv/surface/144x73/monthly
+            ${run-2} ${varid} -cdir sl/144x72/monthly_mean
         )
         varid t700 t500 t300 u700 u500 u300 rh700 rh500 rh300
         timeid ${timeid}
-        region global
         y* *
+        region global
         (
-            ${run1} ${varid} -cdir data_conv/pressure/144x73/monthly
-            ${run2} ${varid} -cdir ml_plev/144x72x37/monthly_mean
+            ${run-1} ${varid} -cdir data_conv/pressure/144x73/monthly
+            ${run-2} ${varid} -cdir ml_plev/144x72x37/monthly_mean
         )
     
-}
-*/
-    run1 ISCCP_D1_OBS
-    run2 ${run2_list}
+    }
+    run-1 ISCCP_D1_OBS
+    run-2 ${run2_list}
     {
         varid isccp_high_vis isccp_middle_vis isccp_low_vis isccp_high_vis_thick isccp_middle_vis_thick isccp_low_vis_thick isccp_high_vis_med isccp_middle_vis_med isccp_low_vis_med isccp_high_vis_thin isccp_middle_vis_thin isccp_low_vis_thin 
         timeid ${timeid}
-        region global
         y* *
+        region global
         (
-            ${run1} ${varid}
-            ${run2} ${varid} -cdir isccp/144x72x49/monthly_mean
+            ${run-1} ${varid}
+            ${run-2} ${varid} -cdir isccp/144x72x49/monthly_mean
         )
     }
-exit
 
-    run1 SRB3.0
-    run2 ${run2_list}
+    run-1 SRB3.0
+    run-2 ${run2_list}
     {
         varid_list = lw_up_toa lw_up_clr_toa lw_crf_toa lw_up_sfc lw_down_sfc sw_up_toa sw_up_clr_toa sw_crf_toa sw_up_sfc sw_down_toa sw_down_sfc sw_net_toa sw_net_sfc lw_net_sfc aw_net_toa aw_crf_toa aw_net_sfc
         varid ${varid_list}
         timeid ${timeid}
-        region global
         y* *
+        region global
         (
-            ${run1} ${varid} -time monthly_mean
-            ${run2} ${varid} -cdir sl/360x181/monthly_mean
+            ${run-1} ${varid} -time monthly_mean
+            ${run-2} ${varid} -cdir sl/360x181/monthly_mean
         )
     }
-    run1 NCEP_FNL
-    run2 ${run2_list}
+    run-1 NCEP_FNL
+    run-2 ${run2_list}
     {
         varid t2m qv2m
         timeid ${timeid}
-        region global
         y* *
+        region global
         (
-            ${run1} ${varid}
-            ${run2} ${varid} -cdir sl/144x72/monthly_mean
+            ${run-1} ${varid}
+            ${run-2} ${varid} -cdir sl/144x72/monthly_mean
         )
         varid t700 t500 t300 u700 u500 u300 rh700 rh500 rh300 qv700 qv500 qv300
         timeid ${timeid}
-        region global
         y* *
+        region global
         (
-            ${run1} ${varid}
-            ${run2} ${varid} -cdir ml_plev/144x72x37/monthly_mean
+            ${run-1} ${varid}
+            ${run-2} ${varid} -cdir ml_plev/144x72x37/monthly_mean
         )
     }
-    run1 OISST_v2
-    run2 ${run2_list}
+    run-1 OISST_v2
+    run-2 ${run2_list}
     {
         varid sst
         timeid ${timeid}
+        y* *
         region global
-        y* *
         (
-            ${run1} ${varid}
-            ${run2} ${varid} -cdir ol/144x72/monthly_mean
+            ${run-1} ${varid}
+            ${run-2} ${varid} -cdir ol/144x72/monthly_mean
         )
     }
-}
 
-
-/*
-
-
-
-
-############################################################
-# start
-#   ftype latlon_type1
-#   mode model_bias
-#   run1 ERA_INTERIM
-#
-ftype latlon_type1
-mode model_bias
-run1 ERA_INTERIM
-#run1 
-{
-    #
-    #----- general -----#
-    #
     # TODO: match grid (ERA: 240x121)
-    run2 ${run2_list}
+    run-1 ERA_INTERIM
+    run-2 ${run2_list}
     {
-#        timeid clim_seasonal_mean clim_monthly_mean seasonal_mean monthly_mean
-#        timeid seasonal_mean monthly_mean
-        timeid seasonal_mean
         varid t2m
+        timeid ${timeid}
         y* *
+        region global
         (
-            ${run1} ${varid} -cdir moda/sfc/240x121
-            ${run2} ${varid} -cdir sl/144x72/monthly_mean
+            ${run-1} ${varid} -cdir moda/sfc/240x121
+            ${run-2} ${varid} -cdir sl/144x72/monthly_mean
         )
     }
-    run2 ${run2_list}
+    run-1 ERA_INTERIM
+    run-2 ${run2_list}
     {
-#        timeid clim_seasonal_mean clim_monthly_mean seasonal_mean monthly_mean
-#        timeid seasonal_mean monthly_mean
-        timeid seasonal_mean
         varid t700 t500 t300 u700 u500 u300 rh700 rh500 rh300
+        timeid ${timeid}
         y* *
+        region global
         (
-            ${run1} ${varid} -cdir moda/pl/240x121
-            ${run2} ${varid} -cdir ml_plev/144x72x18/monthly_mean
+            ${run-1} ${varid} -cdir moda/pl/240x121
+            ${run-2} ${varid} -cdir ml_plev/144x72x37/monthly_mean
         )
     }
-    #
-    #----- for gl05 144x73 grid -----#
-    # on-demand
-    #
-#    run2 CLIM_MATSIRO_200406.run18
-#    {
-#        timeid seasonal_mean monthly_mean
-#        varid t2m
-#        y* *
-#        (
-#            ${run1} ${varid} -cdir monthly/surface
-#            ${run2} ${varid} -cdir sl/144x73/monthly_mean
-#        )
-#    }
-    #
-    #----- for COLA data -----#
-    # on-demand
-    #
-#    run2 COLA-NICAM
-#    {
-#        timeid seasonal_mean monthly_mean
-#        varid t2m
-#        y* *
-#        (
-#            ${run1} ${varid} -cdir monthly/surface
-#            ${run2} ${varid} -cdir data_conv/${year}/320x160/monthly_mean
-#        )
-#    }
-    #
-    #----- for MIROC data -----#
-    #
-#    run2 MIROC_cmip5_mAmO_20C_run01 MIROC_kinmirai_mAmO_AR4_SRES_LA_A1_01 MIROC_amip_t106
-#    {
-#        timeid clim_seasonal_mean clim_monthly_mean seasonal_mean monthly_mean
-#        varid t2m
-#        y* *
-#        (
-#            ${run1} ${varid} -cdir monthly/surface
-#            ${run2} ${varid}
-#        )
-#    }
+
 }
-#
-# end
-#   ftype latlon_type1
-#   mode model_bias
-#   run1 ERA_INTERIM
-############################################################
-
-
-*/

@@ -2,10 +2,9 @@
 #
 # include here for particular jobs
 #
+#include latlon_sens.txt
 #include latlev_sens.txt
-include latlon_sens.txt
-exit
-
+include isccp_matrix_sens.txt
 
 
 ############################################################
@@ -21,8 +20,8 @@ run2_list =
 # running:
 #
 
-#run2_list += K.200406.N12.gl09.b
-#run2_list += K.200406.N12.gl09.b.001
+run2_list += K.200406.N12.gl09.b
+run2_list += K.200406.N12.gl09.b.001
 run2_list += K.200406.N12.gl09.b.002
 run2_list += K.200406.N12.gl09.b.003
 run2_list += K.200406.N12.gl09.b.004
@@ -51,11 +50,11 @@ timeid = seasonal_mean
 #
 ############################################################
 # all other finished
-include latlon_bias.txt
-include latlev_bias.txt
+#include latlon_bias.txt
+#include latlev_bias.txt
+include isccp_matrix_bias.txt
 
 
-#include latlon_isccp2.txt
 ##include sphere.txt
 
 exit
