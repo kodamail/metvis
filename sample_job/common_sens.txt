@@ -1,0 +1,34 @@
+#------------------------------------------------------------#
+#
+# common configurations for *_sens.txt
+#
+#------------------------------------------------------------#
+
+#
+# run_cntl: control run
+# run_sens: sensitivity run
+#
+
+run_cntl = K.200406.N12.gl09.b
+run_sens = 
+#
+#run_sens += K.200406.N12.gl09.b.001
+#run_sens += K.200406.N12.gl09.b.002
+#run_sens += K.200406.N12.gl09.b.003
+#run_sens += K.200406.N12.gl09.b.004
+run_sens += K.200406.N12.gl09.b.005
+
+#run_cntl = K.200406.N12.gl09.b.002
+#run_sens = 
+##
+#run_sens += K.200406.N12.gl09.b.002.001
+#ys = 2004,JJA,2004,JJA
+#ym = 2004,06,2005,08
+
+
+#
+# timeid list for general configuration
+#
+
+#timeid = seasonal_mean monthly_mean
+timeid = seasonal_mean
