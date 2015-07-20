@@ -44,7 +44,6 @@ K.200406.N12.gl09.b.001
     ym  2004,06,2005,05
     ys  2004,JJA,2005,MAM
     ya
-    ys  2004,JJA,2005,MAM
     cya
     cym
     cys
@@ -55,7 +54,6 @@ K.200406.N12.gl09.b.002
     ym  2004,06,2005,05
     ys  2004,JJA,2005,MAM
     ya
-    ys  2004,JJA,2005,MAM
     cya
     cym
     cys
@@ -66,7 +64,6 @@ K.200406.N12.gl09.b.003
     ym  2004,06,2005,05
     ys  2004,JJA,2005,MAM
     ya
-    ys  2004,JJA,2005,MAM
     cya
     cym
     cys
@@ -77,7 +74,6 @@ K.200406.N12.gl09.b.004
     ym  2004,06,2005,05
     ys  2004,JJA,2005,MAM
     ya
-    ys  2004,JJA,2005,MAM
     cya
     cym
     cys
@@ -88,12 +84,34 @@ K.200406.N12.gl09.b.005
     ym  2004,06,2005,05
     ys  2004,JJA,2005,MAM
     ya
-    ys  2004,JJA,2005,MAM
     cya 
     cym
     cys
 }
 
+#
+#----- NICAM.12 resolution dependency family -----#
+#
+K.200406.L38.gl10.run03
+{
+    ymd 2004,06,01,2005,05,31
+    ym  2004,06,2005,05
+    ys  2004,JJA,2005,MAM
+    ya
+    cya 
+    cym
+    cys
+}
+K.200406.L38.gl09.run06
+{
+    ymd 2004,06,01,2005,05,31
+    ym  2004,06,2005,05
+    ys  2004,JJA,2005,MAM
+    ya 
+    cya 
+    cys 
+    cym 
+}
 
 #
 #----- observation -----#
@@ -224,19 +242,6 @@ N12.ES.200404.gl09.L40.ndw6
 
 
 
-#K.200406.L38.gl10.run01
-#{
-#    K.200406.L38.gl10.run01.ERRice
-#    K.200406.L38.gl10.run01.
-#    ym 2004,06,2004,06
-#}
-K.200406.L38.gl10.run03
-{
-    K.200406.L38.gl10.run03
-    K.200406.L38.gl10.run03.
-    ys  2004,JJA,2005,MAM
-    ym  2004,06,2005,05
-}
 K.20xx05.L38.gl10.run01
 {
     K.20xx05.L38.gl10.run01
@@ -252,20 +257,6 @@ K.20xx05.L38.gl09.run00
     ys  2004,JJA,2005,MAM
     ym  2004,05,2005,05
     ymd 2004,05,01,2005,05,31
-}
-K.200406.L38.gl09.run06
-{
-    N12.K.200406.gl09.L38.run06
-    NICAM.12.K.200406.gl09.L38.run06.
-    NICAM.12 GL-09 run06 on K computer. Integration term is 365 days : 2004.06.01 - 2005.05.31.
-    ya 
-    ys  2004,JJA,2005,MAM
-    ym  2004,06,2005,05
-    ymd 2004,06,01,2005,05,31
-    cya 
-    cys 
-    cym 
-    cyd 
 }
 K.200406.L38.gl09.dt60s
 {
