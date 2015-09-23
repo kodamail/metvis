@@ -92,7 +92,8 @@ K.200406.N12.gl09.b.005
 #
 #----- NICAM.12 resolution dependency family -----#
 #
-K.200406.L38.gl10.run03
+#K.200406.L38.gl10.run03
+K.200406.gl10.L38.run03
 {
     ymd 2004,06,01,2005,05,31
     ym  2004,06,2005,05

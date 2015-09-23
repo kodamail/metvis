@@ -92,6 +92,8 @@ for FILE_JOB in ${FILE_JOB_LIST[@]} ; do
 #	    run2=${TARGET_RUN2} \
 #	    varid=${TARGET_VARID} \
 #	    > temp_$$/temp.dat || exit 1
+cat temp_$$/temp.dat
+exit 1
         #
 	[ ! -s temp_$$/temp.dat ] && break
 	DESC=( $( sed temp_$$/temp.dat -e "1,1p" -e d ) )
@@ -112,40 +114,46 @@ for FILE_JOB in ${FILE_JOB_LIST[@]} ; do
 	GIF=${HEAD}.gif  # format for aninmation
 	TXT=${HEAD}.txt  # description
         #
-	FTYPE=""
-	MODE=""
-	VARID=""
-	TIMEID=""
-	REGION=""
-        #
-	YEAR=""
-	SEASON=""
-	MONTH=""
-	DAY=""
+#	FTYPE=""
+#	MODE=""
+#	VARID=""
+#	TIMEID=""
+#	REGION=""
+#        #
+#	YEAR=""
+#	SEASON=""
+#	MONTH=""
+#	DAY=""
 	HOUR="00"
-        #
-	YEARS=""
-        #
-	YEAR2=""
-	MONTH2=""
-	DAY2=""
+#        #
+#	YEARS=""
+#        #
+#	YEAR2=""
+#	MONTH2=""
+#	DAY2=""
 	HOUR2="00"
-        #
-	DIFF_Y=""
-        #
-	LON_MIN=""
-	LON_MID=""
-	LON_MAX=""
-        #
-	ANIM_DLON=""
-        #
-	MATRIX_TYPE=""
-        #
+#        #
+#	DIFF_Y=""
+#        #
+#	LON_MIN=""
+#	LON_MID=""
+#	LON_MAX=""
+#        #
+#	ANIM_DLON=""
+#        #
+#	MATRIX_TYPE=""
+#        #
 	OUTPUT_DIR=${DIR_OUTPUT_IMG}
 	echo
 	for(( j=0; ${j}<${#DESC[@]}; j=${j}+1 )) ; do
 #	echo "${DESC[$j]} ${DIR[$j]}"
 	    OUTPUT_DIR=${OUTPUT_DIR}/$( echo ${DIR[$j]} | sed -e "s/^-/m/g" )
+
+	    # set DESC_*, e.g., DESC_mode="model_bias"
+	    NAME=$( echo ${DESC[$j]} | sed -e "s/-/_/g" )
+	    eval DESC_${NAME}=${DIR[$j]}
+	    # TODO: replace below with above (DESC_*)
+
 	    [ "${DESC[$j]}" = "ftype"       ] && FTYPE=${DIR[$j]}
 	    [ "${DESC[$j]}" = "mode"        ] && MODE=${DIR[$j]}
 	    [ "${DESC[$j]}" = "varid"       ] && VARID=${DIR[$j]}
@@ -251,6 +259,7 @@ for FILE_JOB in ${FILE_JOB_LIST[@]} ; do
         # common for all
 	cat > temp_$$/cnf_${FTYPE}.gsf <<EOF
 function cnf_${FTYPE}()
+    rc = gsfpath( '/cwork5/kodama/gscript/run_list' )
     _varid = '${VARID}'
 EOF
         #

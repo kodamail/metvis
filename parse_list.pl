@@ -1,22 +1,16 @@
 #!/usr/bin/perl
-
-
 use strict;
 use CGI;
 use File::Basename;
-#use Time::Piece ();
 my $cgi = new CGI;
-
 &main();
 exit;
-
 
 #
 # status: "monthly_mean", "JJA", etc...
 # type:   type of status value, such as "mode", "runs", "varid", etc...
 #
 #
-
 sub main()
 {
     ############################################################
@@ -65,7 +59,6 @@ sub main()
 	{
 	    my $child_file = $1;
 	    $child_file = dirname( $file ) . "/" . $child_file;
-	    
 	    my @txt_child;
 	    if( open(LINK, "< $child_file") )
 	    {
@@ -82,7 +75,7 @@ sub main()
 
     ############################################################
     #
-    # parse
+    # parse @txt
     #
     ############################################################
     my @status = ( );  # current status for reading job_list
@@ -99,7 +92,7 @@ sub main()
     my %udef;  # user-defined variables (e.g. define a = 123 456 )
     for( my $i=0; $i<=$#txt; $i++ )  # for all line
     {
-#    print $i . ": " . $txt[$i] . "\n";
+#        print $i . ": " . $txt[$i] . "\n";
     
 	if( $txt[$i] =~ /^\s*exit\s*$/ ){ exit; }
 	
@@ -121,7 +114,6 @@ sub main()
 	} 
 	    
         # define variable
-        #if( $txt[$i] =~ /^define ([a-zA-Z][^ ]*) *= *(.*)$/ )
         if( $txt[$i] =~ /^ *([a-zA-Z][^ ]*) *= *(.*)$/ )
         {
 	    #print STDERR "$i: $txt[$i] : $1 : $2\n";
@@ -205,7 +197,6 @@ sub main()
 	    push( @one_depth, $one_depth_temp );
 	    for( my $j=0; $j<=$one_depth_temp-1; $j++ )
 	    {
-#	    print $j . "\n";
 		push( @status, $status_temp[$j] );
 		push( @type, $type_temp[$j] );
 	    }
@@ -216,18 +207,14 @@ sub main()
 	    next;
 	}
 
-    # any other -> assumed to be a status
-#    if( $txt[$i] ne "" ){ $status_temp .= $txt[$i]; }
+	# any other -> assumed to be a status
 	if( $txt[$i] ne "" )
         {
 	    push( @status_temp, $txt[$i] );
 	    $status_temp[$#status_temp] =~ s/^([^\s]+)\s//;
-#	$status_temp[0] .= $txt[$i];
-#	$status_temp[0] =~ s/^([^\s]+)\s//;
 	    push( @type_temp, $1 );
-#	$type_temp .= $1;
 	    $one_depth_temp++;
-#	print $one_depth_temp . "\n";
+#            print $one_depth_temp . "\n";
 	}
     }
     return;
@@ -244,7 +231,6 @@ sub main()
 #
 sub parse_core
 {
-    #my $d            = shift;
     my $status_now   = shift;  # current status (pointer for array)
     my $type_now     = shift;  # current type of status (pointer for array)
     my $count        = shift;  # pointer
@@ -472,6 +458,10 @@ sub expand_ast
 	my @run_list;
 	my $type_now_tmp = $$type_now[$p];
 	$type_now_tmp =~ s/-[0-9]+$//;  # e.g., run-1 -> run
+	if( $type_now_tmp ne "run"  ){ next; }  # only * in run is expanded.
+
+
+
 	if( open(LINK, "< list/" . $$type_now[$p] . "_list.txt") )
 	{
 	    @run_list = <LINK>;
@@ -482,13 +472,6 @@ sub expand_ast
 	    @run_list = <LINK>;
 	    close(LINK);
 	}
-#	print STDERR "$type_now_tmp\n";
-#	exit 1;
-#	else
-#	{ 
-#	    print STDERR "error in parse_list.pl: list/". $$type_now[$p] . "_list.txt does not exist\n";
-#	    exit 1;
-#	}
 	#print STDERR @run_list;
 	my $flag = 0;
 	for( my $i=0; $i<=$#run_list-1; $i++ )
@@ -496,11 +479,11 @@ sub expand_ast
 	    if( $run_list[$i] =~ /^$$status_now[$p]\s*$/ && $run_list[$i+1] =~ /^\{\s*/ ){ $flag = 1; }
 	    elsif( $run_list[$i] =~ /^\s*\}s*$}/ ){ $flag = 0; }
 
-	    #print STDERR "$i: $flag\n";
-	    #print STDERR "$i: $flag $run_list[$i] $$status_now[$p]\n";
+#	    print STDERR "$i: $flag $run_list[$i] $$status_now[$p]\n";
 
 	    if( $flag == 1 )
 	    {
+		print STDERR "$i: $flag $run_list[$i] $$status_now[$p] \"$$type_now[$d]\"\n";
 		if( $run_list[$i] =~ /^\s+$$type_now[$d]\s+(.*)$/ )
 		{
 		    push( @st, $1 );
@@ -509,13 +492,15 @@ sub expand_ast
 		}
 	    }
 	}
+	
+	# ymd_start, ymd_end -($$type_now[$d])-> e.g. 2004,JJA,2005,MAM -> push to @st
+	my $tmp = `./get_ymd.sh $$status_now[$p] $$type_now[$d]`;
+	print STDERR "tmp = $tmp for $$status_now[$p]\n";
+	
+
+
     }
-#    if( $st[0] eq "" )
-#    {
-#	print STDERR "error in parse_list.pl: $$type_now[$d] is not set in list/$$type_now[$d]_list.txt\n";
-#	exit 1;
-#    }
-#    print STDERR "@st\n";
+    print STDERR "@st\n";
     for( my $s=0; $s<=$#st; $s++ )
     {
 	my @status_list_tmp;
