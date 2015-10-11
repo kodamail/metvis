@@ -298,7 +298,7 @@ sub parse_core
 	@status_list = split( / +/, $$status[$d] );
     }
 
-    print STDERR "status = $status_list[0], $status_list[1], $status_list[2], ..." . "\n";
+#    print STDERR "status = $status_list[0], $status_list[1], $status_list[2], ..." . "\n";
     foreach my $s ( @status_list )
     {
 	push( @$status_now, $s );
@@ -324,8 +324,7 @@ sub parse_core
 #	    if( $$count == $$target_count )
 	    if( $$count == $$target_count || $$target_count == -1 )
 	    {
-#		print "type: ";
-		# output type (first line)
+		# output type (1st line)
 		for( my $p=0; $p<=$#$status_now; $p++ )
 		{
 		    if   ( $$type_now[$p] eq "ym"         ){ print "year month "; }
@@ -342,60 +341,105 @@ sub parse_core
 		}
 		print "\n";
 
-		my $disp = $$val;
+		# output status value (2nd line)
+		my $disp = $$val; # for replacing ${}
+		my %rep = ();     # for replacing ${}
+#		print STDERR "disp = $disp\n";
 		for( my $p=0; $p<=$#$status_now; $p++ )
 		{
-		    # replace ${}
-		    $disp =~ s/\$\{$$type_now[$p]\}|\$$$type_now[$p]/$$status_now[$p]/g;
+		    print $$status_now[$p] . " ";
 		    #
-		    if( $$type_now[$p] eq "ym" && $$status_now[$p] =~ /^([0-9][0-9][0-9][0-9]) ([01][0-9])$/ )
+		    # create hash for replacing ${}
+		    my @array = split( /\s+/, $$status_now[$p] );
+		    #
+		    $rep{$$type_now[$p]} = $$status_now[$p];  # ${type-name}
+		    #
+		    if( $$type_now[$p] eq "ya" )
 		    {
-			my $year = $1;
-			my $month = $2;
-			$disp =~ s/\$\{year\}|\$year/$year/g;
-			$disp =~ s/\$\{month\}|\$month/$month/g;
+			$rep{'year'}  = $array[0];
 		    }
-		    elsif( $$type_now[$p] eq "ymd" && $$status_now[$p] =~ /^([0-9][0-9][0-9][0-9]) ([01][0-9]) ([0-3][0-9])$/ )
+		    elsif( $$type_now[$p] eq "ym" )
 		    {
-			my $year  = $1;
-			my $month = $2;
-			my $day   = $3;
-			$disp =~ s/\$\{year\}|\$year/$year/g;
-			$disp =~ s/\$\{month\}|\$month/$month/g;
-			$disp =~ s/\$\{day\}|\$day/$day/g;
+			$rep{'year'}  = $array[0];
+			$rep{'month'} = $array[1];
 		    }
-		    elsif( $$type_now[$p] eq "ymdh" && $$status_now[$p] =~ /^([0-9][0-9][0-9][0-9]) ([01][0-9]) ([0-3][0-9]) ([0-2][0-9])$/ )
+		    elsif( $$type_now[$p] eq "ymd" )
 		    {
-			my $year  = $1;
-			my $month = $2;
-			my $day   = $3;
-			my $hour  = $4;
-			$disp =~ s/\$\{year\}|\$year/$year/g;
-			$disp =~ s/\$\{month\}|\$month/$month/g;
-			$disp =~ s/\$\{day\}|\$day/$day/g;
-			$disp =~ s/\$\{hour\}|\$hour/$hour/g;
+			$rep{'year'}  = $array[0];
+			$rep{'month'} = $array[1];
+			$rep{'day'}   = $array[2];
 		    }
-		    elsif( $$type_now[$p] eq "ys" && $$status_now[$p] =~ /^([0-9][0-9][0-9][0-9]) (DJF|MAM|JJA|SON)$/ )
+		    elsif( $$type_now[$p] eq "ymdh" )
 		    {
-			my $year = $1;
-			my $season = $2;
-			$disp =~ s/\$\{year\}|\$year/$year/g;
-			$disp =~ s/\$\{season\}|\$season/$season/g;
+			$rep{'year'}  = $array[0];
+			$rep{'month'} = $array[1];
+			$rep{'day'}   = $array[2];
+			$rep{'hour'}  = $array[3];
 		    }
-		    elsif( $$type_now[$p] eq "ya" && $$status_now[$p] =~ /^([0-9][0-9][0-9][0-9])$/ )
+		    elsif( $$type_now[$p] eq "ys" )
 		    {
-			my $year = $1;
-			my $month = $2;
-			$disp =~ s/\$\{year\}|\$year/$year/g;
-			$disp =~ s/\$\{month\}|\$month/$month/g;
+			$rep{'year'}   = $array[0];
+			$rep{'season'} = $array[1];
 		    }
+
+#		    $disp =~ s/\$\{$$type_now[$p]\}|\$$$type_now[$p]/$$status_now[$p]/g;
+#		    #
+#		    if( $$type_now[$p] eq "ym" && $$status_now[$p] =~ /^([0-9][0-9][0-9][0-9]) ([01][0-9])$/ )
+#		    {
+#			my $year = $1;
+#			my $month = $2;
+#			$disp =~ s/\$\{year\}|\$year/$year/g;
+#			$disp =~ s/\$\{month\}|\$month/$month/g;
+#		    }
+#		    elsif( $$type_now[$p] eq "ymd" && $$status_now[$p] =~ /^([0-9][0-9][0-9][0-9]) ([01][0-9]) ([0-3][0-9])$/ )
+#		    {
+#			my $year  = $1;
+#			my $month = $2;
+#			my $day   = $3;
+#			$disp =~ s/\$\{year\}|\$year/$year/g;
+#			$disp =~ s/\$\{month\}|\$month/$month/g;
+#			$disp =~ s/\$\{day\}|\$day/$day/g;
+#		    }
+#		    elsif( $$type_now[$p] eq "ymdh" && $$status_now[$p] =~ /^([0-9][0-9][0-9][0-9]) ([01][0-9]) ([0-3][0-9]) ([0-2][0-9])$/ )
+#		    {
+#			my $year  = $1;
+#			my $month = $2;
+#			my $day   = $3;
+#			my $hour  = $4;
+#			$disp =~ s/\$\{year\}|\$year/$year/g;
+#			$disp =~ s/\$\{month\}|\$month/$month/g;
+#			$disp =~ s/\$\{day\}|\$day/$day/g;
+#			$disp =~ s/\$\{hour\}|\$hour/$hour/g;
+#		    }
+#		    elsif( $$type_now[$p] eq "ys" && $$status_now[$p] =~ /^([0-9][0-9][0-9][0-9]) (DJF|MAM|JJA|SON)$/ )
+#		    {
+#			my $year = $1;
+#			my $season = $2;
+#			$disp =~ s/\$\{year\}|\$year/$year/g;
+#			$disp =~ s/\$\{season\}|\$season/$season/g;
+#		    }
+#		    elsif( $$type_now[$p] eq "ya" && $$status_now[$p] =~ /^([0-9][0-9][0-9][0-9])$/ )
+#		    {
+#			my $year = $1;
+#			my $month = $2;
+#			$disp =~ s/\$\{year\}|\$year/$year/g;
+#			$disp =~ s/\$\{month\}|\$month/$month/g;
+#		    }
 #		    else{print "fail\n";}
 #		    print "ok: $$type[$p], $$status_now[$p]\n";
 #		    print " -> " . $disp;
-		    print $$status_now[$p] . " ";
 		}
 		print "\n";
+
+		# replace ${}
+		while ( my ($tmp_key, $tmp_val) = each %rep )
+		{
+#		    print STDERR "hash: $tmp_key : $tmp_val\n";
+		    $disp =~ s/\$\{$tmp_key\}|\$$tmp_key/$tmp_val/g;
+		}
+		# output parameters for GrADS template (3rd- lines)
 		print $disp;
+
 #		pop( @$status_now );
 		if( $$count == $$target_count ){ last; }
 	    }
