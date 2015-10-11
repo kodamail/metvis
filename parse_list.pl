@@ -277,7 +277,7 @@ sub parse_core
      || $$type_now[$d] eq "ya"  || $$type_now[$d] eq "cya" 
      || $$type_now[$d] eq "ymd_range" || $$type_now[$d] eq "ymdh_range" )
     {
-	if( $$status[$d] eq "*" )  # expand using list/*_list.txt
+	if( $$status[$d] eq "*" )  # expand using run_list
 	{
 	    &expand_ast( \@status_list, $d, $status_now, $type_now );
 	}
@@ -453,54 +453,52 @@ sub expand_ast
     for( my $p=0; $p<=$#$status_now; $p++ )
     {
 	#my $temp = &parse_list_type( $type[$p], $$status_now[$p], $type[$d] );
-
 	#print STDERR "$type[$p] value=$$status_now[$p]\n";
 	my @run_list;
 	my $type_now_tmp = $$type_now[$p];
 	$type_now_tmp =~ s/-[0-9]+$//;  # e.g., run-1 -> run
 	if( $type_now_tmp ne "run"  ){ next; }  # only * in run is expanded.
 
-
-
-	if( open(LINK, "< list/" . $$type_now[$p] . "_list.txt") )
-	{
-	    @run_list = <LINK>;
-	    close(LINK);
-	}
-	elsif( open(LINK, "< list/" . $type_now_tmp . "_list.txt") )
-	{
-	    @run_list = <LINK>;
-	    close(LINK);
-	}
-	#print STDERR @run_list;
-	my $flag = 0;
-	for( my $i=0; $i<=$#run_list-1; $i++ )
-	{
-	    if( $run_list[$i] =~ /^$$status_now[$p]\s*$/ && $run_list[$i+1] =~ /^\{\s*/ ){ $flag = 1; }
-	    elsif( $run_list[$i] =~ /^\s*\}s*$}/ ){ $flag = 0; }
-
-#	    print STDERR "$i: $flag $run_list[$i] $$status_now[$p]\n";
-
-	    if( $flag == 1 )
-	    {
-		print STDERR "$i: $flag $run_list[$i] $$status_now[$p] \"$$type_now[$d]\"\n";
-		if( $run_list[$i] =~ /^\s+$$type_now[$d]\s+(.*)$/ )
-		{
-		    push( @st, $1 );
-		    #print STDERR "  $1\n";
-		    #return $1;
-		}
-	    }
-	}
+#	if( open(LINK, "< list/" . $$type_now[$p] . "_list.txt") )
+#	{
+#	    @run_list = <LINK>;
+#	    close(LINK);
+#	}
+#	elsif( open(LINK, "< list/" . $type_now_tmp . "_list.txt") )
+#	{
+#	    @run_list = <LINK>;
+#	    close(LINK);
+#	}
+#	#print STDERR @run_list;
+#	my $flag = 0;
+#	for( my $i=0; $i<=$#run_list-1; $i++ )
+#	{
+#	    if( $run_list[$i] =~ /^$$status_now[$p]\s*$/ && $run_list[$i+1] =~ /^\{\s*/ ){ $flag = 1; }
+#	    elsif( $run_list[$i] =~ /^\s*\}s*$}/ ){ $flag = 0; }
+#
+##	    print STDERR "$i: $flag $run_list[$i] $$status_now[$p]\n";
+#
+#	    if( $flag == 1 )
+#	    {
+#		print STDERR "$i: $flag $run_list[$i] $$status_now[$p] \"$$type_now[$d]\"\n";
+#		if( $run_list[$i] =~ /^\s+$$type_now[$d]\s+(.*)$/ )
+#		{
+#		    push( @st, $1 );
+#		    #print STDERR "  $1\n";
+#		    #return $1;
+#		}
+#	    }
+#	}
 	
 	# ymd_start, ymd_end -($$type_now[$d])-> e.g. 2004,JJA,2005,MAM -> push to @st
 	my $tmp = `./get_ymd.sh $$status_now[$p] $$type_now[$d]`;
+	$tmp =~ s/\s$//;
 	print STDERR "tmp = $tmp for $$status_now[$p]\n";
-	
-
-
+	push( @st, $tmp );
     }
     print STDERR "@st\n";
+
+    # get time period which all the @st elements overlap with each other.
     for( my $s=0; $s<=$#st; $s++ )
     {
 	my @status_list_tmp;
