@@ -24,7 +24,8 @@ sub main()
     #
     #--- order of job (optional)
     my $target_count = $cgi->param( 'count' );
-    if( $target_count eq "" ){ $target_count = 1; }
+#    if( $target_count eq "" ){ $target_count = 1; }
+    if( $target_count eq "" ){ $target_count = -1; }
     #
     #--- target filter
     my %target;
@@ -140,7 +141,8 @@ sub main()
 	    my @status_now = ();  # temporary variable for parse_core.
 	    my @type_now   = ();  # temporary variable for parse_core.
 	    &parse_core( \@status_now, \@type_now, \$count, \$target_count, \@type, \@status, \%target, \$val );
-	    if( $count >= $target_count ){ exit; }
+#	    if( $count >= $target_count ){ exit; }
+	    if( $count >= $target_count && $target_count != -1 ){ exit; }
 
 	    $flag_blacket = 0;
 	    $val = "";
@@ -241,7 +243,8 @@ sub parse_core
     my $val          = shift;  # pointer
 
     my $d = $#$status_now + 1;  # depth
-    if( $$count >= $$target_count ){ return; }
+#    if( $$count >= $$target_count ){ return; }
+    if( $$count >= $$target_count && $$target_count != -1 ){ return; }
 
     my @status_list = ();
 
@@ -295,54 +298,47 @@ sub parse_core
 	@status_list = split( / +/, $$status[$d] );
     }
 
+    print STDERR "status = $status_list[0], $status_list[1], $status_list[2], ..." . "\n";
     foreach my $s ( @status_list )
     {
 	push( @$status_now, $s );
 #	print "s:" . $s . "\n";
 #	print "now: " . $#$status_now . " : " . $$status_now[$#$status_now] . "\n";
-	if( $d < $#$status )
+	if( $d < $#$status ) # one deeper status
 	{
-	    #&parse_core( $d+1, $status_now, $count, $target_count, $type, $status, $target, $val );
 	    &parse_core( $status_now, $type_now, $count, $target_count, $type, $status, $target, $val );
 	}
-	else
+	else  # this depth
 	{
 	    my $count_flag = 1;
-	    #for( my $p=0; $p<=$#$status_now; $p++ )
 	    LOOP_P: for( my $p=0; $p<=$#$status_now; $p++ )
 	    {
-		#if( $$type_now[$p] eq "type"  && $$status_now[$p] !~ /$$target{'type'}/  ){ $count_flag = 0; last; }
-		#if( $$type_now[$p] eq "mode"  && $$status_now[$p] !~ /$$target{'mode'}/  ){ $count_flag = 0; last; }
-		#if( $$type_now[$p] eq "run1"  && $$status_now[$p] !~ /$$target{'run1'}/  ){ $count_flag = 0; last; }
-		#if( $$type_now[$p] eq "run2"  && $$status_now[$p] !~ /$$target{'run2'}/  ){ $count_flag = 0; last; }
-		#if( $$type_now[$p] eq "varid" && $$status_now[$p] !~ /$$target{'varid'}/ ){ $count_flag = 0; last; }
+		# skip: used if %target is specified, e.g., $target{'type'}, $target{'mode'}.
 		while ( my ($tkey, $tval) = each (%$target) )
 		{
 		    if( $$type_now[$p] eq "$tkey"  && $$status_now[$p] !~ /$tval/  ){ $count_flag = 0; last LOOP_P; }
 		} 
-
 	    }
 	    if( $count_flag == 1 ){ $$count++; }
 
-	    if( $$count == $$target_count )
+#	    if( $$count == $$target_count )
+	    if( $$count == $$target_count || $$target_count == -1 )
 	    {
 #		print "type: ";
+		# output type (first line)
 		for( my $p=0; $p<=$#$status_now; $p++ )
 		{
 		    if   ( $$type_now[$p] eq "ym"         ){ print "year month "; }
-#		    elsif( $$type_now[$p] eq "cym"        ){ print "year_start year_end month "; }
 		    elsif( $$type_now[$p] eq "cym"        ){ print "years month "; }
 		    elsif( $$type_now[$p] eq "ymd"        ){ print "year month day "; }
 		    elsif( $$type_now[$p] eq "ymdh"       ){ print "year month day hour "; }
 		    elsif( $$type_now[$p] eq "ys"         ){ print "year season "; }
-#		    elsif( $$type_now[$p] eq "cys"        ){ print "year_start year_end season "; }
 		    elsif( $$type_now[$p] eq "cys"        ){ print "years season "; }
 		    elsif( $$type_now[$p] eq "ya"         ){ print "year "; }
-#		    elsif( $$type_now[$p] eq "ya"         ){ print "year month "; }
 		    elsif( $$type_now[$p] eq "cya"        ){ print "years "; }
 		    elsif( $$type_now[$p] eq "ymd_range"  ){ print "year month day year2 month2 day2 "; }
 		    elsif( $$type_now[$p] eq "ymdh_range" ){ print "year month day hour year2 month2 day2 hour2 "; }
-		    else{ print "$$type[$p] "; }
+		    else{ print "$$type[$p] "; }  # default
 		}
 		print "\n";
 
@@ -383,16 +379,13 @@ sub parse_core
 		    {
 			my $year = $1;
 			my $season = $2;
-#			print "succeed\n";
 			$disp =~ s/\$\{year\}|\$year/$year/g;
 			$disp =~ s/\$\{season\}|\$season/$season/g;
 		    }
 		    elsif( $$type_now[$p] eq "ya" && $$status_now[$p] =~ /^([0-9][0-9][0-9][0-9])$/ )
-#		    elsif( $$type_now[$p] eq "ya" && $$status_now[$p] =~ /^([0-9][0-9][0-9][0-9]) ([01][0-9])$/ )
 		    {
 			my $year = $1;
 			my $month = $2;
-#			print "succeed\n";
 			$disp =~ s/\$\{year\}|\$year/$year/g;
 			$disp =~ s/\$\{month\}|\$month/$month/g;
 		    }
@@ -403,10 +396,11 @@ sub parse_core
 		}
 		print "\n";
 		print $disp;
-		pop( @$status_now );
-		last;
+#		pop( @$status_now );
+		if( $$count == $$target_count ){ last; }
 	    }
-	}
+
+	}   # end of "this depth"
 	pop( @$status_now );
     }
 
@@ -452,51 +446,18 @@ sub expand_ast
     my @st = ();
     for( my $p=0; $p<=$#$status_now; $p++ )
     {
-	#my $temp = &parse_list_type( $type[$p], $$status_now[$p], $type[$d] );
-	#print STDERR "$type[$p] value=$$status_now[$p]\n";
 	my @run_list;
 	my $type_now_tmp = $$type_now[$p];
 	$type_now_tmp =~ s/-[0-9]+$//;  # e.g., run-1 -> run
 	if( $type_now_tmp ne "run"  ){ next; }  # only * in run is expanded.
 
-#	if( open(LINK, "< list/" . $$type_now[$p] . "_list.txt") )
-#	{
-#	    @run_list = <LINK>;
-#	    close(LINK);
-#	}
-#	elsif( open(LINK, "< list/" . $type_now_tmp . "_list.txt") )
-#	{
-#	    @run_list = <LINK>;
-#	    close(LINK);
-#	}
-#	#print STDERR @run_list;
-#	my $flag = 0;
-#	for( my $i=0; $i<=$#run_list-1; $i++ )
-#	{
-#	    if( $run_list[$i] =~ /^$$status_now[$p]\s*$/ && $run_list[$i+1] =~ /^\{\s*/ ){ $flag = 1; }
-#	    elsif( $run_list[$i] =~ /^\s*\}s*$}/ ){ $flag = 0; }
-#
-##	    print STDERR "$i: $flag $run_list[$i] $$status_now[$p]\n";
-#
-#	    if( $flag == 1 )
-#	    {
-#		print STDERR "$i: $flag $run_list[$i] $$status_now[$p] \"$$type_now[$d]\"\n";
-#		if( $run_list[$i] =~ /^\s+$$type_now[$d]\s+(.*)$/ )
-#		{
-#		    push( @st, $1 );
-#		    #print STDERR "  $1\n";
-#		    #return $1;
-#		}
-#	    }
-#	}
-	
 	# ymd_start, ymd_end -($$type_now[$d])-> e.g. 2004,JJA,2005,MAM -> push to @st
 	my $tmp = `./get_ymd.sh $$status_now[$p] $$type_now[$d]`;
 	$tmp =~ s/\s$//;
-	print STDERR "tmp = $tmp for $$status_now[$p]\n";
+#	print STDERR "tmp = $tmp for $$status_now[$p]\n";
 	push( @st, $tmp );
     }
-    print STDERR "@st\n";
+#    print STDERR "@st\n";
 
     # get time period which all the @st elements overlap with each other.
     for( my $s=0; $s<=$#st; $s++ )
@@ -504,6 +465,7 @@ sub expand_ast
 	my @status_list_tmp;
 #	print STDERR "$s: $st[$s]\n";
 	my @st2 = split( /\s+/, $st[$s] );
+	# expand time period for one dataset to each separable time period
 	for( my $s2=0; $s2<=$#st2; $s2++ )
 	{
 	    &expand( \@status_list_tmp, $$type_now[$d], $st2[$s2], $status_now );
