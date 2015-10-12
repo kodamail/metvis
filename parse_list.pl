@@ -25,7 +25,7 @@ sub main()
     #--- order of job (optional)
     my $target_count = $cgi->param( 'count' );
 #    if( $target_count eq "" ){ $target_count = 1; }
-    if( $target_count eq "" ){ $target_count = -1; }
+    if( $target_count eq "" ){ $target_count = -1; }  # all the count lines are output.
     #
     #--- target filter
     my %target;
@@ -79,13 +79,14 @@ sub main()
     # parse @txt
     #
     ############################################################
-    my @status = ( );  # current status for reading job_list
     my @type = ( );    # current type of status for reading job_list
+    my @status = ( );  # current status for reading job_list
+    my $tparam = "";   # parameter lines for GrADS template.gs
+    my $count = 0;     # current number
+    #
     my $depth = 0;     # depth of { }
     my @one_depth = ( );  # depth of status in one { } (not necessarily 1)
     my $one_depth_temp = 0;
-    my $count = 0;
-    my $val = "";
     my $flag_comment = 0;  # =1: comment(/* */), =0: non-comment
     my $flag_blacket = 0;
     my @status_temp = ( );
@@ -109,22 +110,18 @@ sub main()
         # replace ${} with defined variables
 	while ( my ($key, $val) = each (%udef) )
 	{
-	    #print STDERR "hash: $key : $val\n";
-	    # replace ${}
 	    $txt[$i] =~ s/\$\{$key\}|\$$key/$val/g;
 	} 
 	    
         # define variable
         if( $txt[$i] =~ /^ *([a-zA-Z][^ ]*) *= *(.*)$/ )
         {
-	    #print STDERR "$i: $txt[$i] : $1 : $2\n";
-	    $udef{"$1"} = $2;
+	    $udef{"$1"} = $2;  # new/overwrite
 	    next;
 	}
         elsif( $txt[$i] =~ /^ *([a-zA-Z][^ ]*) *\+= *(.*)$/ )
         {
-	    #print STDERR "$i: $txt[$i] : $1 : $2\n";
-	    $udef{"$1"} = $udef{"$1"} . " " . $2;
+	    $udef{"$1"} = $udef{"$1"} . " " . $2; # add
 	    next;
 	}
 
@@ -140,12 +137,11 @@ sub main()
             # print and exit if $count == $target?
 	    my @status_now = ();  # temporary variable for parse_core.
 	    my @type_now   = ();  # temporary variable for parse_core.
-	    &parse_core( \@status_now, \@type_now, \$count, \$target_count, \@type, \@status, \%target, \$val );
-#	    if( $count >= $target_count ){ exit; }
+	    &parse_core( \@type_now, \@status_now, \$tparam, \$count, \$target_count, \@type, \@status, \%target );
 	    if( $count >= $target_count && $target_count != -1 ){ exit; }
 
 	    $flag_blacket = 0;
-	    $val = "";
+	    $tparam = "";
 	    for( my $j=0; $j<=$one_depth[$#one_depth]-1; $j++ )
 	    {
 		pop( @status );
@@ -158,18 +154,16 @@ sub main()
         # within ( )
 	if( $flag_blacket == 1 )
 	{
-	    $val .= $txt[$i] . "\n";
+	    $tparam .= $txt[$i] . "\n";
 	    next;
 	}
 	    
 	# {
 	if( $txt[$i] =~ /^\s*\{\s*$/ )
         {
-#	print "status_temp: " . $status_temp . "\n";
 	    push( @one_depth, $one_depth_temp );
 	    for( my $j=0; $j<=$one_depth_temp-1; $j++ )
 	    {
-#	    print $j . "\n";
 		push( @status, $status_temp[$j] );
 		push( @type, $type_temp[$j] );
 	    }
@@ -216,7 +210,6 @@ sub main()
 	    $status_temp[$#status_temp] =~ s/^([^\s]+)\s//;
 	    push( @type_temp, $1 );
 	    $one_depth_temp++;
-#            print $one_depth_temp . "\n";
 	}
     }
     return;
@@ -233,17 +226,16 @@ sub main()
 #
 sub parse_core
 {
-    my $status_now   = shift;  # current status (pointer for array)
     my $type_now     = shift;  # current type of status (pointer for array)
+    my $status_now   = shift;  # current status (pointer for array)
+    my $tparam       = shift;  # parameter lines for GrADS template.gs (pointer)
     my $count        = shift;  # pointer
     my $target_count = shift;  # pointer
     my $type         = shift;  # pointer, should be read-only
     my $status       = shift;  # pointer, read-only
     my $target       = shift;  # pointer
-    my $val          = shift;  # pointer
 
     my $d = $#$status_now + 1;  # depth
-#    if( $$count >= $$target_count ){ return; }
     if( $$count >= $$target_count && $$target_count != -1 ){ return; }
 
     my @status_list = ();
@@ -251,9 +243,6 @@ sub parse_core
     #
     #--- set @type_now
     push( @$type_now, $$type[$d] );  # basically, @type_now equals @type.
-    #print STDERR $$type[$d] . "\n";
-    #print STDERR $$type_now[$d] . "\n";
-    
     if( $$type[$d] eq "y*" )
     {
 	for( my $dd=0; $dd<$d; $dd++ )
@@ -273,12 +262,13 @@ sub parse_core
     }
     #
     #--- prepare @status_list for setting @status_now
-    if( $$type_now[$d] eq "ym"  || $$type_now[$d] eq "cym" 
-     || $$type_now[$d] eq "ymd" 
-     || $$type_now[$d] eq "ymdh" 
-     || $$type_now[$d] eq "ys"  || $$type_now[$d] eq "cys" 
-     || $$type_now[$d] eq "ya"  || $$type_now[$d] eq "cya" 
-     || $$type_now[$d] eq "ymd_range" || $$type_now[$d] eq "ymdh_range" )
+#    if( $$type_now[$d] eq "ym"  || $$type_now[$d] eq "cym" 
+#     || $$type_now[$d] eq "ymd" 
+#     || $$type_now[$d] eq "ymdh" 
+#     || $$type_now[$d] eq "ys"  || $$type_now[$d] eq "cys" 
+#     || $$type_now[$d] eq "ya"  || $$type_now[$d] eq "cya" 
+#     || $$type_now[$d] eq "ymd_range" || $$type_now[$d] eq "ymdh_range" )
+    if( $$type_now[$d] =~ /^ym|cym|ymd|ymdh|ys|cys|ya|cya|ymd_range|ymdh_range$/ )
     {
 	if( $$status[$d] eq "*" )  # expand using run_list
 	{
@@ -306,7 +296,7 @@ sub parse_core
 #	print "now: " . $#$status_now . " : " . $$status_now[$#$status_now] . "\n";
 	if( $d < $#$status ) # one deeper status
 	{
-	    &parse_core( $status_now, $type_now, $count, $target_count, $type, $status, $target, $val );
+	    &parse_core( $type_now, $status_now, $tparam, $count, $target_count, $type, $status, $target );
 	}
 	else  # this depth
 	{
@@ -321,7 +311,6 @@ sub parse_core
 	    }
 	    if( $count_flag == 1 ){ $$count++; }
 
-#	    if( $$count == $$target_count )
 	    if( $$count == $$target_count || $$target_count == -1 )
 	    {
 		# output type (1st line)
@@ -342,7 +331,7 @@ sub parse_core
 		print "\n";
 
 		# output status value (2nd line)
-		my $disp = $$val; # for replacing ${}
+		my $disp = $$tparam; # for replacing ${}
 		my %rep = ();     # for replacing ${}
 #		print STDERR "disp = $disp\n";
 		for( my $p=0; $p<=$#$status_now; $p++ )
@@ -381,60 +370,12 @@ sub parse_core
 			$rep{'year'}   = $array[0];
 			$rep{'season'} = $array[1];
 		    }
-
-#		    $disp =~ s/\$\{$$type_now[$p]\}|\$$$type_now[$p]/$$status_now[$p]/g;
-#		    #
-#		    if( $$type_now[$p] eq "ym" && $$status_now[$p] =~ /^([0-9][0-9][0-9][0-9]) ([01][0-9])$/ )
-#		    {
-#			my $year = $1;
-#			my $month = $2;
-#			$disp =~ s/\$\{year\}|\$year/$year/g;
-#			$disp =~ s/\$\{month\}|\$month/$month/g;
-#		    }
-#		    elsif( $$type_now[$p] eq "ymd" && $$status_now[$p] =~ /^([0-9][0-9][0-9][0-9]) ([01][0-9]) ([0-3][0-9])$/ )
-#		    {
-#			my $year  = $1;
-#			my $month = $2;
-#			my $day   = $3;
-#			$disp =~ s/\$\{year\}|\$year/$year/g;
-#			$disp =~ s/\$\{month\}|\$month/$month/g;
-#			$disp =~ s/\$\{day\}|\$day/$day/g;
-#		    }
-#		    elsif( $$type_now[$p] eq "ymdh" && $$status_now[$p] =~ /^([0-9][0-9][0-9][0-9]) ([01][0-9]) ([0-3][0-9]) ([0-2][0-9])$/ )
-#		    {
-#			my $year  = $1;
-#			my $month = $2;
-#			my $day   = $3;
-#			my $hour  = $4;
-#			$disp =~ s/\$\{year\}|\$year/$year/g;
-#			$disp =~ s/\$\{month\}|\$month/$month/g;
-#			$disp =~ s/\$\{day\}|\$day/$day/g;
-#			$disp =~ s/\$\{hour\}|\$hour/$hour/g;
-#		    }
-#		    elsif( $$type_now[$p] eq "ys" && $$status_now[$p] =~ /^([0-9][0-9][0-9][0-9]) (DJF|MAM|JJA|SON)$/ )
-#		    {
-#			my $year = $1;
-#			my $season = $2;
-#			$disp =~ s/\$\{year\}|\$year/$year/g;
-#			$disp =~ s/\$\{season\}|\$season/$season/g;
-#		    }
-#		    elsif( $$type_now[$p] eq "ya" && $$status_now[$p] =~ /^([0-9][0-9][0-9][0-9])$/ )
-#		    {
-#			my $year = $1;
-#			my $month = $2;
-#			$disp =~ s/\$\{year\}|\$year/$year/g;
-#			$disp =~ s/\$\{month\}|\$month/$month/g;
-#		    }
-#		    else{print "fail\n";}
-#		    print "ok: $$type[$p], $$status_now[$p]\n";
-#		    print " -> " . $disp;
 		}
 		print "\n";
 
 		# replace ${}
 		while ( my ($tmp_key, $tmp_val) = each %rep )
 		{
-#		    print STDERR "hash: $tmp_key : $tmp_val\n";
 		    $disp =~ s/\$\{$tmp_key\}|\$$tmp_key/$tmp_val/g;
 		}
 		# output parameters for GrADS template (3rd- lines)
@@ -442,6 +383,7 @@ sub parse_core
 
 #		pop( @$status_now );
 		if( $$count == $$target_count ){ last; }
+		else{ print "\n"; }
 	    }
 
 	}   # end of "this depth"
@@ -451,33 +393,6 @@ sub parse_core
     pop( @$type_now );
     return;
 }
-
-
-# todo: two or more ym
-# all except ym
-#sub parse_list_ym
-#{
-#    my $key = shift;
-#    my $target = shift;
-#    my @run_list;
-#    if( open(LINK, "< list/" . $key . "_list.txt") )
-#    {
-#	@run_list = <LINK>;
-#	close(LINK);
-#    }
-#    my $flag = 0;
-#    for( my $i=0; $i<=$#run_list-1; $i++ )
-#    {
-#	if( $run_list[$i] =~ /^$target\s*/ && $run_list[$i+1] =~ /^\{\s*/ ){ $flag = 1; }
-#	if( $flag == 1 )
-#	{
-#	    if( $run_list[$i] =~ /^\s+ym\s+(.*)$/ )
-#	    {
-#		return $1;
-#	    }
-#	}
-#    }
-#}
 
 
 sub expand_ast
@@ -524,10 +439,7 @@ sub expand_ast
 	    for( my $i=0; $i<=$#$status_list; $i++ )
 	    {
 #		print STDERR "status_list: " . $$status_list[$i] . "\n";
-#		exit 1;
-		#my @yym1 = split( " ", $$status_list[$i] );
 		my @yym1 = split( /[- ]/, $$status_list[$i] );
-
 		my @tmp2 = grep( / $yym1[2]$/, @status_list_tmp );
 		# assume duplicate month does not exist.
 #		print STDERR "@yym1\n";
@@ -538,30 +450,21 @@ sub expand_ast
 
 		if( $#tmp2 == 0 )
 		{
-		    #print STDERR "ok";
-		    #my @yym2 = split( " ", $tmp2[0] );
-		    #my @yym2 = split( "-", $tmp2[0] );
 		    my @yym2 = split( /[- ]/, $tmp2[0] );
-		    
 		    my $ymin = $yym1[0];
 		    if( $yym1[0] < $yym2[0] ){ $ymin = $yym2[0]; }
 		    my $ymax = $yym1[1];
 		    if( $yym1[1] > $yym2[1] ){ $ymax = $yym2[1]; }
 		    if( $ymin > $ymax ){ $$status_list[$i] = ""; }
-		    #else{ $$status_list[$i] = "$ymin $ymax $yym1[2]"; }
 		    else{ $$status_list[$i] = "$ymin-$ymax $yym1[2]"; }
-
 #		    print STDERR "match:" . $$status_list[$i] . "\n";
 		}
 		else
 		{
 		    $$status_list[$i] = "";
 		}
-		#print STDERR $tmp[0] . "\n";
-		
 	    }
 	    @$status_list = split( "SEP", join( "SEP", @$status_list ) );
-	    
 	}
 
 	elsif( $$type_now[$d] eq "cya" )
@@ -591,40 +494,7 @@ sub expand_ast
 	    @$status_list = grep { { map {$_,1} @status_list_tmp }->{$_} } @$status_list;
 	}
     }
-#    print STDERR "ok\n";
-#    print STDERR "@$status_list\n";
-#    exit 1;
 }
-
-
-=comment
-sub parse_list_type
-{
-    my $key    = shift;
-    my $target = shift;
-    my $type   = shift;
-    my @run_list;
-    if( open(LINK, "< list/" . $key . "_list.txt") )
-    {
-	@run_list = <LINK>;
-	close(LINK);
-    }
-    my $flag = 0;
-    my @cand = ();
-    for( my $i=0; $i<=$#run_list-1; $i++ )
-    {
-	if( $run_list[$i] =~ /^$target\s*$/ && $run_list[$i+1] =~ /^\{\s*/ ){ $flag = 1; }
-	if( $flag == 1 )
-	{
-	    if( $run_list[$i] =~ /^\s+$type\s+(.*)$/ )
-	    {
-		push( @cand, $1 );
-		return $1;
-	    }
-	}
-    }
-}
-=cut
 
 
 #
@@ -654,7 +524,6 @@ sub expand
 	    push( @$status_list, "$year $month" );
 	}
     }
-#    elsif( $type_now eq "cym" && $st =~ /^([0-9][0-9][0-9][0-9]),([0-9][0-9][0-9][0-9]),([01]*[0-9]),([01]*[0-9])$/ )
     elsif( $type_now eq "cym" && $st =~ /^([0-9][0-9][0-9][0-9])-([0-9][0-9][0-9][0-9]),([01]*[0-9]),([01]*[0-9])$/ )
     {
 	my ( $year_start, $year_end    ) = ( $1, $2 );
@@ -663,7 +532,6 @@ sub expand
 	{
 	    my $month = $m + 0;
 	    if( $m < 10 ){ $month = "0" . $month; }
-#	    push( @$status_list, "$year_start $year_end $month" );
 	    push( @$status_list, "$year_start-$year_end $month" );
 	}
     }
@@ -776,47 +644,11 @@ sub expand
 	push( @$status_list, "$year_start $month_start $day_start $year_end $month_end $day_end" );
     }
     elsif( $type_now eq "ymdh_range" && $st =~ /^([0-9][0-9][0-9][0-9]),([01]*[0-9]),([0-3]*[0-9]),([0-2]*[0-9]),([0-9][0-9][0-9][0-9]),([01]*[0-9]),([0-3]*[0-9]),([0-2]*[0-9])$/ )
-#	    elsif( $type[$d] eq "ymdh_range")
     {
 	my ( $year_start, $month_start, $day_start, $hour_start ) = ( $1, $2, $3, $4 );
 	my ( $year_end,   $month_end,   $day_end,   $hour_end   ) = ( $5, $6, $7, $8 );
 	push( @$status_list, "$year_start $month_start $day_start $hour_start $year_end $month_end $day_end $hour_end" );
     }
-#	    elsif( $type[$d] eq "ymd" && $st[$s] =~ /^([0-9][0-9][0-9][0-9]),([01]*[0-9]),([0-3]*[0-9]),([0-9][0-9][0-9][0-9]),([01]*[0-9]),([0-3]*[0-9])$/ )
-#	    {
-#		my ( $year_start, $month_start, $day_start ) = ( $1, $2, $3 );
-#		my ( $year_end,   $month_end,   $day_end )   = ( $4, $5, $6 );
-#		my $ym_start = $year_start * 12 + ($month_start-1);
-#		my $ym_end   = $year_end   * 12 + ($month_end-1);
-#		for( my $ym=$ym_start; $ym<=$ym_end; $ym++ )
-#		{
-##		    print "$ym_start $ym_end\n";
-#		    my $year = int( $ym / 12 );
-#		    my $month = $ym - $year * 12 + 1;
-#		    if( $month < 10 ){ $month = "0" . $month; }
-#
-#		    my $maxday = 31;  # end day of month
-#		    if( $month == 4 || $month == 6 || $month == 9 || $month == 11 ){ $maxday = 30; }
-#		    elsif( $month == 2 )
-#		    {
-#			if(    $year % 400 == 0 ){ $maxday = 29; }
-#			elsif( $year % 100 == 0 ){ $maxday = 28; }
-#			elsif( $year % 4   == 0 ){ $maxday = 29; }
-#			else                     { $maxday = 28; }
-#		    }
-#
-#		    for( my $day=1; $day<=$maxday; $day=$day+1)
-#		    {
-#			if( $ym == $ym_start && $day < $day_start ){ next; }
-#			if( $ym == $ym_end   && $day > $day_end ){ next; }
-#			if( $day < 10 ){ $day = "0" . $day; }
-#			push( @status_list, "$year $month $day" );
-##			print "ok: $day\n";
-#		    }
-#		}
-##		    print "ok";
-##		    exit;
-#	    }
     elsif( $type_now eq "ys" && $st =~ /^([0-9][0-9][0-9][0-9]),(DJF|MAM|JJA|SON),([0-9][0-9][0-9][0-9]),(DJF|MAM|JJA|SON)$/ )
     {
 	my ( $year_start, $season_start ) = ( $1, $2 );
@@ -832,7 +664,6 @@ sub expand
 	    push( @$status_list, "$year $season" );
 	}
     }
-#    elsif( $type_now eq "cys" && $st =~ /^([0-9][0-9][0-9][0-9]),([0-9][0-9][0-9][0-9]),(DJF|MAM|JJA|SON),(DJF|MAM|JJA|SON)$/ )
     elsif( $type_now eq "cys" && $st =~ /^([0-9][0-9][0-9][0-9])-([0-9][0-9][0-9][0-9]),(DJF|MAM|JJA|SON),(DJF|MAM|JJA|SON)$/ )
     {
 	my ( $year_start,   $year_end   ) = ( $1, $2 );
@@ -841,21 +672,16 @@ sub expand
 	my @season     = ( "MAM",      "JJA",      "SON",      "DJF" );
 	for( my $s=$idx_season{$season_start}; $s<=$idx_season{$season_end}; $s++ )
 	{
-#	    push( @$status_list, "$year_start $year_end $season[$s]" );
 	    push( @$status_list, "$year_start-$year_end $season[$s]" );
 	    
 	}
     }
     elsif( $type_now eq "ya" && $st =~ /^([0-9][0-9][0-9][0-9]),([0-9][0-9][0-9][0-9])$/ )
-#    elsif( $type_now eq "ya" && $st =~ /^([0-9][0-9][0-9][0-9]),([0-9][0-9][0-9][0-9])(,([0-1][0-9]))?$/ )
     {
 	my ( $year_start,   $year_end   ) = ( $1, $2 );
-#	my ( $year_start,   $year_end, $month   ) = ( $1, $2, $4 );
-#	if ( $month eq "" ){ $month = "01"; }
 	for( my $y=$year_start; $y<=$year_end; $y++ )
 	{
 	    push( @$status_list, "$y" );
-#	    push( @$status_list, "$y $month" );
 	}
     }
     elsif( $type_now eq "cya" && $st =~ /^([0-9][0-9][0-9][0-9])-([0-9][0-9][0-9][0-9])$/ )
@@ -871,5 +697,3 @@ sub expand
 	exit 1;
     }
 }
-
-
