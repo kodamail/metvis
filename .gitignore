@@ -1,9 +1,4 @@
 *~
-configure/
 job/
 temp_*/
 usr/
-
-#configure/[^.]*
-#log/
-#usr/[^.]*
