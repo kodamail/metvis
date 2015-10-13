@@ -8,7 +8,8 @@ TYPE=$2  # e.g., "ys"
 
 # TODO; ya06 (annual mean starting from June)
 
-grads -xblc "/cwork5/kodama/gscript/run_list/get_ymd.gs ${RUNID} temp.$$" > /dev/null
+#grads -xblc "/cwork5/kodama/gscript/run_list/get_ymd.gs ${RUNID} temp.$$" > /dev/null
+grads -xblc "/cwork5/kodama/gscript/gtemplate_git/git/get_ymd.gs ${RUNID} temp.$$" > /dev/null
 YMD_LIST=( $( cat temp.$$ | sed -e "s/-/ /g" ) ) # TODO: in future. more than one YMD range will be supported.
 rm temp.$$
 

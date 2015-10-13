@@ -173,7 +173,8 @@ for FILE_JOB in ${FILE_JOB_LIST[@]} ; do
         # common for all
 	cat > ${TEMP_DIR}/cnf_${DESC_ftype}.gsf <<EOF
 function cnf_${DESC_ftype}()
-    rc = gsfpath( '${DIR_RUN_LIST}' )
+*    rc = gsfpath( '${DIR_RUN_LIST}' )
+    rc = gsfpath( '${DIR_RUN_LIST} ${DIR_RUN_LIST}/database' )
     _varid = '${DESC_varid}'
 EOF
         #
