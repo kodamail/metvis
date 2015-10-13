@@ -1,0 +1,23 @@
+include common_sens.txt
+
+ftype latlev
+mode sens_model_bias
+{
+    run-1 JRA55
+    run-2 ${run_cntl}
+    run-3 ${run_sens}
+    {
+        varid t u v rh qv
+        timeid ${timeid}
+        y* *
+#        timeid seasonal_mean 
+#        ys ${ys}
+#        timeid monthly_mean
+#        ym ${ym}
+        (
+            ${run-1} ${varid} -cdir ctl_monthly
+            ${run-2} ${varid} -cdir ml_plev/zmean_145x37/monthly_mean
+            ${run-3} ${varid} -cdir ml_plev/zmean_145x37/monthly_mean
+        )
+	    }
+}

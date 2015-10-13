@@ -1,0 +1,132 @@
+############################################################
+# start
+#   ftype latlon_isccp2
+#   mode model_bias_raw, model_bias_diff
+#   run1 ISCCP_D1_OBS
+#
+ftype latlon_isccp2
+mode model_bias_raw model_bias_diff
+run1 ISCCP_D1_OBS
+{
+    #
+    #----- general -----#
+    #
+    run2 ${run2_list}
+    {
+        timeid seasonal_mean monthly_mean
+        varid vis
+        y* *
+        (
+            ${run1} isccp_high_vis
+            ${run1} isccp_middle_vis
+            ${run1} isccp_low_vis
+            ${run2} isccp_high_vis   -cdir isccp/144x72x49/monthly_mean
+            ${run2} isccp_middle_vis -cdir isccp/144x72x49/monthly_mean
+            ${run2} isccp_low_vis    -cdir isccp/144x72x49/monthly_mean
+        )
+    }
+    #
+    #----- for gl05 144x73 grid -----#
+    # on-demand
+    #
+#    run2 CLIM_MATSIRO_200406.run18
+#    {
+#        timeid clim_seasonal_mean clim_monthly_mean seasonal_mean monthly_mean
+#        varid vis
+#        y* *
+#        (
+#            ${run1} isccp_high_vis
+#            ${run1} isccp_middle_vis
+#            ${run1} isccp_low_vis
+#            ${run2} isccp_high_vis   -cdir isccp/144x73x49/monthly_mean
+#            ${run2} isccp_middle_vis -cdir isccp/144x73x49/monthly_mean
+#            ${run2} isccp_low_vis    -cdir isccp/144x73x49/monthly_mean
+#        )
+#    }
+    #
+    #----- for MIROC data -----#
+    # on-demand
+    #
+#    run2 MIROC_kinmirai_mAmO_AR4_SRES_LA_A1_01 MIROC_kinmirai_mAmO_AR4_SRES_LA_A1_01 MIROC_amip_t106
+#    {
+#        timeid clim_seasonal_mean clim_monthly_mean seasonal_mean monthly_mean
+#        varid vis
+#        y* *
+#        (
+#            ${run1} isccp_high_vis
+#            ${run1} isccp_middle_vis
+#            ${run1} isccp_low_vis
+#            ${run2} isccp_high_vis
+#            ${run2} isccp_middle_vis
+#            ${run2} isccp_low_vis
+#        )
+#    }
+}
+#
+# end
+#   ftype latlon_isccp2
+#   mode model_bias_raw, model_bias_diff
+#   run1 ISCCP_D1_OBS
+############################################################
+
+
+
+############################################################
+# start
+#   ftype latlon_isccp2
+#   mode model_gw_raw model_gw_diff
+#   run1 200404.new.prun2010.gl09
+#   run2 200403.new.prun2010.gl09.plus.dsst
+#   timeid monthly_mean
+#
+ftype latlon_isccp2
+mode model_gw_raw model_gw_diff
+run1 K.200406.L38.gl09.run06
+run2 K.20xx05.L38.gl09.run00
+{
+    timeid seasonal_mean monthly_mean
+    varid vis
+    y* *
+    sw 2560x1280 144x72
+    (
+        ${run1} isccp_high_vis   -cdir isccp/${sw}x49/monthly_mean
+        ${run1} isccp_middle_vis -cdir isccp/${sw}x49/monthly_mean
+        ${run1} isccp_low_vis    -cdir isccp/${sw}x49/monthly_mean
+        ${run2} isccp_high_vis   -cdir isccp/${sw}x49/monthly_mean
+        ${run2} isccp_middle_vis -cdir isccp/${sw}x49/monthly_mean
+        ${run2} isccp_low_vis    -cdir isccp/${sw}x49/monthly_mean
+    )
+    timeid seasonal_mean monthly_mean
+    varid high_vis middle_vis low_vis
+    y* *
+    sw 2560x1280 144x72
+    (
+        ${run1} isccp_${varid}_thin  -cdir isccp/${sw}x49/monthly_mean
+        ${run1} isccp_${varid}_med   -cdir isccp/${sw}x49/monthly_mean
+        ${run1} isccp_${varid}_thick -cdir isccp/${sw}x49/monthly_mean
+        ${run2} isccp_${varid}_thin  -cdir isccp/${sw}x49/monthly_mean
+        ${run2} isccp_${varid}_med   -cdir isccp/${sw}x49/monthly_mean
+        ${run2} isccp_${varid}_thick -cdir isccp/${sw}x49/monthly_mean
+    )
+    timeid seasonal_mean
+    varid thickness
+    y* *
+    sw 2560x1280 144x72
+    (
+        ${run1} isccp_vis_thin  -cdir isccp/${sw}x49/monthly_mean
+        ${run1} isccp_vis_med   -cdir isccp/${sw}x49/monthly_mean
+        ${run1} isccp_vis_thick -cdir isccp/${sw}x49/monthly_mean
+        ${run2} isccp_vis_thin  -cdir isccp/${sw}x49/monthly_mean
+        ${run2} isccp_vis_med   -cdir isccp/${sw}x49/monthly_mean
+        ${run2} isccp_vis_thick -cdir isccp/${sw}x49/monthly_mean
+    )
+}
+#
+# end
+#   ftype latlon_isccp2
+#   mode model_gw_raw model_gw_diff
+#   run1 200404.new.prun2010.gl09
+#   run2 200403.new.prun2010.gl09.plus.dsst
+#   timeid monthly_mean
+############################################################
+

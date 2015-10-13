@@ -1,0 +1,46 @@
+
+ftype sphere
+mode model_raw
+run1 K.200406.L38.gl09.run06
+timeid 1hr_mean
+varid olr_precip
+ymdh 2004,06,01,00,2004,08,31,23
+{
+    lon_mid 045
+#    lon_mid 045 135 225 315
+    (
+        ${run1} lw_up_toa -cdir sl/2560x1280/${timeid}
+        ${run1} precip -cdir sl/2560x1280/${timeid}
+    )
+}
+
+
+exit
+
+
+
+
+ftype sphere
+mode model_raw_anim
+#run1 200406.new.prun2010.gl09
+run1 K.200406.L38.gl09.run02
+timeid tstep
+varid olr_precip
+#ymdh_range 2004,06,01,00,2004,06,01,02
+ymdh_range 2004,06,01,00,2004,07,02,00 2005,01,01,00,2005,02,02,00
+#ymdh_range 2004,06,01,00,2004,07,02,00 2004,07,01,00,2004,08,02,00 2004,08,01,00,2004,09,02,00 2004,09,01,00,2004,10,02,00 2004,10,01,00,2004,11,02,00 2004,11,01,00,2004,12,02,00 2004,12,01,00,2005,01,02,00 2005,01,01,00,2005,02,02,00
+{
+#    lon_mid 045 135 225 315
+#    anim_dlon 0
+#    (
+#        ${run1} lw_up_toa -cdir sl/2560x1280/${timeid}
+#        ${run1} precip -cdir sl/2560x1280/${timeid}
+#    )
+    lon_mid 045
+    anim_dlon -1
+#    anim_dlon 0 -1
+    (
+        ${run1} lw_up_toa -cdir sl/2560x1280/${timeid}
+        ${run1} precip -cdir sl/2560x1280/${timeid}
+    )
+}

@@ -1,0 +1,87 @@
+############################################################
+#
+run_cntl = K.200406.N12.gl09.b
+run_sens = K.200406.N12.gl09.b.001 K.200406.N12.gl09.b.002 K.200406.N12.gl09.b.003 K.200406.N12.gl09.b.004 K.200406.N12.gl09.b.005
+#ys = 2004,JJA,2005,MAM
+#ym = 2004,06,2005,05
+ys = 2004,JJA,2004,JJA
+ym = 2004,06,2005,08
+varid_2d_all = precip iwp lwp qv2m t2m lw_up_toa lw_up_clr_toa lw_crf_toa lw_up_sfc lw_down_sfc lw_net_sfc sw_up_toa sw_up_clr_toa sw_up_sfc sw_down_toa sw_crf_toa sw_down_sfc sw_net_sfc aw_net_toa aw_crf_toa aw_net_sfc sh_sfc lh_sfc energy_net_sfc u10m v10m qv2m
+
+varid_3dlevel_all = u700 u500 u300 t700 t500 t300 qv700 qv500 qv300 rh700 rh500 rh300
+#
+############################################################
+#
+/*
+ftype latlon
+mode sens_model_bias
+run1 GPCP
+run2 ${run_cntl}
+{
+    run3 ${run_sens}
+    {
+        varid precip 
+        timeid seasonal_mean
+        region global
+        ys ${ys}
+        (
+            ${run1} ${varid}
+            ${run2} ${varid} -cdir sl/144x72/monthly_mean
+            ${run3} ${varid} -cdir sl/144x72/monthly_mean
+        )
+        varid precip
+        timeid monthly_mean
+        region global
+        ym ${ym}
+        (
+            ${run1} ${varid}
+            ${run2} ${varid} -cdir sl/144x72/monthly_mean
+            ${run3} ${varid} -cdir sl/144x72/monthly_mean
+        )
+    }
+}
+*/
+
+ftype latlon
+mode sens_model
+run1 ${run_cntl}
+{
+    run2 ${run_sens}
+    {
+        varid ${varid_2d_all}
+        timeid seasonal_mean
+        region global
+        ys ${ys}
+        (
+            ${run1} ${varid} -cdir sl/144x72/monthly_mean
+            ${run2} ${varid} -cdir sl/144x72/monthly_mean
+        )
+/*
+        varid ${varid_2d_all}
+        timeid monthly_mean
+        region global
+        ym ${ym}
+        (
+            ${run1} ${varid} -cdir sl/144x72/monthly_mean
+            ${run2} ${varid} -cdir sl/144x72/monthly_mean
+        )
+        varid ${varid_3dlevel_all}
+        timeid seasonal_mean
+        region global
+        ys ${ys}
+        (
+            ${run1} ${varid} -cdir ml_plev/144x72x37/monthly_mean
+            ${run2} ${varid} -cdir ml_plev/144x72x37/monthly_mean
+        )
+        varid ${varid_2d_all}
+        timeid monthly_mean
+        region global
+        ym ${ym}
+        (
+            ${run1} ${varid} -cdir ml_plev/144x72x37/monthly_mean
+            ${run2} ${varid} -cdir ml_plev/144x72x37/monthly_mean
+        )
+*/
+    }
+}
+############################################################

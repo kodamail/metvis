@@ -1,0 +1,552 @@
+############################################################
+#
+# include here for particular jobs
+#
+#include latlon_sens.txt
+#include latlev_sens.txt
+include isccp_matrix_sens.txt
+
+
+############################################################
+#
+# run2 list for general configuration
+#
+run2_list = 
+#
+# well done:
+#
+
+#
+# running:
+#
+
+run2_list += K.200406.N12.gl09.b
+run2_list += K.200406.N12.gl09.b.001
+run2_list += K.200406.N12.gl09.b.002
+run2_list += K.200406.N12.gl09.b.003
+run2_list += K.200406.N12.gl09.b.004
+run2_list += K.200406.N12.gl09.b.005
+
+#run2_list += AMIP.N12.197806.gl09.L38.run01
+
+# not done yet ->
+
+# data preparing -> 
+
+# waiting for running ->
+
+############################################################
+#
+# timeid list for general configuration
+#
+# for annual-scale integration
+#timeid = clim_annual_mean clim_seasonal_mean clim_monthly_mean annual_mean seasonal_mean monthly_mean
+timeid = seasonal_mean
+
+# for decadal-scale integration
+#timeid = clim_annual_mean clim_seasonal_mean clim_monthly_mean annual_mean
+#timeid = clim_annual_mean clim_seasonal_mean
+
+#
+############################################################
+# all other finished
+#include latlon_bias.txt
+#include latlev_bias.txt
+include isccp_matrix_bias.txt
+
+
+##include sphere.txt
+
+exit
+
+
+
+
+/*
+ftype isccp_matrix
+mode model_raw
+{
+    run1 AMIP.N12.197806.gl09.L38.run01 AMIP.N12.207406.gl09.L38.run01
+    {
+        timeid clim_annual_mean clim_seasonal_mean clim_monthly_mean annual_mean seasonal_mean
+        matrix_type 3x3 7x7
+        y* *
+        sw 144x72
+        (
+            NICAM
+            ${run1} dfq_isccp2 -cdir isccp/${sw}x49/monthly_mean
+            ${run1} pres -cdir ml_zlev/${sw}x38/monthly_mean
+        )
+    }
+    run1 K.200406.L38.gl09.run06 K.20xx05.L38.gl09.run00 K.200406.L38.gl10.run03 K.20xx05.L38.gl10.run01
+    {
+        timeid seasonal_mean monthly_mean
+        matrix_type 3x3 7x7
+        y* *
+        sw 144x72
+        (
+            NICAM
+            ${run1} dfq_isccp2 -cdir isccp/${sw}x49/monthly_mean
+            ${run1} pres -cdir ml_zlev/${sw}x38/monthly_mean
+        )
+    }
+    run1 ISCCP_D1_OBS
+    {
+        timeid clim_seasonal_mean
+        matrix_type 3x3 7x7
+#        cys 1996-1999,JJA,DJF 1997-2000,MAM,MAM
+        cys 1995-2004,MAM,DJF
+        sw 144x72
+        (
+            satellite
+            ${run1}
+            
+        )
+        timeid clim_monthly_mean
+        matrix_type 3x3 7x7
+#        cym 1996-1999,06,12 1997-2000,01,05
+        cym 1995-2004,01,12
+        sw 144x72
+        (
+            satellite
+            ${run1}
+            
+        )
+    }
+}
+*/
+
+/*
+ftype isccp_matrix
+mode clim_change
+{
+    run1 ISCCP_D1_OBS
+    run2 K.200406.L38.gl09.run06 K.200406.L38.gl10.run03
+    {
+        timeid clim_seasonal_mean
+        matrix_type 3x3 7x7
+        cys 2004-2004,JJA,DJF 2005-2005,MAM,MAM
+        diff_y 0
+        sw 144x72
+        (
+            satellite
+            ${run1}
+            
+            NICAM
+            ${run2} dfq_isccp2 -cdir isccp/${sw}x49/monthly_mean
+            ${run2} pres -cdir ml_zlev/${sw}x38/monthly_mean
+        )
+    }
+    run1 K.200406.L38.gl09.run06
+    run2 K.20xx05.L38.gl09.run00
+    {
+        timeid clim_seasonal_mean
+        matrix_type 3x3 7x7
+        cys 2004-2004,JJA,DJF 2005-2005,MAM,MAM
+        diff_y 0
+        sw 144x72
+        (
+            NICAM
+            ${run1} dfq_isccp2 -cdir isccp/${sw}x49/monthly_mean
+            ${run1} pres -cdir ml_zlev/${sw}x38/monthly_mean
+            NICAM
+            ${run2} dfq_isccp2 -cdir isccp/${sw}x49/monthly_mean
+            ${run2} pres -cdir ml_zlev/${sw}x38/monthly_mean
+        )
+    }
+    run1 K.200406.L38.gl10.run03
+    run2 K.20xx05.L38.gl10.run01
+    {
+        timeid clim_seasonal_mean
+        matrix_type 3x3 7x7
+        cys 2004-2004,JJA,DJF 2005-2005,MAM,MAM
+        diff_y 0
+        sw 144x72
+        (
+            NICAM
+            ${run1} dfq_isccp2 -cdir isccp/${sw}x49/monthly_mean
+            ${run1} pres -cdir ml_zlev/${sw}x38/monthly_mean
+            NICAM
+            ${run2} dfq_isccp2 -cdir isccp/${sw}x49/monthly_mean
+            ${run2} pres -cdir ml_zlev/${sw}x38/monthly_mean
+        )
+    }
+    run1 ISCCP_D1_OBS
+    run2 AMIP.N12.197806.gl09.L38.run01
+    {
+        timeid clim_annual_mean
+        matrix_type 3x3 7x7
+        cya 1995-2004
+        diff_y -16
+        sw 144x72
+        (
+            satellite
+            ${run1}
+            
+            NICAM
+            ${run2} dfq_isccp2 -cdir isccp/${sw}x49/monthly_mean
+            ${run2} pres -cdir ml_zlev/${sw}x38/monthly_mean
+        )
+        timeid clim_seasonal_mean
+        matrix_type 3x3 7x7
+        cys 1995-2004,MAM,DJF
+        diff_y -16
+        sw 144x72
+        (
+            satellite
+            ${run1}
+            
+            NICAM
+            ${run2} dfq_isccp2 -cdir isccp/${sw}x49/monthly_mean
+            ${run2} pres -cdir ml_zlev/${sw}x38/monthly_mean
+        )
+        timeid clim_monthly_mean
+        matrix_type 3x3 7x7
+        cym 1995-2004,01,12
+        diff_y -16
+        sw 144x72
+        (
+            satellite
+            ${run1}
+            
+            NICAM
+            ${run2} dfq_isccp2 -cdir isccp/${sw}x49/monthly_mean
+            ${run2} pres -cdir ml_zlev/${sw}x38/monthly_mean
+        )
+    }
+    run1 AMIP.N12.197806.gl09.L38.run01
+    run2 AMIP.N12.207406.gl09.L38.run01
+    {
+        timeid clim_annual_mean
+        matrix_type 3x3 7x7
+        cya 1979-1988
+        diff_y 96
+        sw 144x72
+        (
+            NICAM
+            ${run1} dfq_isccp2 -cdir isccp/${sw}x49/monthly_mean
+            ${run1} pres -cdir ml_zlev/${sw}x38/monthly_mean
+            NICAM
+            ${run2} dfq_isccp2 -cdir isccp/${sw}x49/monthly_mean
+            ${run2} pres -cdir ml_zlev/${sw}x38/monthly_mean
+        )
+        timeid clim_seasonal_mean
+        matrix_type 3x3 7x7
+        cys 1979-1988,MAM,DJF
+        diff_y 96
+        sw 144x72
+        (
+            NICAM
+            ${run1} dfq_isccp2 -cdir isccp/${sw}x49/monthly_mean
+            ${run1} pres -cdir ml_zlev/${sw}x38/monthly_mean
+            NICAM
+            ${run2} dfq_isccp2 -cdir isccp/${sw}x49/monthly_mean
+            ${run2} pres -cdir ml_zlev/${sw}x38/monthly_mean
+        )
+        timeid clim_monthly_mean
+        matrix_type 3x3 7x7
+        cym 1979-1988,01,12
+        diff_y 96
+        sw 144x72
+        (
+            NICAM
+            ${run1} dfq_isccp2 -cdir isccp/${sw}x49/monthly_mean
+            ${run1} pres -cdir ml_zlev/${sw}x38/monthly_mean
+            NICAM
+            ${run2} dfq_isccp2 -cdir isccp/${sw}x49/monthly_mean
+            ${run2} pres -cdir ml_zlev/${sw}x38/monthly_mean
+        )
+    }
+}
+*/
+
+
+
+run2_list = AMIP.N12.197806.gl09.L38.run01
+
+varid_list  = isccp_all_vis isccp_all_vis_thin isccp_all_vis_med isccp_all_vis_thick
+varid_list += isccp_high_vis isccp_middle_vis isccp_low_vis isccp_high_vis_thin isccp_high_vis_med isccp_high_vis_thick isccp_middle_vis_thin isccp_middle_vis_med isccp_middle_vis_thick isccp_low_vis_thin isccp_low_vis_med isccp_low_vis_thick
+
+varid_list += isccp_p1tau1 isccp_p1tau2 isccp_p1tau3 isccp_p1tau4 isccp_p1tau5 isccp_p1tau6
+varid_list += isccp_p2tau1 isccp_p2tau2 isccp_p2tau3 isccp_p2tau4 isccp_p2tau5 isccp_p2tau6
+varid_list += isccp_p3tau1 isccp_p3tau2 isccp_p3tau3 isccp_p3tau4 isccp_p3tau5 isccp_p3tau6
+varid_list += isccp_p4tau1 isccp_p4tau2 isccp_p4tau3 isccp_p4tau4 isccp_p4tau5 isccp_p4tau6
+varid_list += isccp_p5tau1 isccp_p5tau2 isccp_p5tau3 isccp_p5tau4 isccp_p5tau5 isccp_p5tau6
+varid_list += isccp_p6tau1 isccp_p6tau2 isccp_p6tau3 isccp_p6tau4 isccp_p6tau5 isccp_p6tau6
+
+ftype latlon_type1
+mode clim_change
+{
+    run1 ISCCP_D1_OBS
+    run2 AMIP.N12.197806.gl09.L38.run01
+    {
+        timeid clim_annual_mean
+        varid ${varid_list}
+        cya 1995-2004
+        diff_y -16
+        sw 144x72
+        (
+            ${run1} ${varid}
+            ${run2} ${varid} -cdir isccp/${sw}x49/monthly_mean
+        )
+        timeid clim_seasonal_mean
+        varid ${varid_list}
+        cys 1995-2004,MAM,DJF
+        diff_y -16
+        sw 144x72
+        (
+            ${run1} ${varid}
+            ${run2} ${varid} -cdir isccp/${sw}x49/monthly_mean
+        )
+#        timeid clim_monthly_mean
+#        varid ${varid_list}
+#        cym 1995-2004,01,12
+#        diff_y -16
+#        sw 144x72
+#        (
+#            ${run1} ${varid}
+#            ${run2} ${varid} -cdir isccp/${sw}x49/monthly_mean
+#        )
+    }
+}
+
+exit
+
+/*
+varid_list = lw_up_toa lw_up_clr_toa lw_crf_toa lw_up_sfc lw_down_sfc sw_up_toa sw_up_clr_toa sw_crf_toa sw_up_sfc sw_down_toa sw_down_sfc sw_net_toa sw_net_sfc lw_net_sfc aw_net_toa aw_crf_toa aw_net_sfc
+
+ftype latlon_type1
+mode clim_change
+{
+    run1 SRB3.0
+    run2 AMIP.N12.197806.gl09.L38.run01
+    {
+        timeid clim_annual_mean
+        varid ${varid_list}
+        cya 1984-1993
+        diff_y -5
+        sw 144x72
+        (
+            ${run1} ${varid} -time monthly_mean
+            ${run2} ${varid} -cdir sl/${sw}/monthly_mean
+        )
+        timeid clim_seasonal_mean
+        varid ${varid_list}
+        cys 1984-1993,MAM,DJF
+        diff_y -5
+        sw 144x72
+        (
+            ${run1} ${varid} -time monthly_mean
+            ${run2} ${varid} -cdir sl/${sw}/monthly_mean
+        )
+        timeid clim_monthly_mean
+        varid ${varid_list}
+        cym 1984-1993,01,12
+        diff_y -5
+        sw 144x72
+        (
+            ${run1} ${varid} -time monthly_mean
+            ${run2} ${varid} -cdir sl/${sw}/monthly_mean
+        )
+    }
+}
+*/
+
+/*
+varid_list = t u v rh qv qc qi qr qs qg
+ftype latlev_type1
+mode clim_change
+{
+    run1 AMIP.N12.197806.gl09.L38.run01
+    run2 AMIP.N12.207406.gl09.L38.run01
+    {
+        timeid clim_annual_mean
+        varid ${varid_list}
+        cya 1979-1988
+        diff_y 96
+        (
+            ${run1} ${varid} -cdir ml_plev/144x72x18/monthly_mean
+            ${run2} ${varid} -cdir ml_plev/144x72x18/monthly_mean
+        )
+#            ${run1} ${varid} -cdir ml_plev/zmean_72x18/monthly_mean
+#            ${run2} ${varid} -cdir ml_plev/zmean_72x18/monthly_mean
+        timeid clim_seasonal_mean
+        varid ${varid_list}
+        cys 1979-1988,MAM,DJF
+        diff_y 96
+        (
+            ${run1} ${varid} -cdir ml_plev/144x72x18/monthly_mean
+            ${run2} ${varid} -cdir ml_plev/144x72x18/monthly_mean
+        )
+        timeid clim_monthly_mean
+        varid ${varid_list}
+        cym 1979-1988,01,12
+        diff_y 96
+        (
+            ${run1} ${varid} -cdir ml_plev/144x72x18/monthly_mean
+            ${run2} ${varid} -cdir ml_plev/144x72x18/monthly_mean
+        )
+
+        timeid annual_mean
+        varid ${varid_list}
+        ya 1979,1988
+        diff_y 96
+        (
+            ${run1} ${varid} -cdir ml_plev/144x72x18/monthly_mean
+            ${run2} ${varid} -cdir ml_plev/144x72x18/monthly_mean
+        )
+        timeid seasonal_mean
+        varid ${varid_list}
+        ys 1979,MAM,1988,JJA
+        diff_y 96
+        (
+            ${run1} ${varid} -cdir ml_plev/144x72x18/monthly_mean
+            ${run2} ${varid} -cdir ml_plev/144x72x18/monthly_mean
+        )
+#        timeid monthly_mean
+#        varid ${varid_list}
+#        ym 1979,01,1980,08
+#        diff_y 96
+#        (
+#            ${run1} ${varid} -cdir ml_plev/zmean_72x18/monthly_mean
+#            ${run2} ${varid} -cdir ml_plev/zmean_72x18/monthly_mean
+#        )
+    }
+}
+*/
+
+varid_list = precip lw_up_toa iwp lwp precip qv2m t2m lw_up_toa lw_up_clr_toa lw_crf_toa lw_up_sfc lw_down_sfc lw_net_sfc sw_up_toa sw_up_clr_toa sw_up_sfc sw_down_toa sw_crf_toa sw_down_sfc sw_net_sfc aw_net_toa aw_crf_toa aw_net_sfc sh_sfc lh_sfc energy_net_sfc sst ice icr
+varid_list = mslp
+ftype latlon_type1
+mode clim_change
+{
+    run1 AMIP.N12.197806.gl09.L38.run01
+    run2 AMIP.N12.207406.gl09.L38.run01
+    {
+        timeid clim_annual_mean
+        varid ${varid_list}
+        cya 1979-1988
+        diff_y 96
+        sw 360x181
+        (
+            ${run1} ${varid} -cdir sl/${sw}/monthly_mean
+            ${run2} ${varid} -cdir sl/${sw}/monthly_mean
+        )
+        timeid clim_seasonal_mean
+        varid ${varid_list}
+#        cys 1979-1982,JJA,DJF 1980-1983,MAM,MAM
+#        cys 1979-1988,JJA,DJF 1980-1989,MAM,MAM
+        cys 1979-1988,MAM,DJF
+        diff_y 96
+#        sw 144x72
+        sw 360x181
+        (
+            ${run1} ${varid} -cdir sl/${sw}/monthly_mean
+            ${run2} ${varid} -cdir sl/${sw}/monthly_mean
+        )
+#            ${run1} ${varid} -cdir ol/${sw}/monthly_mean
+#            ${run2} ${varid} -cdir ol/${sw}/monthly_mean
+        timeid clim_monthly_mean
+        varid ${varid_list}
+#        cym 1979-1982,06,12 1980-1983,01,05
+        cym 1979-1988,01,12
+        diff_y 96
+#        sw 144x72
+        sw 360x181
+        (
+            ${run1} ${varid} -cdir sl/${sw}/monthly_mean
+            ${run2} ${varid} -cdir sl/${sw}/monthly_mean
+        )
+#            ${run1} ${varid} -cdir ol/${sw}/monthly_mean
+#            ${run2} ${varid} -cdir ol/${sw}/monthly_mean
+
+        timeid seasonal_mean
+        varid ${varid_list}
+        ys 1979,MAM,1988,JJA
+        diff_y 96
+        sw 144x72
+        (
+            ${run1} ${varid} -cdir sl/${sw}/monthly_mean
+            ${run2} ${varid} -cdir sl/${sw}/monthly_mean
+        )
+#        timeid monthly_mean
+#        varid ${varid_list}
+#        ym 1979,01,1980,08
+#        diff_y 96
+#        sw 144x72
+#        (
+#            ${run1} ${varid} -cdir sl/${sw}/monthly_mean
+#            ${run2} ${varid} -cdir sl/${sw}/monthly_mean
+#        )
+    }
+}
+
+exit
+
+#varid_list = isccp_high_vis isccp_middle_vis isccp_low_vis
+varid_list = isccp_all_vis isccp_all_vis_thin isccp_all_vis_med isccp_all_vis_thick
+varid_list += isccp_high_vis isccp_middle_vis isccp_low_vis isccp_high_vis_thin isccp_high_vis_med isccp_high_vis_thick isccp_middle_vis_thin isccp_middle_vis_med isccp_middle_vis_thick isccp_low_vis_thin isccp_low_vis_med isccp_low_vis_thick
+
+varid_list += isccp_p1tau0 isccp_p1tau1 isccp_p1tau2 isccp_p1tau3 isccp_p1tau4 isccp_p1tau5 isccp_p1tau6
+varid_list += isccp_p2tau0 isccp_p2tau1 isccp_p2tau2 isccp_p2tau3 isccp_p2tau4 isccp_p2tau5 isccp_p2tau6
+varid_list += isccp_p3tau0 isccp_p3tau1 isccp_p3tau2 isccp_p3tau3 isccp_p3tau4 isccp_p3tau5 isccp_p3tau6
+varid_list += isccp_p4tau0 isccp_p4tau1 isccp_p4tau2 isccp_p4tau3 isccp_p4tau4 isccp_p4tau5 isccp_p4tau6
+varid_list += isccp_p5tau0 isccp_p5tau1 isccp_p5tau2 isccp_p5tau3 isccp_p5tau4 isccp_p5tau5 isccp_p5tau6
+varid_list += isccp_p6tau0 isccp_p6tau1 isccp_p6tau2 isccp_p6tau3 isccp_p6tau4 isccp_p6tau5 isccp_p6tau6
+
+
+ftype latlon_type1
+mode clim_change
+{
+    run1 AMIP.N12.197806.gl09.L38.run01
+    run2 AMIP.N12.207406.gl09.L38.run01
+    {
+        timeid clim_annual_mean
+        varid ${varid_list}
+        cya 1979-1988
+        diff_y 96
+        sw 144x72
+        (
+            ${run1} ${varid} -cdir isccp/${sw}x49/monthly_mean
+            ${run2} ${varid} -cdir isccp/${sw}x49/monthly_mean
+        )
+        timeid clim_seasonal_mean
+        varid ${varid_list}
+        cys 1979-1988,MAM,DJF
+        diff_y 96
+        sw 144x72
+        (
+            ${run1} ${varid} -cdir isccp/${sw}x49/monthly_mean
+            ${run2} ${varid} -cdir isccp/${sw}x49/monthly_mean
+        )
+        timeid clim_monthly_mean
+        varid ${varid_list}
+        cym 1979-1988,01,12
+        diff_y 96
+        sw 144x72
+        (
+            ${run1} ${varid} -cdir isccp/${sw}x49/monthly_mean
+            ${run2} ${varid} -cdir isccp/${sw}x49/monthly_mean
+        )
+/*
+        timeid seasonal_mean
+        varid ${varid_list}
+        ys 1979,MAM,1980,JJA
+        diff_y 96
+        sw 144x72
+        (
+            ${run1} ${varid} -cdir isccp/${sw}x49/monthly_mean
+            ${run2} ${varid} -cdir isccp/${sw}x49/monthly_mean
+        )
+        timeid monthly_mean
+        varid ${varid_list}
+        ym 1979,01,1980,08
+        diff_y 96
+        sw 144x72
+        (
+            ${run1} ${varid} -cdir isccp/${sw}x49/monthly_mean
+            ${run2} ${varid} -cdir isccp/${sw}x49/monthly_mean
+        )
+*/
+    }
+}

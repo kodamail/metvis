@@ -1,0 +1,20 @@
+include common_sens.txt
+
+ftype isccp_matrix
+mode sens_model_bias
+{
+    run-1 ISCCP_D1_OBS
+    run-2 ${run_cntl}
+    run-3 ${run_sens}
+    {
+       timeid ${timeid}
+        y* *
+        region global
+        matrix_type 7x7
+        (
+            ${run-1} dummy
+            ${run-2} dummy
+            ${run-3} dummy
+        )
+    }
+}
