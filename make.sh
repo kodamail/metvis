@@ -55,8 +55,8 @@ fi
 
 cd ${TEMP_DIR}
 #
-for FILE in ${FILE_LIST_TEMPLATE[@]} ; do
-    ln -s ${DIR_TEMPLATE}/${FILE}
+for FILE in ${FILE_LIST_GTEMPLATE[@]} ; do
+    ln -s ${DIR_GTEMPLATE}/${FILE}
 done
 cd - > /dev/null
 
@@ -92,7 +92,7 @@ for FILE_JOB in ${FILE_JOB_LIST[@]} ; do
 	fi
 	echo
         #
-	#----- set OUTPUT_DIR and several parameters for GrADS template
+	#----- set OUTPUT_DIR and several parameters for GrADS gtemplate
 	#
 	HEAD=img
 	OUTPUT_DIR=${DIR_OUTPUT_IMG}
@@ -165,7 +165,7 @@ for FILE_JOB in ${FILE_JOB_LIST[@]} ; do
 	    OUTPUT_DIR=${OUTPUT_DIR}/$( echo ${DIR[$j]} | sed -e "s/^-/m/g" )
 	done
 	#
-	LINE_LIST=( "${LINE_LIST[@]:2:15}" )  # shift array by 2
+	LINE_LIST=( "${LINE_LIST[@]:2:99}" )  # shift array by 2
 	FLAG_GRADS=0
         #
         #----- create cnf for ${DESC_ftype}.gs -----
@@ -173,8 +173,7 @@ for FILE_JOB in ${FILE_JOB_LIST[@]} ; do
         # common for all
 	cat > ${TEMP_DIR}/cnf_${DESC_ftype}.gsf <<EOF
 function cnf_${DESC_ftype}()
-*    rc = gsfpath( '${DIR_RUN_LIST}' )
-    rc = gsfpath( '${DIR_RUN_LIST} ${DIR_RUN_LIST}/database' )
+    rc = gsfpath( '${DIR_GTEMPLATE} ${DIR_GTEMPLATE}/database' )
     _varid = '${DESC_varid}'
 EOF
         #

@@ -1,23 +1,19 @@
 #!/bin/sh
+. ./usr/common.sh || exit 1
 export LANG=en
 
 RUNID=$1
 TYPE=$2  # e.g., "ys"
 
-#exit  # If you don't use astarisk in job/, comment in this line.
+#exit  # If you don't use astarisk in job/, exit this script here.
 
 # TODO; ya06 (annual mean starting from June)
 
-#grads -xblc "/cwork5/kodama/gscript/run_list/get_ymd.gs ${RUNID} temp.$$" > /dev/null
-grads -xblc "/cwork5/kodama/gscript/gtemplate_git/git/get_ymd.gs ${RUNID} temp.$$" > /dev/null
+grads -xblc "${DIR_GTEMPLATE}/get_ymd.gs ${RUNID} temp.$$" > /dev/null
 YMD_LIST=( $( cat temp.$$ | sed -e "s/-/ /g" ) ) # TODO: in future. more than one YMD range will be supported.
 rm temp.$$
 
 [ ${#YMD_LIST[@]} -eq 1 ] && exit
-
-#YMD_LIST=( 20040820 20130228 )
-#YMD_LIST=( 20040820 20140830 )
-#YMD_LIST=( 20040101 20141231 )
 
 if [ ${YMD_LIST[0]} -gt ${YMD_LIST[1]} ] ; then
     RET=""

@@ -1,16 +1,14 @@
-. /cwork5/kodama/program/sh/bash_common/release-20151012/bash_common.sh
-export PATH=/cwork5/kodama/program/sh/bash_common/release-20151012:${PATH}
+export PATH=/hoge/bash_common/release-20151012:${PATH}
+. bash_common.sh
 
-DIR_RUN_LIST=/cwork5/kodama/gscript/run_list
-
-DIR_TEMPLATE=/cwork5/kodama/gscript/template_git/release-20150912
-FILE_LIST_TEMPLATE=( \
+DIR_GTEMPLATE=/hoge/gtemplate/release-20151013
+FILE_LIST_GTEMPLATE=( \
     isccp_matrix.gs  \
     latlev.gs        \
     latlon.gs        \
     latzm.gs         \
-    run_list.gsf     \
-    run_list         \
+    set_region.gsf   \
+    set_time.gsf     \
     )
 
 OVERWRITE="no"
