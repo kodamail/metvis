@@ -336,9 +336,10 @@ EOF
 	    ERROR=${ERROR}$( grep -i "all undefined values" grads.log )
 	    ERROR=${ERROR}$( grep -i "Data Request Warning" grads.log )
 	    if [ "${ERROR}" != "" ] ; then
+		cp -r ../${TEMP_DIR} ../${TEMP_DIR}.save
 		echo
 		echo "error occurred!"
-		echo "see temp_$$/grads.log for details"
+		echo "see ${TEMP_DIR}.save/grads.log for details"
 		echo
 		exit 1
 	    fi
