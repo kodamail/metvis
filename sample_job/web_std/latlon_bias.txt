@@ -1,25 +1,9 @@
 include common_bias.txt
 
-#
-#----- general configurations for ftype = latlon -----#
-#
 ftype latlon
 mode model_bias
 {
-    # note: GSMaP_TMI: 0.25deg x 0.25deg
-    run-1 GSMaP_TMI
-    run-2 ${run2_list}
-    {
-        varid precip
-        timeid ${timeid}
-        y* *
-        region global tropics
-        (
-            ${run-1} ${varid}
-            ${run-2} ${varid} -cdir sl/2560x1280/monthly_mean
-        )
-    }
-    run-1 GPCP CMAP
+    run-1 GPCP.v2.2 CMAP
     run-2 ${run2_list}
     {
         varid precip
@@ -29,6 +13,18 @@ mode model_bias
         (
             ${run-1} ${varid}
             ${run-2} ${varid} -cdir sl/144x72/monthly_mean
+        )
+    }
+    run-1 GSMaP_TMI
+    run-2 ${run2_list}
+    {
+        varid precip
+        timeid ${timeid}
+        y* *
+        region global tropics
+        (
+            ${run-1} ${varid} -cdir monthly
+            ${run-2} ${varid} -cdir sl/1440x720/monthly_mean
         )
     }
     run-1 JRA55
@@ -59,7 +55,7 @@ mode model_bias
         y* *
         region global
         (
-            ${run-1} ${varid} -cdir data_conv/surface/144x73/monthly
+            ${run-1} ${varid} -cdir surface/144x73/monthly
             ${run-2} ${varid} -cdir sl/144x72/monthly_mean
         )
         varid t700 t500 t300 u700 u500 u300 rh700 rh500 rh300
@@ -67,24 +63,22 @@ mode model_bias
         y* *
         region global
         (
-            ${run-1} ${varid} -cdir data_conv/pressure/144x73/monthly
+            ${run-1} ${varid} -cdir pressure/144x73/monthly
             ${run-2} ${varid} -cdir ml_plev/144x72x37/monthly_mean
         )
-    
     }
     run-1 ISCCP_D1_OBS
     run-2 ${run2_list}
     {
-        varid isccp_high_vis isccp_middle_vis isccp_low_vis isccp_high_vis_thick isccp_middle_vis_thick isccp_low_vis_thick isccp_high_vis_med isccp_middle_vis_med isccp_low_vis_med isccp_high_vis_thin isccp_middle_vis_thin isccp_low_vis_thin 
+        varid isccp_all_vis isccp_high_vis isccp_middle_vis isccp_low_vis isccp_all_vis_thick isccp_high_vis_thick isccp_middle_vis_thick isccp_low_vis_thick isccp_all_vis_med isccp_high_vis_med isccp_middle_vis_med isccp_low_vis_med isccp_all_vis_thin isccp_high_vis_thin isccp_middle_vis_thin isccp_low_vis_thin 
         timeid ${timeid}
         y* *
         region global
         (
-            ${run-1} ${varid}
+            ${run-1} ${varid} -cdir monthly
             ${run-2} ${varid} -cdir isccp/144x72x49/monthly_mean
         )
     }
-
     run-1 SRB3.0
     run-2 ${run2_list}
     {
@@ -94,7 +88,20 @@ mode model_bias
         y* *
         region global
         (
-            ${run-1} ${varid} -time monthly_mean
+            ${run-1} ${varid} -cdir monthly
+            ${run-2} ${varid} -cdir sl/360x181/monthly_mean
+        )
+    }
+    run-1 CERES_EBAF_TOA_Ed2.8
+    run-2 ${run2_list}
+    {
+        varid_list = lw_up_toa lw_up_clr_toa lw_crf_toa sw_up_toa sw_up_clr_toa sw_crf_toa sw_down_toa sw_net_toa aw_net_toa aw_crf_toa
+        varid ${varid_list}
+        timeid ${timeid}
+        y* *
+        region global
+        (
+            ${run-1} ${varid} -cdir monthly
             ${run-2} ${varid} -cdir sl/360x181/monthly_mean
         )
     }
@@ -118,7 +125,7 @@ mode model_bias
             ${run-2} ${varid} -cdir ml_plev/144x72x37/monthly_mean
         )
     }
-    run-1 OISST_v2
+    run-1 OISST.v2
     run-2 ${run2_list}
     {
         varid sst
@@ -130,8 +137,6 @@ mode model_bias
             ${run-2} ${varid} -cdir ol/144x72/monthly_mean
         )
     }
-
-    # TODO: match grid (ERA: 240x121)
     run-1 ERA_INTERIM
     run-2 ${run2_list}
     {
@@ -141,7 +146,7 @@ mode model_bias
         region global
         (
             ${run-1} ${varid} -cdir moda/sfc/240x121
-            ${run-2} ${varid} -cdir sl/144x72/monthly_mean
+            ${run-2} ${varid} -cdir sl/240x121/monthly_mean
         )
     }
     run-1 ERA_INTERIM
@@ -153,7 +158,7 @@ mode model_bias
         region global
         (
             ${run-1} ${varid} -cdir moda/pl/240x121
-            ${run-2} ${varid} -cdir ml_plev/144x72x37/monthly_mean
+            ${run-2} ${varid} -cdir ml_plev/240x121x37/monthly_mean
         )
     }
 

@@ -261,7 +261,7 @@ EOF
 	esac
         #
 	if [ "${DESC_ftype}" = "isccp_matrix" ] ; then
-	    cat >> /cnf_${DESC_ftype}.gsf <<EOF
+	    cat >> ${TEMP_DIR}/cnf_${DESC_ftype}.gsf <<EOF
     _type = '${DESC_matrix_type}'
 EOF
 	fi
@@ -291,7 +291,7 @@ EOF
       prex( 'open 'dir'/isccp/144x72x49/monthly_mean/dfq_isccp2/dfq_isccp2.ctl' )
       _var.f = 'dfq_isccp2.'f
       _f2df.f = last()
-      'open 'dir'/ml_zlev/144x72x38/monthly_mean/ms_pres/ms_pres.ctl'
+      prex( 'open 'dir'/ml_zlev/144x72x38/monthly_mean/ms_pres/ms_pres.ctl' )
       _var_pres.f = 'ms_pres.'_f2df.f+1
       f = f + 1
     endif

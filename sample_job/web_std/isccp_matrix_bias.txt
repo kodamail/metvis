@@ -11,8 +11,10 @@ mode model_bias
         region global
         matrix_type 7x7
         (
-            ${run-1} dummy
+            ${run-1} -cdir monthly
             ${run-2} dummy
         )
     }
 }
+#            ${run-1} dummy
+#            ${run-2} dummy

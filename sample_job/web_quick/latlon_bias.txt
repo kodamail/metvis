@@ -1,0 +1,44 @@
+include common_bias.txt
+
+ftype latlon
+mode model_bias
+{
+    run-1 GPCP.v2.2
+    run-2 ${run2_list}
+    {
+        varid precip
+        timeid ${timeid}
+        y* *
+        region global
+        (
+            ${run-1} ${varid}
+            ${run-2} ${varid} -cdir sl/144x72/monthly_mean
+        )
+    }
+    run-1 JRA55
+    run-2 ${run2_list}
+    {
+        varid t2m
+        timeid ${timeid}
+        y* *
+        region global
+        (
+            ${run-1} ${varid} -cdir ctl_monthly
+            ${run-2} ${varid} -cdir sl/288x145/monthly_mean
+        )
+    }
+    run-1 CERES_EBAF_TOA_Ed2.8
+    run-2 ${run2_list}
+    {
+        varid_list = lw_up_toa lw_up_clr_toa lw_crf_toa sw_up_toa sw_up_clr_toa sw_crf_toa sw_down_toa sw_net_toa aw_net_toa aw_crf_toa
+        varid ${varid_list}
+        timeid ${timeid}
+        y* *
+        region global
+        (
+            ${run-1} ${varid} -cdir monthly
+            ${run-2} ${varid} -cdir sl/360x181/monthly_mean
+        )
+    }
+}
+

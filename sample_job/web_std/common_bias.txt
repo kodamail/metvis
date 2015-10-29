@@ -1,0 +1,21 @@
+#------------------------------------------------------------#
+#
+# common configurations for *_bias.txt
+#
+#------------------------------------------------------------#
+#
+
+
+#
+# run2 list for general configuration
+#
+run2_list = K.200406.N12.gl09.L38.a
+
+#
+# timeid list for general configuration
+#
+
+# for annual-scale integration
+timeid  = seasonal_mean
+#timeid += monthly_mean
+
