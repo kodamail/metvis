@@ -1,28 +1,5 @@
 include common_bias.txt
 
-#
-#----- quick -----#
-# -> separate file!
-#
-ftype latlev
-mode model_bias
-{
-    run-1 JRA55
-    run-2 ${run2_list}
-    {
-        varid t u
-        timeid ${timeid}
-        y* *
-        (
-            ${run-1} ${varid} -cdir ctl_monthly
-            ${run-2} ${varid} -cdir ml_plev/zmean_145x37/monthly_mean
-        )
-    }
-}
-
-#
-#----- all -----#
-#
 ftype latlev
 mode model_bias
 {
@@ -34,7 +11,7 @@ mode model_bias
         y* *
         (
             ${run-1} ${varid} -cdir ctl_monthly
-            ${run-2} ${varid} -cdir ml_plev/zmean_145x37/monthly_mean
+            ${run-2} ${varid} -cdir ml_plev/mm_zmean_145x37/monthly_mean
         )
     }
     run-1 ERA_INTERIM
@@ -45,7 +22,7 @@ mode model_bias
         y* *
         (
             ${run-1} ${varid} -cdir moda/pl/240x121
-            ${run-2} ${varid} -cdir ml_plev/zmean_121x37/monthly_mean
+            ${run-2} ${varid} -cdir ml_plev/mm_zmean_121x37/monthly_mean
         )
     }
 
@@ -57,7 +34,7 @@ mode model_bias
         y* *
         (
             ${run-1} ${varid} -cdir pressure/144x73/monthly
-            ${run-2} ${varid} -cdir ml_plev/zmean_72x37/monthly_mean
+            ${run-2} ${varid} -cdir ml_plev/mm_zmean_72x37/monthly_mean
         )
     }
 
@@ -69,7 +46,7 @@ mode model_bias
         y* *
         (
             ${run-1} ${varid}
-            ${run-2} ${varid} -cdir ml_plev/zmean_72x37/monthly_mean
+            ${run-2} ${varid} -cdir ml_plev/mm_zmean_72x37/monthly_mean
         )
     }
 
