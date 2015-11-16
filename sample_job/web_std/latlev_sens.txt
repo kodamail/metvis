@@ -1,0 +1,58 @@
+include common_sens.txt
+
+ftype latlev
+mode sens_model_bias
+{
+    run-1 JRA55
+    run-2 ${run_cntl}
+    run-3 ${run_sens}
+    {
+        varid t u v rh qv
+        timeid ${timeid}
+        y* *
+        (
+            ${run-1} ${varid} -cdir ctl_monthly
+            ${run-2} ${varid} -cdir ml_plev/mm_zmean_145x37/monthly_mean
+            ${run-3} ${varid} -cdir ml_plev/mm_zmean_145x37/monthly_mean
+        )
+    }
+    run-1 ERA_INTERIM
+    run-2 ${run_cntl}
+    run-3 ${run_sens}
+    {
+        varid t u v rh
+        timeid ${timeid}
+        y* *
+        (
+            ${run-1} ${varid} -cdir moda/pl/240x121
+            ${run-2} ${varid} -cdir ml_plev/mm_zmean_121x37/monthly_mean
+            ${run-3} ${varid} -cdir ml_plev/mm_zmean_121x37/monthly_mean
+        )
+    }
+    run-1 NCEP1
+    run-2 ${run_cntl}
+    run-3 ${run_sens}
+    {
+        varid t u v rh
+        timeid ${timeid}
+        y* *
+        (
+            ${run-1} ${varid} -cdir pressure/144x73/monthly
+            ${run-2} ${varid} -cdir ml_plev/mm_zmean_72x37/monthly_mean
+            ${run-3} ${varid} -cdir ml_plev/mm_zmean_72x37/monthly_mean
+        )
+    }
+    run-1 NCEP_FNL
+    run-2 ${run_cntl}
+    run-3 ${run_sens}
+    {
+        varid t u rh qv
+        timeid ${timeid}
+        y* *
+        (
+            ${run-1} ${varid}
+            ${run-2} ${varid} -cdir ml_plev/mm_zmean_72x37/monthly_mean
+            ${run-3} ${varid} -cdir ml_plev/mm_zmean_72x37/monthly_mean
+        )
+    }
+}

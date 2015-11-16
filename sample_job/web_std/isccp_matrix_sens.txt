@@ -12,7 +12,7 @@ mode sens_model_bias
         region global
         matrix_type 7x7
         (
-            ${run-1} dummy
+            ${run-1} -ctl monthly
             ${run-2} dummy
             ${run-3} dummy
         )
