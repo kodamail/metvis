@@ -57,6 +57,7 @@ elif [ "${TYPE}" = "ys" ] ; then
 	let YEAR2=YEAR2-1
 	MONTH=12
 	RET="${RET},${YEAR2},DJF"
+	let YEAR2=YEAR2+1
     elif [ ${MONTH2} -le 7 ] ; then
 	MONTH=3
 	RET="${RET},${YEAR2},MAM"
