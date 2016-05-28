@@ -1,0 +1,18 @@
+#------------------------------------------------------------#
+#
+# common configurations for *_sens.txt
+#
+#------------------------------------------------------------#
+
+#
+# run_cntl: control run
+# run_sens: sensitivity run
+#
+run_cntl = K.200406.N15.5v2.gl09.s
+run_sens = K.200406.N15.5v2.gl09.s.005
+
+#
+# timeid list for general configuration
+#
+timeid = seasonal_mean
+#timeid += monthly_mean
