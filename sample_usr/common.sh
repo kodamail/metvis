@@ -9,6 +9,7 @@ FILE_LIST_GTEMPLATE=( \
     latzm.gs         \
     set_region.gsf   \
     set_time.gsf     \
+    spm.gs
     )
 
 OVERWRITE="no"
