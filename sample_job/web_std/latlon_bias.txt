@@ -1,6 +1,6 @@
 include common_bias.txt
 
-ftype latlon
+ftype latlon latzm
 mode model_bias
 {
     run-1 GPCP.v2.2 CMAP
