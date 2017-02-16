@@ -186,6 +186,8 @@ EOF
     _disp.5 = '2 1'
     _cbar.2 = 'hor'
     _cbar.5 = 'hor'
+    _monit.5 = 'bias'
+    _monit.6 = 'bias'
 EOF
 		if [ "${DESC_ftype}" = "latlev" ] ; then
 		    cat >> ${TEMP_DIR}/cnf_${DESC_ftype}.gsf <<EOF
@@ -205,6 +207,8 @@ EOF
     _disp.6 = '3 1'
     _cbar.3 = 'hor'
     _cbar.6 = 'hor'
+    _monit.5 = 'bias'
+    _monit.6 = 'bias'
 EOF
 		if [ "${DESC_ftype}" = "latlev" ] ; then
 		    cat >> ${TEMP_DIR}/cnf_${DESC_ftype}.gsf <<EOF
