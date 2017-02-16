@@ -15,15 +15,17 @@ mode model_bias
             ${run-2} ${varid} -cdir sl/144x72/monthly_mean
         )
     }
-    run-1 JRA55
+#    run-1 JRA55
+    run-1 JRA55v2
     run-2 ${run2_list}
     {
-        varid t2m
+        varid mslp t2m
         timeid ${timeid}
         y* *
         region global
         (
-            ${run-1} ${varid} -cdir ctl_monthly
+#            ${run-1} ${varid} -cdir ctl_monthly
+            ${run-1} ${varid} -cdir sl/288x145/monthly_mean
             ${run-2} ${varid} -cdir sl/288x145/monthly_mean
         )
     }
