@@ -72,6 +72,7 @@ for FILE_JOB in ${FILE_JOB_LIST[@]} ; do
     ./parse_list.pl file=${FILE_JOB} > ${TEMP_DIR}/temp.txt || exit 1
     pmax=$( cat ${TEMP_DIR}/temp.txt | wc -l ) || exit 1
     for(( p=1; ${p}<=${pmax}; p=${p}+1 )) ; do
+    	[ ${p} -eq 1 ] && echo "JOB=${FILE_JOB}"
 	TMP_LINE=$( sed ${TEMP_DIR}/temp.txt -e "${p},${p}p" -e d ) || exit 1
 	if [ "${TMP_LINE}" != "" ] ; then
 	    LINE_LIST[${#LINE_LIST[@]}]=${TMP_LINE}
