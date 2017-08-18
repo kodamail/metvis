@@ -116,7 +116,7 @@ mode model_bias
             ${run-1} ${varid}
             ${run-2} ${varid} -cdir sl/144x72/monthly_mean
         )
-        varid t700 t500 t300 u700 u500 u300 rh700 rh500 rh300 qv700 qv500 qv300
+        varid t700 t500 t300 u700 u500 u300 rh700 rh500 rh300
         timeid ${timeid}
         y* *
         region global
