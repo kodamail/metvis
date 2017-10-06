@@ -45,7 +45,8 @@ mode model_bias
     run-1 CERES_EBAF_TOA_Ed2.8
     run-2 ${run2_list}
     {
-        varid_list = lw_up_toa lw_up_clr_toa lw_crf_toa sw_up_toa sw_up_clr_toa sw_crf_toa sw_down_toa sw_net_toa aw_net_toa aw_crf_toa
+#        varid_list = lw_up_toa lw_up_clr_toa lw_crf_toa sw_up_toa sw_up_clr_toa sw_crf_toa sw_down_toa sw_net_toa aw_net_toa aw_crf_toa
+        varid_list = lw_up_toa lw_up_clr_toa lw_crf_toa sw_up_toa sw_up_clr_toa sw_crf_toa aw_down_toa aw_net_toa aw_crf_toa
         varid ${varid_list}
         timeid ${timeid}
         y* *

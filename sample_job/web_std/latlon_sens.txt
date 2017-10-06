@@ -110,25 +110,27 @@ mode sens_model_bias
             ${run-3} ${varid} -cdir isccp/144x72x49/monthly_mean
         )
     }
-    run-1 SRB3.0
-    run-2 ${run_cntl}
-    run-3 ${run_sens}
-    {
-        varid ${varid_2d_rad_list}
-        timeid ${timeid}
-        y* *
-        region global
-        (
-            ${run-1} ${varid} -cdir monthly
-            ${run-2} ${varid} -cdir sl/360x181/monthly_mean
-            ${run-3} ${varid} -cdir sl/360x181/monthly_mean
-        )
-    }
+#    run-1 SRB3.0
+#    run-2 ${run_cntl}
+#    run-3 ${run_sens}
+#    {
+#        varid ${varid_2d_rad_list}
+#        timeid ${timeid}
+#        y* *
+#        region global
+#        (
+#            ${run-1} ${varid} -cdir monthly
+#            ${run-2} ${varid} -cdir sl/360x181/monthly_mean
+#            ${run-3} ${varid} -cdir sl/360x181/monthly_mean
+#        )
+#    }
     run-1 CERES_EBAF_TOA_Ed2.8
     run-2 ${run_cntl}
     run-3 ${run_sens}
     {
-        varid lw_up_toa lw_up_clr_toa lw_crf_toa sw_up_toa sw_up_clr_toa sw_crf_toa sw_down_toa sw_net_toa aw_net_toa aw_crf_toa
+#        varid lw_up_toa lw_up_clr_toa lw_crf_toa sw_up_toa sw_up_clr_toa sw_crf_toa sw_down_toa sw_net_toa aw_net_toa aw_crf_toa
+        varid_list = lw_up_toa lw_up_clr_toa lw_crf_toa sw_up_toa sw_up_clr_toa sw_crf_toa aw_down_toa aw_net_toa aw_crf_toa
+        varid ${varid_list}
         timeid ${timeid}
         y* *
         region global
