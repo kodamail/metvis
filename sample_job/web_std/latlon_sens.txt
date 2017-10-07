@@ -6,9 +6,9 @@ include common_sens.txt
 varid_2d_rad_list  = 
 varid_2d_rad_list += lw_up_toa lw_up_clr_toa lw_crf_toa 
 varid_2d_rad_list += lw_up_sfc lw_down_sfc lw_net_sfc
-varid_2d_rad_list += sw_up_toa sw_down_toa sw_net_toa sw_up_clr_toa sw_crf_toa 
+varid_2d_rad_list += sw_up_toa sw_up_clr_toa sw_crf_toa 
 varid_2d_rad_list += sw_up_sfc sw_down_sfc sw_net_sfc
-varid_2d_rad_list += aw_net_toa aw_crf_toa
+varid_2d_rad_list += aw_down_toa aw_net_toa aw_crf_toa
 varid_2d_rad_list += aw_net_sfc
 #
 varid_isccp_list  = isccp_all_vis isccp_high_vis isccp_middle_vis isccp_low_vis
