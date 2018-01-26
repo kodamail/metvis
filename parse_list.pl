@@ -253,6 +253,7 @@ sub parse_core
 		elsif( $$status_now[$dd] eq "monthly_mean"       ){ $$type_now[$d] = "ym";  }
 		elsif( $$status_now[$dd] eq "seasonal_mean"      ){ $$type_now[$d] = "ys";  }
 		elsif( $$status_now[$dd] eq "annual_mean"        ){ $$type_now[$d] = "ya";  }
+		elsif( $$status_now[$dd] eq "annual_mean_06"     ){ $$type_now[$d] = "ya06";  }
 		elsif( $$status_now[$dd] eq "clim_monthly_mean"  ){ $$type_now[$d] = "cym"; }
 		elsif( $$status_now[$dd] eq "clim_seasonal_mean" ){ $$type_now[$d] = "cys"; }
 		elsif( $$status_now[$dd] eq "clim_annual_mean"   ){ $$type_now[$d] = "cya"; }
@@ -268,7 +269,7 @@ sub parse_core
 #     || $$type_now[$d] eq "ys"  || $$type_now[$d] eq "cys" 
 #     || $$type_now[$d] eq "ya"  || $$type_now[$d] eq "cya" 
 #     || $$type_now[$d] eq "ymd_range" || $$type_now[$d] eq "ymdh_range" )
-    if( $$type_now[$d] =~ /^ym|cym|ymd|ymdh|ys|cys|ya|cya|ymd_range|ymdh_range$/ )
+    if( $$type_now[$d] =~ /^ym|cym|ymd|ymdh|ys|cys|ya|ya06|cya|ymd_range|ymdh_range$/ )
     {
 	if( $$status[$d] eq "*" )  # expand using run_list
 	{
@@ -323,6 +324,7 @@ sub parse_core
 		    elsif( $$type_now[$p] eq "ys"         ){ print "year season "; }
 		    elsif( $$type_now[$p] eq "cys"        ){ print "years season "; }
 		    elsif( $$type_now[$p] eq "ya"         ){ print "year "; }
+		    elsif( $$type_now[$p] eq "ya06"       ){ print "year "; }
 		    elsif( $$type_now[$p] eq "cya"        ){ print "years "; }
 		    elsif( $$type_now[$p] eq "ymd_range"  ){ print "year month day year2 month2 day2 "; }
 		    elsif( $$type_now[$p] eq "ymdh_range" ){ print "year month day hour year2 month2 day2 hour2 "; }
@@ -343,7 +345,7 @@ sub parse_core
 		    #
 		    $rep{$$type_now[$p]} = $$status_now[$p];  # ${type-name}
 		    #
-		    if( $$type_now[$p] eq "ya" )
+		    if( $$type_now[$p] eq "ya" || $$type_now[$p] eq "ya06" )
 		    {
 			$rep{'year'}  = $array[0];
 		    }
@@ -403,6 +405,7 @@ sub expand_ast
     my $type_now    = shift;  # pointer
     
     my @st = ();
+#    print STDERR "ok: @$status_now\n";
     for( my $p=0; $p<=$#$status_now; $p++ )
     {
 	my @run_list;
@@ -676,7 +679,8 @@ sub expand
 	    
 	}
     }
-    elsif( $type_now eq "ya" && $st =~ /^([0-9][0-9][0-9][0-9]),([0-9][0-9][0-9][0-9])$/ )
+#    elsif( $type_now eq "ya" && $st =~ /^([0-9][0-9][0-9][0-9]),([0-9][0-9][0-9][0-9])$/ )
+    elsif( ( $type_now eq "ya" || $type_now eq "ya06" ) && $st =~ /^([0-9][0-9][0-9][0-9]),([0-9][0-9][0-9][0-9])$/ )
     {
 	my ( $year_start,   $year_end   ) = ( $1, $2 );
 	for( my $y=$year_start; $y<=$year_end; $y++ )
