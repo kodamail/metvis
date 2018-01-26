@@ -78,6 +78,13 @@ elif [ "${TYPE}" = "ya" ] ; then
     Y2=$( date --date "${Y2}0101 1 year ago" +%Y )
     [ ${Y1} -le ${Y2} ] && RET="${Y1},${Y2}"
 
+elif [ "${TYPE}" = "ya06" ] ; then
+    Y1=$( date --date "${YMD_LIST[0]} 5 month ago 1 second ago" +%Y )
+    Y1=$( date --date "${Y1}0601 1 year" +%Y )
+    Y2=$( date --date "${YMD_LIST[1]} 5 month ago 1 day" +%Y )
+    Y2=$( date --date "${Y2}0601 1 year ago" +%Y )
+    [ ${Y1} -le ${Y2} ] && RET="${Y1},${Y2}"
+
 elif [ "${TYPE}" = "cym" ] ; then
     YM1=$( date --date "${YMD_LIST[0]} 1 second ago" +%Y%m )
     YM1=$( date --date "${YM1}01 1 month" +%Y%m )

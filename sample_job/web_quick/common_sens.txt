@@ -16,3 +16,4 @@ run_sens = K.200406.N15.5v2.gl09.s.005
 #
 timeid = seasonal_mean
 #timeid += monthly_mean
+#timeid += annual_mean_06

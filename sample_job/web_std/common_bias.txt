@@ -18,4 +18,5 @@ run2_list = K.200406.N12.gl09.L38.a
 # for annual-scale integration
 timeid  = seasonal_mean
 #timeid += monthly_mean
+#timeid += annual_mean_06
 
