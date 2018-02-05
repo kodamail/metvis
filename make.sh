@@ -341,8 +341,9 @@ EOF
 	    else
 		grads -blcx "${DESC_ftype}.gs" | tee grads.log 2>&1
 	    fi
-	    #
-	    ERROR=$( grep -i "error" grads.log )
+	    #	    
+#	    ERROR=$( grep -i "error" grads.log )
+	    ERROR=$( grep -i "error" grads.log | grep -v "Error in xcbar.gs: No shading information" )
 	    ERROR=${ERROR}$( grep -i "all undefined values" grads.log )
 #	    ERROR=${ERROR}$( grep -i "Data Request Warning" grads.log )
 	    if [ "${ERROR}" != "" ] ; then
