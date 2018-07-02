@@ -197,6 +197,17 @@ EOF
 EOF
 		fi
 		;;
+	    "sens_model_3" )
+		cat >> ${TEMP_DIR}/cnf_${DESC_ftype}.gsf <<EOF
+    _disp.1 = '1'
+    _disp.2 = '2'
+    _disp.3 = '3'
+    _disp.5 = '2 1'
+    _disp.6 = '3 2'
+    _cbar.3 = 'hor'
+    _cbar.6 = 'hor'
+EOF
+		;;
 	    "sens_model_bias" )
 		cat >> ${TEMP_DIR}/cnf_${DESC_ftype}.gsf <<EOF
     _disp.1 = '1'
@@ -221,6 +232,12 @@ EOF
     _over.6 = '1'
 EOF
 		fi
+		;;
+	    "raw" )
+		cat >> ${TEMP_DIR}/cnf_${DESC_ftype}.gsf <<EOF
+    _disp.1 = '1'
+    _cbar.1 = 'hor'
+EOF
 		;;
 	    * )
 		echo "error: DESC_mode=${DESC_mode} is invalid."
