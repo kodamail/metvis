@@ -76,6 +76,116 @@ sub main()
 
     ############################################################
     #
+    # pre-process: expand variable
+    #
+    ############################################################
+    my $flag_comment = 0;  # =1: comment(/* */), =0: non-comment
+    my %udef;  # user-defined variables (e.g. define a = 123 456 )
+    for( my $i=0; $i<=$#txt; $i++ )  # for all line
+    {
+#        print $i . ": " . $txt[$i] . "\n";
+
+	if( $txt[$i] =~ /^\s*exit\s*$/ ){ last; }
+
+        # comment statement
+	if( $flag_comment == 1 )
+	{
+	    $txt[$i] = ""; 
+	    if( $txt[$i] =~ /^\s*\*\// ){ $flag_comment = 0; }
+	    next;
+	}
+	if( $txt[$i] =~ /^\s*\/\*/ ){ $txt[$i] = ""; $flag_comment = 1; next; }
+	if( $txt[$i] =~ /^\s*#/ ){ $txt[$i] = ""; next; }
+	    
+        # replace ${} with defined variables
+	while ( my ($key, $val) = each (%udef) )
+	{
+	    $txt[$i] =~ s/\$\{$key\}|\$$key/$val/g;
+	} 
+
+        # define variable
+        if( $txt[$i] =~ /^ *([a-zA-Z][^ ]*) *= *(.*)$/ )
+        {
+	    $udef{"$1"} = $2;  # new/overwrite
+	    $txt[$i] = "";
+	    next;
+	}
+        elsif( $txt[$i] =~ /^ *([a-zA-Z][^ ]*) *\+= *(.*)$/ )
+        {
+	    $udef{"$1"} = $udef{"$1"} . " " . $2; # add
+	    $txt[$i] = "";
+	    next;
+	}
+
+        # delete void line and unnecessary space
+        $txt[$i] =~ s/^ +//;
+        $txt[$i] =~ s/  +/ /g;
+        $txt[$i] =~ s/\n$//;
+        #print STDERR $i . ": " . $txt[$i] . "\n";
+
+	# expend ;
+	if( $txt[$i] =~ /^ *([a-zA-Z][^ ;]*);([a-zA-Z][^ ;]*)[ ;]/ )
+	{
+	    # search for copy area
+	    # foreward
+	    my $imin = 0;
+	    my $imax = -1;
+	    for( my $j=$i-1; $j>=0; $j-- )
+	    {
+		if( $txt[$j] =~ /^\s*\{\s*$/ ){ $imin = $j + 1 ; last; }
+	    }
+	    my $depth = 0;     # depth of { }
+	    for( my $j=$i+1; $j<=$#txt; $j++ )
+	    {
+#		print $j . ", " . $depth . " : " .$txt[$j] . "\n";
+		if( $txt[$j] =~ /^\s*\{\s*$/ ){ $depth++ }
+		if( $txt[$j] =~ /^\s*\}\s*$/ ){ $depth--; $imax = $j; }
+		if( $depth == 0 && $imax >= 0 ){ last; }
+	    }
+	    my @cp_head = @txt[$imin..$i-1];
+	    my @cp_tail = @txt[$i+1..$imax];
+
+	    my @org = split( /\s+/, $txt[$i] );
+	    my @ins;
+	    my ( $str1, $str2 );
+	    my @tmp1 = split( /;/, $org[0] );
+	    for( my $j=1; $j<=$#org; $j++ )
+	    {
+		my @tmp2 = split( /;/, $org[$j] );
+		push( @ins, @cp_head );
+		push( @ins, "$tmp1[0] $tmp2[0]" );
+		push( @ins, "$tmp1[1] $tmp2[1]" );
+		push( @ins, @cp_tail );
+
+	    }
+#	    print @ins;
+	    splice( @txt, $imin, $imax-$imin+1, @ins );
+
+
+#	    print $imin . "\n";
+#	    print $imax . "\n";
+#	    print "cp:\n";
+#	    print @cp;
+#	    print "head:\n";
+#	    print @cp_head;
+#	    print "\n";
+#	    print "tail:\n";
+#	    print @cp_tail;
+#	    print "\n";
+#	    exit;
+#	    splice( @txt, $i, 1, ( $str1, $str2 ) );
+
+
+
+	}
+#        print "  ->  " . $txt[$i] . "\n";
+
+
+    }
+
+
+    ############################################################
+    #
     # parse @txt
     #
     ############################################################
@@ -87,49 +197,51 @@ sub main()
     my $depth = 0;     # depth of { }
     my @one_depth = ( );  # depth of status in one { } (not necessarily 1)
     my $one_depth_temp = 0;
-    my $flag_comment = 0;  # =1: comment(/* */), =0: non-comment
     my $flag_blacket = 0;
     my @status_temp = ( );
     my @type_temp = ( );
-    my %udef;  # user-defined variables (e.g. define a = 123 456 )
     for( my $i=0; $i<=$#txt; $i++ )  # for all line
     {
 #        print $i . ": " . $txt[$i] . "\n";
     
 	if( $txt[$i] =~ /^\s*exit\s*$/ ){ exit; }
-	
-        # comment statement
-	if( $flag_comment == 1 )
-	{
-	    if( $txt[$i] =~ /^\s*\*\// ){ $flag_comment = 0; }
-	    next;
-	}
-	if( $txt[$i] =~ /^\s*\/\*/ ){ $flag_comment = 1; next; }
-	if( $txt[$i] =~ /^\s*#/ ){ next; }
-	    
-        # replace ${} with defined variables
-	while ( my ($key, $val) = each (%udef) )
-	{
-	    $txt[$i] =~ s/\$\{$key\}|\$$key/$val/g;
-	} 
-	    
-        # define variable
-        if( $txt[$i] =~ /^ *([a-zA-Z][^ ]*) *= *(.*)$/ )
-        {
-	    $udef{"$1"} = $2;  # new/overwrite
-	    next;
-	}
-        elsif( $txt[$i] =~ /^ *([a-zA-Z][^ ]*) *\+= *(.*)$/ )
-        {
-	    $udef{"$1"} = $udef{"$1"} . " " . $2; # add
-	    next;
-	}
 
-        # delete void line and unnecessary space
-        $txt[$i] =~ s/^ +//;
-        $txt[$i] =~ s/  +/ /g;
-        $txt[$i] =~ s/\n$//;
-        #print STDERR $i . ": " . $txt[$i] . "\n";
+	
+#        # comment statement
+#	if( $flag_comment == 1 )
+#	{
+#	    if( $txt[$i] =~ /^\s*\*\// ){ $flag_comment = 0; }
+#	    next;
+#	}
+#	if( $txt[$i] =~ /^\s*\/\*/ ){ $flag_comment = 1; next; }
+#	if( $txt[$i] =~ /^\s*#/ ){ next; }
+	    
+#        # replace ${} with defined variables
+#	while ( my ($key, $val) = each (%udef) )
+#	{
+#	    $txt[$i] =~ s/\$\{$key\}|\$$key/$val/g;
+#	} 
+
+#        # define variable
+#        if( $txt[$i] =~ /^ *([a-zA-Z][^ ]*) *= *(.*)$/ )
+#        {
+#	    $udef{"$1"} = $2;  # new/overwrite
+#	    next;
+#	}
+#        elsif( $txt[$i] =~ /^ *([a-zA-Z][^ ]*) *\+= *(.*)$/ )
+#        {
+#	    $udef{"$1"} = $udef{"$1"} . " " . $2; # add
+#	    next;
+#	}
+
+#        # delete void line and unnecessary space
+#        $txt[$i] =~ s/^ +//;
+#        $txt[$i] =~ s/  +/ /g;
+#        $txt[$i] =~ s/\n$//;
+#        #print STDERR $i . ": " . $txt[$i] . "\n";
+
+#        print $i . ": " . $txt[$i] . "\n";
+
 
         # )
         if( $txt[$i] =~ /^\s*\)\s*$/ )
