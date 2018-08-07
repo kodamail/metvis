@@ -21,6 +21,9 @@ FILE_JOB_LIST=()
 while [ "$1" != "" ] ; do
     if [ "$1" = "--test" -o "$1" = "test" ] ; then
 	RUN_MODE="test"
+    elif [ "$1" = "--include" ] ; then
+	shift
+	cat $1 >> ${TEMP_DIR}/inc2.txt
     elif [ "${DIR_OUTPUT_IMG}" = "" -a -d "$1" ] ; then
 	DIR_OUTPUT_IMG=$1
     elif [ -f "$1" ] ; then
@@ -81,6 +84,7 @@ for FILE_JOB in ${FILE_JOB_LIST[@]} ; do
 	cat ${TEMP_DIR}/inc2.txt >> ${TEMP_DIR}/inc.txt
     fi
     [ -f ${TEMP_DIR}/inc.txt ] && INC="inc=${TEMP_DIR}/inc.txt"
+#    cat ${TEMP_DIR}/inc.txt
     ./parse_list.pl file=${FILE_JOB} ${INC} > ${TEMP_DIR}/temp.txt || exit 1
 #    ./parse_list.pl file=${FILE_JOB} > ${TEMP_DIR}/temp.txt || exit 1
     pmax=$( cat ${TEMP_DIR}/temp.txt | wc -l ) || exit 1
