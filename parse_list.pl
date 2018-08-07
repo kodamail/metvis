@@ -21,6 +21,7 @@ sub main()
     #
     #--- job file name
     my $file = $cgi->param( 'file' );
+    my $inc  = $cgi->param( 'inc'  );
     #
     #--- order of job (optional)
     my $target_count = $cgi->param( 'count' );
@@ -41,12 +42,22 @@ sub main()
     # read data file
     #
     ############################################################
-    my @txt_pre;
+    my @txt_pre = ();
+    if( $inc ne "" )
+    {
+	if( open(LINK, "< $inc") )
+	{
+	    push( @txt_pre, <LINK> );
+	    close(LINK);
+	}
+    }
     if( open(LINK, "< $file") )
     {
-	@txt_pre = <LINK>;
+	#@txt_pre = <LINK>;
+	push( @txt_pre, <LINK> );
 	close(LINK);
     }
+    #my @txt_pre =
 
     ############################################################
     #

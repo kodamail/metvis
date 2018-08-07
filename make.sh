@@ -25,6 +25,8 @@ while [ "$1" != "" ] ; do
 	DIR_OUTPUT_IMG=$1
     elif [ -f "$1" ] ; then
 	FILE_JOB_LIST=( ${FILE_JOB_LIST[@]} $1 )
+    elif [ "$( echo $1 | grep = )" != ""  ] ; then
+	echo $1 >> ${TEMP_DIR}/inc2.txt
     else
  	echo "error in $0: argument \"$1\" is not supported (or directory does not exist)."
 	exit 1
@@ -69,7 +71,18 @@ for FILE_JOB in ${FILE_JOB_LIST[@]} ; do
     #
     i=1  # figure number
     p=1  # line number
-    ./parse_list.pl file=${FILE_JOB} > ${TEMP_DIR}/temp.txt || exit 1
+    
+    FILE_COMMON_JOB=${FILE_JOB%/*}/common.txt
+    rm -f ${TEMP_DIR}/inc.txt
+    if [ -f ${FILE_COMMON_JOB} ] ; then
+	cat ${FILE_COMMON_JOB} >> ${TEMP_DIR}/inc.txt
+    fi
+    if [ -f ${TEMP_DIR}/inc2.txt ] ; then
+	cat ${TEMP_DIR}/inc2.txt >> ${TEMP_DIR}/inc.txt
+    fi
+    [ -f ${TEMP_DIR}/inc.txt ] && INC="inc=${TEMP_DIR}/inc.txt"
+    ./parse_list.pl file=${FILE_JOB} ${INC} > ${TEMP_DIR}/temp.txt || exit 1
+#    ./parse_list.pl file=${FILE_JOB} > ${TEMP_DIR}/temp.txt || exit 1
     pmax=$( cat ${TEMP_DIR}/temp.txt | wc -l ) || exit 1
     for(( p=1; ${p}<=${pmax}; p=${p}+1 )) ; do
 	TMP_LINE=$( sed ${TEMP_DIR}/temp.txt -e "${p},${p}p" -e d ) || exit 1
