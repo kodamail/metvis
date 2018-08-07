@@ -208,6 +208,24 @@ EOF
     _cbar.6 = 'hor'
 EOF
 		;;
+	    "sens_model_bias_3" )
+		cat >> ${TEMP_DIR}/cnf_${DESC_ftype}.gsf <<EOF
+    _disp.1 = '2'
+    _disp.2 = '3'
+    _disp.3 = '4'
+    _disp.4 = '2 1'
+    _disp.5 = '3 1'
+    _disp.6 = '4 1'
+    _over.1 = '2'
+    _over.2 = '3'
+    _over.3 = '4'
+    _over.4 = '2'
+    _over.5 = '3'
+    _over.6 = '4'
+    _cbar.3 = 'hor'
+    _cbar.6 = 'hor'
+EOF
+		;;
 	    "sens_model_bias" )
 		cat >> ${TEMP_DIR}/cnf_${DESC_ftype}.gsf <<EOF
     _disp.1 = '1'
