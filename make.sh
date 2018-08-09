@@ -24,6 +24,9 @@ while [ "$1" != "" ] ; do
     elif [ "$1" = "--include" ] ; then
 	shift
 	cat $1 >> ${TEMP_DIR}/inc2.txt
+    elif [ "$1" = "--error-cnt" ] ; then
+	shift
+	MAX_ERROR_CNT=$1
     elif [ "${DIR_OUTPUT_IMG}" = "" -a -d "$1" ] ; then
 	DIR_OUTPUT_IMG=$1
     elif [ -f "$1" ] ; then
@@ -68,6 +71,7 @@ cd - > /dev/null
 #
 #========== loop for all the job files ==========
 #
+ERROR_CNT=0
 for FILE_JOB in ${FILE_JOB_LIST[@]} ; do
     #
     #========== loop for all the lines in a job file ==========
@@ -183,7 +187,7 @@ for FILE_JOB in ${FILE_JOB_LIST[@]} ; do
 	done
 	#
 	LINE_LIST=( "${LINE_LIST[@]:2:99}" )  # shift array by 2
-	FLAG_GRADS=0
+#	FLAG_GRADS=0
         #
         #----- create cnf for ${DESC_ftype}.gs -----
         #
@@ -383,7 +387,7 @@ EOF
 return
 EOF
 
-	if [ ${FLAG_GRADS} -eq 0 ] ; then
+#	if [ ${FLAG_GRADS} -eq 0 ] ; then
 	    cd ${TEMP_DIR}
 	    #
 	    if [ "${RUN_MODE}" = "test" ] ; then
@@ -399,19 +403,31 @@ EOF
 	    ERROR=${ERROR}$( grep -i "all undefined values" grads.log )
 #	    ERROR=${ERROR}$( grep -i "Data Request Warning" grads.log )
 	    if [ "${ERROR}" != "" ] ; then
-		cp -r ../${TEMP_DIR} ../${TEMP_DIR}.save
+		let ERROR_CNT++
+		ERROR_DIR=${TEMP_DIR}.error.$( printf "%05d" ${ERROR_CNT} )
+		cp -r ../${TEMP_DIR} ../${ERROR_DIR}
 		echo
 		echo "error occurred!"
-		echo "see ${TEMP_DIR}.save/grads.log for details"
+		echo "see ${ERROR_DIR}/grads.log for details"
 		echo
-		exit 1
-	    fi
-	    [ -f ${HEAD}.eps ] && eps2png.sh ${HEAD}.eps
+		if [ ${ERROR_CNT} -gt ${MAX_ERROR_CNT} ] ; then
+		    echo
+		    echo "error cnt (=${ERROR_CNT}) exceeds maximum error count (=${MAX_ERROR_CNT})!"
+		    echo "see ${TEMP_DIR}.error._____/grads.log for details"
+		    echo
+		    exit 1
+		fi
 	    cd - > /dev/null
-	fi
+	    else
+		[ -f ${HEAD}.eps ] && eps2png.sh ${HEAD}.eps
+		cd - > /dev/null
+		mv ${TEMP_DIR}/${HEAD}.png ${TEMP_DIR}/grads.log ${TEMP_DIR}/cnf_${DESC_ftype}.gsf ${OUTPUT_DIR} || exit 1
+		rm -f ${TEMP_DIR}/${HEAD}.eps
+	    fi
+#	fi
         #
-	mv ${TEMP_DIR}/${HEAD}.png ${TEMP_DIR}/grads.log ${TEMP_DIR}/cnf_${DESC_ftype}.gsf ${OUTPUT_DIR} || exit 1
-	rm -f ${TEMP_DIR}/${HEAD}.eps
+#	mv ${TEMP_DIR}/${HEAD}.png ${TEMP_DIR}/grads.log ${TEMP_DIR}/cnf_${DESC_ftype}.gsf ${OUTPUT_DIR} || exit 1
+#	rm -f ${TEMP_DIR}/${HEAD}.eps
         #
         ##############################
 	#
@@ -422,6 +438,12 @@ done
 
 rm ${TEMP_DIR}/temp.txt
 echo
-echo "$0 normally finished ($(date))"
-echo
+if [ ${ERROR_CNT} -gt 0 ] ; then
+    echo "error occurred during execution!"
+    echo "see ${TEMP_DIR}.error._____/grads.log for details"
+    echo "$0 finished ($(date))"
+else
+    echo "$0 normally finished ($(date))"
+fi
+    echo
 exit
