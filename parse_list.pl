@@ -87,7 +87,7 @@ sub main()
 
     ############################################################
     #
-    # pre-process: expand variable
+    # pre-process: expand variable & delete comment
     #
     ############################################################
     my $flag_comment = 0;  # =1: comment(/* */), =0: non-comment
@@ -216,6 +216,7 @@ sub main()
 #        print $i . ": " . $txt[$i] . "\n";
     
 	if( $txt[$i] =~ /^\s*exit\s*$/ ){ exit; }
+	if( $txt[$i] =~ /^\s*$/ ){ next; }
 
 	
 #        # comment statement
