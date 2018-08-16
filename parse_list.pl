@@ -39,51 +39,15 @@ sub main()
 
     ############################################################
     #
-    # read data file
+    # read data file and expand -include
     #
     ############################################################
     my @txt_pre = ();
     if( $inc ne "" )
     {
-	if( open(LINK, "< $inc") )
-	{
-	    push( @txt_pre, <LINK> );
-	    close(LINK);
-	}
+	read_txt( $inc, \@txt_pre );
     }
-    if( open(LINK, "< $file") )
-    {
-	#@txt_pre = <LINK>;
-	push( @txt_pre, <LINK> );
-	close(LINK);
-    }
-    #my @txt_pre =
-
-    ############################################################
-    #
-    # pre-process: expand -include.
-    #
-    ############################################################
-    my @txt;
-    for( my $i=0; $i<=$#txt_pre; $i++ )
-    {
-	if( $txt_pre[$i] =~ /^ *include ([^ ]+) *$/g )
-	{
-	    my $child_file = $1;
-	    $child_file = dirname( $file ) . "/" . $child_file;
-	    my @txt_child;
-	    if( open(LINK, "< $child_file") )
-	    {
-		@txt_child = <LINK>;
-		close(LINK);
-	    }
-	    @txt = ( @txt, @txt_child );
-	}
-	else
-	{
-	    push( @txt, $txt_pre[$i] );
-	}
-    }
+    read_txt( $file, \@txt_pre );
 
     ############################################################
     #
@@ -92,50 +56,51 @@ sub main()
     ############################################################
     my $flag_comment = 0;  # =1: comment(/* */), =0: non-comment
     my %udef;  # user-defined variables (e.g. define a = 123 456 )
-    for( my $i=0; $i<=$#txt; $i++ )  # for all line
+#    my @txt = ();
+    for( my $i=0; $i<=$#txt_pre; $i++ )  # for all line
     {
-#        print $i . ": " . $txt[$i] . "\n";
+#        print $i . ": " . $txt_pre[$i] . "\n";
 
-	if( $txt[$i] =~ /^\s*exit\s*$/ ){ last; }
+	if( $txt_pre[$i] =~ /^\s*exit\s*$/ ){ last; }
 
         # comment statement
 	if( $flag_comment == 1 )
 	{
-	    $txt[$i] = ""; 
-	    if( $txt[$i] =~ /^\s*\*\// ){ $flag_comment = 0; }
+	    $txt_pre[$i] = ""; 
+	    if( $txt_pre[$i] =~ /^\s*\*\// ){ $flag_comment = 0; }
 	    next;
 	}
-	if( $txt[$i] =~ /^\s*\/\*/ ){ $txt[$i] = ""; $flag_comment = 1; next; }
-	if( $txt[$i] =~ /^\s*#/ ){ $txt[$i] = ""; next; }
+	if( $txt_pre[$i] =~ /^\s*\/\*/ ){ $txt_pre[$i] = ""; $flag_comment = 1; next; }
+	if( $txt_pre[$i] =~ /^\s*#/ ){ $txt_pre[$i] = ""; next; }
 	    
         # replace ${} with defined variables
 	while ( my ($key, $val) = each (%udef) )
 	{
-	    $txt[$i] =~ s/\$\{$key\}|\$$key/$val/g;
+	    $txt_pre[$i] =~ s/\$\{$key\}|\$$key/$val/g;
 	} 
 
         # define variable
-        if( $txt[$i] =~ /^ *([a-zA-Z][^ ]*) *= *(.*)$/ )
+        if( $txt_pre[$i] =~ /^ *([a-zA-Z][^ ]*) *= *(.*)$/ )
         {
 	    $udef{"$1"} = $2;  # new/overwrite
-	    $txt[$i] = "";
+	    $txt_pre[$i] = "";
 	    next;
 	}
-        elsif( $txt[$i] =~ /^ *([a-zA-Z][^ ]*) *\+= *(.*)$/ )
+        elsif( $txt_pre[$i] =~ /^ *([a-zA-Z][^ ]*) *\+= *(.*)$/ )
         {
 	    $udef{"$1"} = $udef{"$1"} . " " . $2; # add
-	    $txt[$i] = "";
+	    $txt_pre[$i] = "";
 	    next;
 	}
 
         # delete void line and unnecessary space
-        $txt[$i] =~ s/^ +//;
-        $txt[$i] =~ s/  +/ /g;
-        $txt[$i] =~ s/\n$//;
+        $txt_pre[$i] =~ s/^ +//;
+        $txt_pre[$i] =~ s/  +/ /g;
+        $txt_pre[$i] =~ s/\n$//;
         #print STDERR $i . ": " . $txt[$i] . "\n";
 
 	# expend ;
-	if( $txt[$i] =~ /^ *([a-zA-Z][^ ;]*);([a-zA-Z][^ ;]*)[ ;]/ )
+	if( $txt_pre[$i] =~ /^ *([a-zA-Z][^ ;]*);([a-zA-Z][^ ;]*)[ ;]/ )
 	{
 	    # search for copy area
 	    # foreward
@@ -143,20 +108,20 @@ sub main()
 	    my $imax = -1;
 	    for( my $j=$i-1; $j>=0; $j-- )
 	    {
-		if( $txt[$j] =~ /^\s*\{\s*$/ ){ $imin = $j + 1 ; last; }
+		if( $txt_pre[$j] =~ /^\s*[\{\}]\s*$/ ){ $imin = $j + 1 ; last; }
 	    }
 	    my $depth = 0;     # depth of { }
-	    for( my $j=$i+1; $j<=$#txt; $j++ )
+	    for( my $j=$i+1; $j<=$#txt_pre; $j++ )
 	    {
 #		print $j . ", " . $depth . " : " .$txt[$j] . "\n";
-		if( $txt[$j] =~ /^\s*\{\s*$/ ){ $depth++ }
-		if( $txt[$j] =~ /^\s*\}\s*$/ ){ $depth--; $imax = $j; }
+		if( $txt_pre[$j] =~ /^\s*\{\s*$/ ){ $depth++ }
+		if( $txt_pre[$j] =~ /^\s*\}\s*$/ ){ $depth--; $imax = $j; }
 		if( $depth == 0 && $imax >= 0 ){ last; }
 	    }
-	    my @cp_head = @txt[$imin..$i-1];
-	    my @cp_tail = @txt[$i+1..$imax];
+	    my @cp_head = @txt_pre[$imin..$i-1];
+	    my @cp_tail = @txt_pre[$i+1..$imax];
 
-	    my @org = split( /\s+/, $txt[$i] );
+	    my @org = split( /\s+/, $txt_pre[$i] );
 	    my @ins;
 	    my ( $str1, $str2 );
 	    my @tmp1 = split( /;/, $org[0] );
@@ -169,12 +134,13 @@ sub main()
 		push( @ins, @cp_tail );
 
 	    }
+
+#	    print "  from:" . $imin . ": $txt_pre[$imin]\n";
+#	    print "  to  :" . $imax . ": $txt_pre[$imax]\n";
 #	    print @ins;
-	    splice( @txt, $imin, $imax-$imin+1, @ins );
+	    splice( @txt_pre, $imin, $imax-$imin+1, @ins );
 
 
-#	    print $imin . "\n";
-#	    print $imax . "\n";
 #	    print "cp:\n";
 #	    print @cp;
 #	    print "head:\n";
@@ -187,12 +153,21 @@ sub main()
 #	    splice( @txt, $i, 1, ( $str1, $str2 ) );
 
 
-
+#	    push( @txt, @ins );
 	}
+#	else{ push( @txt, $txt_pre[$i] ); }
 #        print "  ->  " . $txt[$i] . "\n";
 
 
     }
+
+    my @txt = @txt_pre;
+
+#    for( my $i=0; $i<=$#txt; $i++ )  # for all line
+#    {
+#	if( $txt[$i] ne "" ){ print $txt[$i] . "\n"; }
+#    }
+#    exit 1;
 
 
     ############################################################
@@ -339,6 +314,51 @@ sub main()
     return;
 }
 
+
+############################################################
+#
+# read job and expand -include.
+#
+############################################################
+sub read_txt
+{
+    my $fname = shift;
+    my $txt   = shift;
+    my @txt_pre;
+
+    if( open(LINK, "< $fname") )
+    {
+	push( @txt_pre, <LINK> );
+	close(LINK);
+    }
+    else
+    {
+	print STDERR "error: $fname does not exist\n";
+	exit 1;
+    }
+
+    for( my $i=0; $i<=$#txt_pre; $i++ )
+    {
+	if( $txt_pre[$i] =~ /^ *include ([^ ]+) *$/g )
+	{
+	    my $child_file = $1;
+	    $child_file = dirname( $fname ) . "/" . $child_file;
+	    my @txt_child;
+	    if( open(LINK, "< $child_file") )
+	    {
+		@txt_child = <LINK>;
+		close(LINK);
+	    }
+	    #@txt = ( @txt, @txt_child );
+	    push( @$txt, @txt_child );
+	}
+	else
+	{
+	    push( @$txt, $txt_pre[$i] );
+#	    push( @txt, $txt_pre[$i] );
+	}
+    }
+}
 
 
 ############################################################
