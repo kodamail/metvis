@@ -1,6 +1,7 @@
 #!/bin/sh
 . ./usr/common.sh || exit 1
-export LANG=en
+#export LANG=en
+export LANG=C
 
 RUNID=$1
 TYPE=$2  # e.g., "ys"
@@ -10,6 +11,7 @@ TYPE=$2  # e.g., "ys"
 # TODO; ya06 (annual mean starting from June)
 
 grads -xblc "${DIR_GTEMPLATE}/get_ymd.gs ${RUNID} temp.$$" > /dev/null
+#/home/kodama/grads_install/2.1.a2/grads-2.1.a2/bin/grads -xblc "${DIR_GTEMPLATE}/get_ymd.gs ${RUNID} temp.$$" > /dev/null
 YMD_LIST=( $( cat temp.$$ | sed -e "s/-/ /g" ) ) # TODO: in future. more than one YMD range will be supported.
 rm temp.$$
 
