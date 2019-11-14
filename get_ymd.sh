@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 . ./usr/common.sh || exit 1
 #export LANG=en
 export LANG=C
@@ -9,7 +9,6 @@ TYPE=$2  # e.g., "ys"
 #exit  # If you don't use astarisk in job/, exit this script here.
 
 # TODO; ya06 (annual mean starting from June)
-
 grads -xblc "${DIR_GTEMPLATE}/get_ymd.gs ${RUNID} temp.$$" > /dev/null
 #/home/kodama/grads_install/2.1.a2/grads-2.1.a2/bin/grads -xblc "${DIR_GTEMPLATE}/get_ymd.gs ${RUNID} temp.$$" > /dev/null
 YMD_LIST=( $( cat temp.$$ | sed -e "s/-/ /g" ) ) # TODO: in future. more than one YMD range will be supported.

@@ -66,8 +66,8 @@ sub main()
         # comment statement
 	if( $flag_comment == 1 )
 	{
-	    $txt_pre[$i] = ""; 
 	    if( $txt_pre[$i] =~ /^\s*\*\// ){ $flag_comment = 0; }
+	    $txt_pre[$i] = ""; 
 	    next;
 	}
 	if( $txt_pre[$i] =~ /^\s*\/\*/ ){ $txt_pre[$i] = ""; $flag_comment = 1; next; }
@@ -161,13 +161,14 @@ sub main()
 
     }
 
+#    exit 1;
+
     my @txt = @txt_pre;
 
 #    for( my $i=0; $i<=$#txt; $i++ )  # for all line
 #    {
 #	if( $txt[$i] ne "" ){ print $txt[$i] . "\n"; }
 #    }
-#    exit 1;
 
 
     ############################################################
@@ -192,44 +193,7 @@ sub main()
     
 	if( $txt[$i] =~ /^\s*exit\s*$/ ){ exit; }
 	if( $txt[$i] =~ /^\s*$/ ){ next; }
-
 	
-#        # comment statement
-#	if( $flag_comment == 1 )
-#	{
-#	    if( $txt[$i] =~ /^\s*\*\// ){ $flag_comment = 0; }
-#	    next;
-#	}
-#	if( $txt[$i] =~ /^\s*\/\*/ ){ $flag_comment = 1; next; }
-#	if( $txt[$i] =~ /^\s*#/ ){ next; }
-	    
-#        # replace ${} with defined variables
-#	while ( my ($key, $val) = each (%udef) )
-#	{
-#	    $txt[$i] =~ s/\$\{$key\}|\$$key/$val/g;
-#	} 
-
-#        # define variable
-#        if( $txt[$i] =~ /^ *([a-zA-Z][^ ]*) *= *(.*)$/ )
-#        {
-#	    $udef{"$1"} = $2;  # new/overwrite
-#	    next;
-#	}
-#        elsif( $txt[$i] =~ /^ *([a-zA-Z][^ ]*) *\+= *(.*)$/ )
-#        {
-#	    $udef{"$1"} = $udef{"$1"} . " " . $2; # add
-#	    next;
-#	}
-
-#        # delete void line and unnecessary space
-#        $txt[$i] =~ s/^ +//;
-#        $txt[$i] =~ s/  +/ /g;
-#        $txt[$i] =~ s/\n$//;
-#        #print STDERR $i . ": " . $txt[$i] . "\n";
-
-#        print $i . ": " . $txt[$i] . "\n";
-
-
         # )
         if( $txt[$i] =~ /^\s*\)\s*$/ )
         {
