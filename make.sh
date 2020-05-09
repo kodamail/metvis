@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # Synoptis
 #   ./make.sh [--test | test] [output-img-dir] job-1 [job-2 ...]
@@ -18,20 +18,20 @@ echo "$0 ($(date))"
 RUN_MODE=""
 DIR_OUTPUT_IMG=""
 FILE_JOB_LIST=()
-while [ "$1" != "" ] ; do
-    if [ "$1" = "--test" -o "$1" = "test" ] ; then
+while [[ "$1" != "" ]] ; do
+    if [[ "$1" = "--test" || "$1" = "test" ]] ; then
 	RUN_MODE="test"
-    elif [ "$1" = "--include" ] ; then
+    elif [[ "$1" = "--include" ]] ; then
 	shift
 	cat $1 >> ${TEMP_DIR}/inc2.txt
-    elif [ "$1" = "--error-cnt" ] ; then
+    elif [[ "$1" = "--error-cnt" ]] ; then
 	shift
 	MAX_ERROR_CNT=$1
-    elif [ "${DIR_OUTPUT_IMG}" = "" -a -d "$1" ] ; then
+    elif [[ "${DIR_OUTPUT_IMG}" = "" && -d "$1" ]] ; then
 	DIR_OUTPUT_IMG=$1
-    elif [ -f "$1" ] ; then
+    elif [[ -f "$1" ]] ; then
 	FILE_JOB_LIST=( ${FILE_JOB_LIST[@]} $1 )
-    elif [ "$( echo $1 | grep = )" != ""  ] ; then
+    elif [[ "$( echo $1 | grep = )" != ""  ]] ; then
 	echo $1 >> ${TEMP_DIR}/inc2.txt
     else
  	echo "error in $0: argument \"$1\" is not supported (or directory does not exist)."
@@ -40,20 +40,22 @@ while [ "$1" != "" ] ; do
     shift
 done
 
-if [ ${#FILE_JOB_LIST[@]} -eq 0 ] ; then
+#if [ ${#FILE_JOB_LIST[@]} -eq 0 ] ; then
+if (( ${#FILE_JOB_LIST[@]} == 0 )) ; then
     echo
     echo "usage:"
-    echo "  $0 [--test | test] [output-img-dir] job-1 [job-2 ...]"
+    echo "  $0 [--test | test] [--include inc-filename]"
+    echo "     [output-img-dir] job-1 [job-2 ...]"
     echo
     exit 1
 fi
 
-if [ "${DIR_OUTPUT_IMG}" = "" ] ; then
+if [[ "${DIR_OUTPUT_IMG}" = "" ]] ; then
     echo "forced to set test mode"
     RUN_MODE="test"
 fi
 
-if [ "${RUN_MODE}" = "test" ] ; then
+if [[ "${RUN_MODE}" = "test" ]] ; then
     echo
     echo "  FILE_JOB_LIST: ${FILE_JOB_LIST[@]}"
     echo "  DIR_OUTPUT_IMG: ${DIR_OUTPUT_IMG}"
@@ -78,23 +80,22 @@ for FILE_JOB in ${FILE_JOB_LIST[@]} ; do
     #
     i=1  # figure number
     p=1  # line number
-    
+
     FILE_COMMON_JOB=${FILE_JOB%/*}/common.txt
     rm -f ${TEMP_DIR}/inc.txt
-    if [ -f ${FILE_COMMON_JOB} ] ; then
+    if [[ -f ${FILE_COMMON_JOB} ]] ; then
 	cat ${FILE_COMMON_JOB} >> ${TEMP_DIR}/inc.txt
     fi
-    if [ -f ${TEMP_DIR}/inc2.txt ] ; then
+    if [[ -f ${TEMP_DIR}/inc2.txt ]] ; then
 	cat ${TEMP_DIR}/inc2.txt >> ${TEMP_DIR}/inc.txt
     fi
-    [ -f ${TEMP_DIR}/inc.txt ] && INC="inc=${TEMP_DIR}/inc.txt"
-#    cat ${TEMP_DIR}/inc.txt
+    [[ -f ${TEMP_DIR}/inc.txt ]] && INC="inc=${TEMP_DIR}/inc.txt"
     ./parse_list.pl file=${FILE_JOB} ${INC} > ${TEMP_DIR}/temp.txt || exit 1
-#    ./parse_list.pl file=${FILE_JOB} > ${TEMP_DIR}/temp.txt || exit 1
+    [[ "${RUN_MODE}" = "test" ]] && cat ${TEMP_DIR}/temp.txt
     pmax=$( cat ${TEMP_DIR}/temp.txt | wc -l ) || exit 1
     for(( p=1; ${p}<=${pmax}; p=${p}+1 )) ; do
 	TMP_LINE=$( sed ${TEMP_DIR}/temp.txt -e "${p},${p}p" -e d ) || exit 1
-	if [ "${TMP_LINE}" != "" ] ; then
+	if [[ "${TMP_LINE}" != "" ]] ; then
 	    LINE_LIST[${#LINE_LIST[@]}]=${TMP_LINE}
 	    continue
 	fi
@@ -105,7 +106,7 @@ for FILE_JOB in ${FILE_JOB_LIST[@]} ; do
         #
         #----- initial check -----
         #
-	if [ "${#DESC[@]}" -ne "${#DIR[@]}" ] ; then
+	if [[ "${#DESC[@]}" -ne "${#DIR[@]}" ]] ; then
 	    echo " -> skip: inconsistent number of parameters (${#DESC[@]} vs. ${#DIR[@]})"
 	    let i=i+1
 	    LINE_LIST=()
